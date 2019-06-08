@@ -1,12 +1,24 @@
-import store from '../store.js';
+import { fetchAllLineStatus } from '../utils/api.js';
+import { updateStore } from '../utils/helpers.js';
 
 export default class TubeStatusWrapper extends HTMLElement {
-    connectedCallback() {
-        const heading = document.createElement('h1');
-        heading.innerText = 'Hello world';
-        this.appendChild(heading);
+    async connectedCallback() {
+        try {
+            const results = await fetchAllLineStatus();
+            this.updateStore(results);
+        } catch(e) {
+            this.handleError(e);
+        } 
+    }
 
-        store.lineData.lines['central'] = 'disruptions';
+    updateStore(results) {
+        console.log(results);
+        // update store
+
+    }
+
+    handleError(e) {
+        console.error(e);
     }
 }
 
