@@ -1,0 +1,18 @@
+{
+    "name": "Tube status",
+    "short_name": "Tube status",
+    "icons": [{
+      "src": "./images/train-small.png",
+        "type": "image/png"
+      }, {
+        "src": "./images/train-medium.png",
+        "type": "image/png"
+      }, {
+        "src": "./images/train-large.png",
+        "type": "image/png"
+      }],
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#0b1b84",
+    "theme_color": "#ffffff"
+  }
