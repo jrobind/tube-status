@@ -3,14 +3,21 @@
     "short_name": "Tube status",
     "icons": [{
       "src": "./images/train-small.png",
+      "sizes": "144x144",
         "type": "image/png"
       }, {
         "src": "./images/train-medium.png",
+        "sizes": "192x192",
         "type": "image/png"
       }, {
         "src": "./images/train-large.png",
+        "sizes": "256x256",
         "type": "image/png"
-      }],
+      },{
+        "src": "./images/train-splash-screen.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }],
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#0b1b84",
