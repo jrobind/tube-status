@@ -1,3 +1,4 @@
+// use async/await once implemented
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -7,40 +8,25 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-const FILES_TO_CACHE = [
-    './offline.html',
+const version = 'v1::';
+
+const offlineFundamentals = [
+    './',
+    './src/scripts/index.js',
+    './offline.html'
 ];
 
-evt.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-        console.log('[ServiceWorker] Pre-caching offline page');
-        return cache.addAll(FILES_TO_CACHE);
-    })
-);
+self.addEventListener("install", (event) => {
+    console.log('WORKER: install event in progress.');
 
-evt.waitUntil(
-    caches.keys().then((keyList) => {
-        return Promise.all(keyList.map((key) => {
-            if (key !== CACHE_NAME) {
-                console.log('[ServiceWorker] Removing old cache', key);
-                return caches.delete(key);
-            }
-        }));
-    })
-);
+    caches.open(version + 'fundamentals')   
+        .then((cache) => cache.addAll(offlineFundamentals))
+        .then(() => console.log('WORKER: install completed'))
+});
 
-if (evt.request.mode !== 'navigate') {
-    // Not a page navigation, bail.
-    return;
-}
-
-evt.respondWith(
-    fetch(evt.request)
-        .catch(() => {
-            return caches.open(CACHE_NAME)
-                .then((cache) => {
-                    return cache.match('offline.html');
-                });
-            })
-);
+self.addEventListener("fetch", (event) => {
+    console.log('WORKER: fetch event in progress.');
+    // only cache a GET request
+    if (event.request.method !== 'GET') return;
+});
 
