@@ -19,14 +19,27 @@ const offlineFundamentals = [
 self.addEventListener("install", (event) => {
     console.log('WORKER: install event in progress.');
 
-    caches.open(version + 'fundamentals')   
-        .then((cache) => cache.addAll(offlineFundamentals))
-        .then(() => console.log('WORKER: install completed'))
+    event.waitUntil(
+        caches.open(version + 'fundamentals')   
+            .then((cache) => cache.addAll(offlineFundamentals))
+            .then(() => console.log('WORKER: install completed'))
+    );
 });
 
 self.addEventListener("fetch", (event) => {
     console.log('WORKER: fetch event in progress.');
     // only cache a GET request
     if (event.request.method !== 'GET') return;
+
+    event.respondWith(
+        caches.match(event.request)
+        .then((cached) => {
+            const networked = fetch(event.request)
+                .then(fetchedFromNetwork, unableToResolve)
+                .catch(unableToResolve);
+            // return the cached response immediately if there is one, othwerwise wait on network 
+            return cached || networked;
+        })
+    );
 });
 
