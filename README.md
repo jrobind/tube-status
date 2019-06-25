@@ -3,7 +3,7 @@ Status updates are sourced via the Transport for London Unified API. Please see:
 
 ## Todo:
 
-* setup basic scaffold to fetch tube api data & render
 * setup service worker logic
 * setup PWA config
+* setup test config
 
