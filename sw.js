@@ -37,7 +37,7 @@ self.addEventListener("fetch", (event) => {
                 const networked = fetch(event.request)
                     .then(fetchedFromNetwork, unableToResolve)
                     .catch(unableToResolve);
-                    // return the cached response immediately if there is one, othwerwise wait on network 
+                // return the cached response immediately if there is one, othwerwise wait on network 
                 return cached || networked;
 
                 function fetchedFromNetwork(response) {
@@ -55,7 +55,7 @@ self.addEventListener("fetch", (event) => {
                 }
        
                 // provide a meaningful response even when all else fails
-                function unableToResolve () {
+                function unableToResolve() {
                     console.log('WORKER: fetch request failed in both cache and network.');
           
                     return new Response('<h1>Service Unavailable</h1>', {
@@ -68,5 +68,20 @@ self.addEventListener("fetch", (event) => {
                 }
             })
     );
+});
+
+self.addEventListener("activate", (event) => {
+    console.log('WORKER: activate event in progress.');
+
+    event.waitUntil(
+        caches
+            .keys()
+            .then((keys) => {
+                return Promise.all(
+                    keys.filter((key) => !key.startsWith(version)).map((key) => caches.delete(key))
+                );    
+            })
+            .then(() => console.log('WORKER: activate completed.'))
+    )
 });
 
