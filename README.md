@@ -6,4 +6,5 @@ Status updates are sourced via the Transport for London Unified API. Please see:
 * setup service worker logic
 * setup PWA config
 * setup test config
+* use JSdoc for type checking
 
