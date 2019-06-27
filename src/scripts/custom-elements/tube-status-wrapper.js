@@ -5,21 +5,18 @@ export default class TubeStatusWrapper extends HTMLElement {
     async connectedCallback() {
         try {
             const results = await fetchAllLineStatus();
-            this.updateStore(results);
+            this.updateStore_(results);
         } catch(e) {
-            this.handleError(e);
+            this.handleError_(e);
         } 
     }
 
-    updateStore(results) {
-        console.log(results);
+    updateStore_(results) {
         // update store
-
+        updateStore(results);
     }
 
-    handleError(e) {
+    handleError_(e) {
         console.error(e);
     }
 }
-
-window.customElements.define('tube-status-wrapper', TubeStatusWrapper);
