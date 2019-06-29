@@ -11,7 +11,7 @@ const version = 'v1::';
 const offlineFundamentals = [
     './',
     './src/scripts/index.js',
-    './offline.html'
+    './images'
 ];
 
 self.addEventListener("install", (event) => {
@@ -35,8 +35,8 @@ self.addEventListener("fetch", (event) => {
             .match(event.request)
             .then((cached) => {
                 const networked = fetch(event.request)
-                    .then(fetchedFromNetwork, unableToResolve)
-                    .catch(unableToResolve);
+                    .then(fetchedFromNetwork)
+                    .catch(() => console.log('WORKER: fetch request failed in both cache and network.'));
                 // return the cached response immediately if there is one, othwerwise wait on network 
                 return cached || networked;
 
@@ -52,19 +52,6 @@ self.addEventListener("fetch", (event) => {
                         .then(() => console.log('WORKER: fetch response stored in cache.', event.request.url));
                         
                     return response;
-                }
-       
-                // provide a meaningful response even when all else fails
-                function unableToResolve() {
-                    console.log('WORKER: fetch request failed in both cache and network.');
-          
-                    return new Response('<h1>Service Unavailable</h1>', {
-                        status: 503,
-                        statusText: 'Service Unavailable',
-                        headers: new Headers({
-                            'Content-Type': 'text/html'
-                        })
-                    });
                 }
             })
     );
