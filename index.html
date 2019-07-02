@@ -13,10 +13,23 @@
     <link rel="manifest" href="./manifest.json">
   </head>
   <body>
-        <div class="app-wrapper">
-            <h1>TEST</h1>
-            <tube-status-wrapper></tube-status-wrapper>
-        </div>
+    <div class="app-wrapper">
+      <h1>TUBE STATUS</h1>
+      <tube-status-wrapper>
+        <tube-line line='bakerloo'></tube-line>
+        <tube-line line='central'></tube-line>
+        <tube-line line='circle'></tube-line>
+        <tube-line line='district'></tube-line>
+        <tube-line line='hammersmith-city'></tube-line>
+        <tube-line line='jubilee'></tube-line>
+        <tube-line line='metropolitan'></tube-line>
+        <tube-line line='northern'></tube-line>
+        <tube-line line='piccadilly'></tube-line>
+        <tube-line line='victoria'></tube-line>
+        <tube-line line='waterloo-city'></tube-line>
+        <tube-line line='tfl-rail'></tube-line>
+      </tube-status-wrapper>
+    </div>
     <script type="module" src="./sw.js"></script>
     <script type="module" src="./src/scripts/index.js"></script>
   </body>
