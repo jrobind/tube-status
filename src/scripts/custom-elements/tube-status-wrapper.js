@@ -1,11 +1,19 @@
+import { store, updateStore } from '../utils/store.js';
 import { fetchAllLineStatus } from '../utils/api.js';
-import { updateStore } from '../utils/helpers.js';
 
 export default class TubeStatusWrapper extends HTMLElement {
+    constructor() {
+        super();
+        
+        this.results_ = null;
+    }
+
     async connectedCallback() {
         try {
-            const results = await fetchAllLineStatus();
-            this.updateStore_(results);
+            this.results_ = await fetchAllLineStatus();
+            this.updateStore_(this.results_);
+            // dispatch event once initial store update has been completed
+            this.dispatchEvent(new Event('initialise'));
         } catch(e) {
             this.handleError_(e);
         } 
@@ -13,7 +21,8 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     updateStore_(results) {
         // update store
-        updateStore(results);
+        console.log(updateStore(results));
+
     }
 
     handleError_(e) {
