@@ -11,7 +11,7 @@ export default class TubeLine extends HTMLElement {
 
     connectedCallback() {
         this.tubeStatusWrapper_  = document.querySelector('tube-status-wrapper');
-        this.tubeStatusWrapper_.addEventListener('initialise', () => this.lineStatus_ = getLine(this.line_));
+        this.lineStatus_ = getLine(this.line_);
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

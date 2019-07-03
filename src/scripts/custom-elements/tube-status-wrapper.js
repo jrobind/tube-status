@@ -12,8 +12,6 @@ export default class TubeStatusWrapper extends HTMLElement {
         try {
             this.results_ = await fetchAllLineStatus();
             this.updateStore_(this.results_);
-            // dispatch event once initial store update has been completed
-            this.dispatchEvent(new Event('initialise'));
         } catch(e) {
             this.handleError_(e);
         } 
@@ -21,8 +19,7 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     updateStore_(results) {
         // update store
-        console.log(updateStore(results));
-
+        updateStore(results);
     }
 
     handleError_(e) {
