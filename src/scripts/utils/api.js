@@ -21,8 +21,7 @@ export const fetchAllLineStatus = async () => {
 
         const deserialisedJSON = await responseAll.json(); 
 
-        rail.lineStatuses = railResponse.length ? railResponse : { statusSeverityDescription: 'Good Service' };
-       
+        rail.lineStatuses = railResponse.length ? railResponse : [{ statusSeverityDescription: 'Good Service' }];
         deserialisedJSON.push(rail);
 
         return deserialisedJSON;

@@ -1,18 +1,25 @@
 // when updating store, do not mutate.
-export let store = {
+let store = {
     lineData: {
         lines: {}
-    }
+    },
+    subscribers: []
 }
+
+export const getStore = () => store;
 
 export const updateStore = (data) => {
     const newStore = { ...store, lineData:{ lines: {  ...data } } };
     store = newStore;
-    return store.lineData;
+    // invoke subscribers
+    if  (store.subscribers.length) store.subscribers.forEach(callback => callback());
+    return store;
 }
 
-export const getLine = (line) => {
-    for (let [key, value] of Object.entries(store.lineData.lines)) {
-        if (value.id === line) return value;
+export const subscribeToStore = (callbacks) => {
+    if (Array.isArray(callbacks)) {
+        callbacks.forEach(callback => store.subscribers.push(callback));
+    } else {
+        store.subscribers.push(callbacks);
     }
-}
+};
