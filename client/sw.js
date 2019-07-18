@@ -2,34 +2,33 @@
 const version = 'v1::';
 
 const offlineFundamentals = [
-    './',
     './src/scripts/index.js',
-    './images'
+    './images/train-large.png'
 ];
 
 self.addEventListener('push', e => {
     const data =  e.data.json();
     console.log('push recieved', data)
     self.registration.showNotification(data.title, {
-        body: "Notified by Traversy Media!",
-        icon: "http://image.ibb.co/frYOFd/tmlogo.png"
+        body: "Notified by Tube Status",
     });
 });
 
 self.addEventListener("install", (event) => {
-    // console.log('WORKER: install event in progress.');
-
     event.waitUntil(
         caches
             .open(version + 'fundamentals')   
             .then((cache) => cache.addAll(offlineFundamentals))
-            // .then(() => console.log('WORKER: install completed'))
+            .then(r => console.log('FINE'))
+            .catch(e => console.log('ERROR', e))
     );
 });
 
 self.addEventListener("fetch", (event) => {
+    console.log('hello')
     // console.log('WORKER: fetch event in progress.');
     // only cache a GET request
+    console.log(event.request.method,'TEST')
     if (event.request.method !== 'GET') return;
 
     event.respondWith(
@@ -61,7 +60,7 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("activate", (event) => {
     // console.log('WORKER: activate event in progress.');
-
+    console.log('ACTIVATE')
     event.waitUntil(
         caches
             .keys()
