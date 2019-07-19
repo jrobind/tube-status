@@ -19,24 +19,29 @@ const privateKey = process.env.PRIVATE_KEY;
 webpush.setVapidDetails("mailto:test@test.com", publicKey, privateKey);
 
 // temp database
-const dataStore = {};
+const dataStore = { lines: [] };
 
-// Subscribe Route
+// get Route
+app.get("/lines", (req, res) => {
+    // send results
+    (async() => {
+        const results = await apiResults.fetchAllLineStatus(); 
+         console.log(results);
+         res.json(results)
+      })();
+});
+
+// subscribe Route
 app.post("/subscribe", (req, res) => {
-    // pushSubscription object
     console.log('REACHING')
-    const subscription = req.body;
-    // payload
-    // (async() => {
-    //     const results = await apiResults.fetchAllLineStatus(); 
-    //      console.log(results);
+    const { pushSubscription, line } = req.body;
+    dataStore.lines.push(line);
+
     const payload = JSON.stringify({title: "TESTING"})
     webpush
-        .sendNotification(subscription, payload)
+        .sendNotification(pushSubscription, payload)
         .catch(err => console.error(err));
-        
-    //   })();
 
 });
 
-app.listen(4000, () => console.log(`Server started on port 4000`));
+app.listen(4500, () => console.log(`Server started on port 4500`));

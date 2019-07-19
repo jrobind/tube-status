@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if ('serviceWorker' in navigator) {
         // register service worker
         navigator.serviceWorker.register('./sw.js')
+            // register for push
             .then(registration => {
                 const publicKey = 'BAyM-TL7OKAfqC9A9AkUnHqyzf3Cw3yEkFmvNCg56H6GjRMxUOyW-YK4_DJ_BdFRuSFB-lxJpqXjyxFVX_hdGe4';
                 registration.pushManager.subscribe({ 
@@ -9,14 +10,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     applicationServerKey: urlBase64ToUint8Array(publicKey)
                 })
                 .then(pushSubscription => {
-                    console.log(pushSubscription);
+                    // setup listeners for line push subscription
                     [...document.querySelectorAll('tube-line')].forEach(el => {
                         el.shadowRoot.querySelector('.subscribe').addEventListener('click', (e) => {
-                            console.log(e.target.getAttribute('line'))
+                            const line = e.target.getAttribute('line');
                             // post subscription
                             fetch('/subscribe',{ 
                                 method: 'POST',
-                                body: JSON.stringify(pushSubscription),
+                                body: JSON.stringify({ pushSubscription, line }),
                                 headers: {
                                     'content-type': 'application/json'
                                 }
@@ -26,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 })
             });
     }
-    
     
     function urlBase64ToUint8Array(base64String) {
         const padding = "=".repeat((4 - base64String.length % 4) % 4);
