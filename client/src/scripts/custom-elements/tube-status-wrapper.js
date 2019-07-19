@@ -19,6 +19,9 @@ export default class TubeStatusWrapper extends HTMLElement {
         this.getAllLineData_();
         // get data every 30 seconds
         this.initialise_();
+
+        fetch('/lines')
+            .then(res => console.log(res, 'from server'))
     }
     
     /**
