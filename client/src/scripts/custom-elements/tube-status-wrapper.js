@@ -1,5 +1,4 @@
 import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
-import { fetchAllLineStatus } from '../utils/api.js';
 
 /** @type {number} */
 const FETCH_INTERVAL = 30000;
@@ -10,18 +9,12 @@ const FETCH_INTERVAL = 30000;
 export default class TubeStatusWrapper extends HTMLElement {
     constructor() {
         super();
-
-        /** @private {object} */
-        this.results_ = null;
     }
 
     connectedCallback() {
         this.getAllLineData_();
         // get data every 30 seconds
         this.initialise_();
-
-        fetch('/lines')
-            .then(res => console.log(res, 'from server'))
     }
     
     /**
@@ -29,13 +22,11 @@ export default class TubeStatusWrapper extends HTMLElement {
      * @private
      */
     async getAllLineData_() {
-        try {
-            this.results_ = await fetchAllLineStatus();
-            // update store with successful API response
-            updateStore(this.results_);
-        } catch(e) {
-            this.handleError_(e);
-        } 
+        const lines = await fetch('/lines').catch(this.handleError_);
+        const deserialised = await lines.json();
+        // update store with successful API response
+        updateStore(deserialised);
+        return deserialised;
     }
 
     /**
