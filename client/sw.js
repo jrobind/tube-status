@@ -19,16 +19,12 @@ self.addEventListener("install", (event) => {
         caches
             .open(version + 'fundamentals')   
             .then((cache) => cache.addAll(offlineFundamentals))
-            .then(r => console.log('FINE'))
-            .catch(e => console.log('ERROR', e))
     );
 });
 
 self.addEventListener("fetch", (event) => {
-    console.log('hello')
     // console.log('WORKER: fetch event in progress.');
     // only cache a GET request
-    console.log(event.request.method,'TEST')
     if (event.request.method !== 'GET') return;
 
     event.respondWith(
@@ -60,7 +56,6 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("activate", (event) => {
     // console.log('WORKER: activate event in progress.');
-    console.log('ACTIVATE')
     event.waitUntil(
         caches
             .keys()
