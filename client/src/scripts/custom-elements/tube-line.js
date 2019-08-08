@@ -32,7 +32,7 @@ export default class TubeLine extends HTMLElement {
             if (value.id === this.line_) this.lineStatus_ = value;
         }
 
-        console.log(this.lineStatus_)
+        // console.log(this.lineStatus_)
     }
 
     /**
@@ -63,7 +63,7 @@ export default class TubeLine extends HTMLElement {
             </style>
             <div class="line-wrapper" current-status>
                 <slot name="line-status"></slot>
-                <div>SUBSCRIBE TO ALERTS</div>
+                <div class="subscribe" line=${this.line_}>SUBSCRIBE TO ALERTS</div>
             </div>
         `;
         const templateContent = template.content;
