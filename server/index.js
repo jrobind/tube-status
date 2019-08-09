@@ -1,7 +1,6 @@
 const express = require("express");
 const webpush = require("web-push");
 const bodyParser = require("body-parser");
-const path = require("path");
 const apiResults = require('./api');
 require('dotenv').config({path: '../.env'});
 
@@ -23,11 +22,12 @@ const dataStore = { lines: [] };
 
 // get Route
 app.get("/lines", (req, res) => {
+    const line = req.line;
+    dataStore.lines.push({ line });
     // send results
     (async() => {
         const results = await apiResults.fetchAllLineStatus(); 
-         console.log(results);
-         res.json(results)
+         res.json(results);
       })();
 });
 
