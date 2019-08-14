@@ -8,12 +8,14 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#ffffff">
     <meta name="apple-mobile-web-app-title" content="Tube status PWA">
+    <meta name="google-signin-client_id" content="55387840936-mejpra12qf0d4rlrr6n3kta1boor8jh1.apps.googleusercontent.com">
     <link rel="apple-touch-icon" href="./images/train-small.png">
     <title>Tube status</title>
     <link rel="manifest" href="./manifest.json">
   </head>
   <body>
     <div class="app-wrapper">
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
       <h1>TUBE STATUS</h1>
       <tube-status-wrapper>
         <tube-line line='bakerloo'>
@@ -62,5 +64,6 @@
     </div>
     <script type="module" src="./src/scripts/index.js"></script>
     <script type="text/javascript" src="./push-setup.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
   </body>
 </html>
