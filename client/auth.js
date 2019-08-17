@@ -1,16 +1,9 @@
 function onSignIn(googleUser) {
-  const profile = googleUser.getBasicProfile();
-  const name = profile.getName();
-  const avatar = profile.getImageUrl();
-  const email = profile.getEmail();
-
-  console.log('Name: ' + name);
-  console.log('Image URL: ' + avatar);
-  console.log('Email: ' + email);
+  const token = googleUser.getAuthResponse().id_token;
 
   fetch('api/subscribe',{ 
     method: 'POST',
-    body: JSON.stringify({ name, avatar, email }),
+    body: JSON.stringify({ token }),
     headers: {
         'content-type': 'application/json'
     } 
