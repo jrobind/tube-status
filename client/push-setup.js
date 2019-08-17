@@ -9,22 +9,22 @@ document.addEventListener("DOMContentLoaded", function() {
                     userVisibleOnly: true,
                     applicationServerKey: urlBase64ToUint8Array(publicKey)
                 })
-                .then(pushSubscription => {
-                    // setup listeners for line push subscription
-                    [...document.querySelectorAll('tube-line')].forEach(el => {
-                        el.shadowRoot.querySelector('.subscribe').addEventListener('click', (e) => {
-                            const line = e.target.getAttribute('line');
-                            // post subscription
-                            fetch('/subscribe',{ 
-                                method: 'POST',
-                                body: JSON.stringify({ pushSubscription, line }),
-                                headers: {
-                                    'content-type': 'application/json'
-                                }
-                            });
-                        });
-                    });
-                })
+                // .then(pushSubscription => {
+                //     // setup listeners for line push subscription
+                //     [...document.querySelectorAll('tube-line')].forEach(el => {
+                //         el.shadowRoot.querySelector('.subscribe').addEventListener('click', (e) => {
+                //             const line = e.target.getAttribute('line');
+                //             // post subscription
+                //             fetch('/subscribe',{ 
+                //                 method: 'POST',
+                //                 body: JSON.stringify({ pushSubscription, line }),
+                //                 headers: {
+                //                     'content-type': 'application/json'
+                //                 }
+                //             });
+                //         });
+                //     });
+                // })
             });
     }
     

@@ -12,9 +12,9 @@ export default class TubeStatusWrapper extends HTMLElement {
     }
 
     connectedCallback() {
-        this.getAllLineData_();
+        // this.getAllLineData_();
         // get data every 30 seconds
-        this.initialise_();
+        // this.initialise_();
     }
     
     /**
