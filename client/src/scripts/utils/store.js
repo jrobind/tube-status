@@ -3,10 +3,13 @@ let store = {
     lineData: {
         lines: {}
     },
+    signedIn: false,
     subscribers: []
 }
 
 export const getStore = () => store;
+
+export const updateStoreAuth = (status) => store.signedIn = status; 
 
 export const updateStore = (data) => {
     const newStore = { ...store, lineData:{ lines: {  ...data } } };

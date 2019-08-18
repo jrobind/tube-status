@@ -1,4 +1,6 @@
-function onSignIn(googleUser) {
+import { updateStoreAuth, getStore } from './src/scripts/utils/store.js';
+
+export function onSignIn(googleUser) {
   const token = googleUser.getAuthResponse().id_token;
 
   fetch('api/subscribe',{ 
@@ -8,14 +10,17 @@ function onSignIn(googleUser) {
         'content-type': 'application/json'
     } 
   })
-  .then((res) => console.log(res))
+  .then((res) => {
+    updateStoreAuth(true)
+    console.log('User signed in.', getStore());
+  })
   .catch((err) => console.log(err));
 }
 
-function signOut() {
+export function signOut() {
   const auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(() => {
-    console.log('User signed out.');
+    updateStoreAuth(false)
+    console.log('User signed out.', getStore());
   });
 }
-  
