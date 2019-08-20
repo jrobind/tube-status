@@ -11,6 +11,7 @@ const mongoSetup = () => {
 
     // enable promises with mongoose
     mongoose.Promise = Promise;
+    mongoose.set('useFindAndModify', false);
 }
 
 // export model once created
