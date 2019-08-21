@@ -7,7 +7,7 @@ const router = express.Router();
 // subscribe Route
 router.post('/subscribe', (req, res) => {
     const { token } = req.body;
-    const lines = req.body.line || [];
+    const lines = req.body.lines || [];
     console.log(req.body)
     fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`)
         .then(res => {
@@ -31,7 +31,18 @@ router.post('/subscribe', (req, res) => {
                     // check if user exists. If not, then add to db.
                     db.UserModel.findOne({ googleId }, (err, resp) => {
                         if (resp) {
-                            console.log('User already exists');
+                            const query = { 'googleId': profileData.googleId };
+                            
+                            db.UserModel.findOneAndUpdate(query, { $push: { lines } },
+                              (err, success) => {
+                                    if (err) {
+                                        console.log('Failed to update');
+                                    } else {
+                                        console.log('Successfully updated', success);
+                                        console.log(lines)
+                                        res.json('success')
+                                    }
+                                });
                             return
                         } else {
                             const newUser = new db.UserModel(profileData);
