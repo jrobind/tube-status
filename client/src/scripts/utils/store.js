@@ -3,18 +3,28 @@ let store = {
     lineData: {
         lines: {}
     },
-    signedIn: false,
+    userProfile: {
+        signedIn: false,
+        name: null,
+        avatar: null
+    },
     subscribers: []
 }
 
 export const getStore = () => store;
 
-export const updateStoreAuth = (status) => store.signedIn = status; 
+export const updateStoreAuth = (data) => {
+    const newStore = { ...store, userProfile:{ ...data } };
+    store = newStore;
+    // invoke subscribers
+    if (store.subscribers.length) store.subscribers.forEach(callback => callback());
+    return store;
+}
 
 export const updateStore = (data) => {
     const newStore = { ...store, lineData:{ lines: {  ...data } } };
     store = newStore;
-    // invoke subscribers
+    
     if (store.subscribers.length) store.subscribers.forEach(callback => callback());
     return store;
 }
