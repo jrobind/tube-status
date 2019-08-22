@@ -3,9 +3,17 @@ const webpush = require("web-push");
 const bodyParser = require("body-parser");
 const session = require('express-session');
 const passport = require('passport');  
+const jwt = require('jsonwebtoken');
+const passportJWT = require("passport-jwt");
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const JwtStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const db = require('./models');
 require('dotenv').config({path: '../.env'});
+
+const jwtOptions = {};
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+jwtOptions.secretOrKey = 'secret';
 
 // require routes
 const subscribe = require('./routes/subscribe');
@@ -71,7 +79,18 @@ passport.use(new GoogleStrategy({
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/', session: true }), (req, res) => {
     console.log('wooo we authenticated, here is our user object:', req.user);
-    res.redirect('/')
+    const token = jwt.sign(req.user, 'secret');
+    const htmlWithEmbeddedJWT = `
+    <html>
+        <script>
+            // Save JWT to localStorage
+            window.localStorage.setItem('JWT', '${token}');
+            // Redirect browser to root of application
+            window.location.href = '/';
+        </script>
+        </html>
+    `;
+    res.send(htmlWithEmbeddedJWT);
   }
 );
   
