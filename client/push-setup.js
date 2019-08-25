@@ -1,4 +1,18 @@
+import { updateStoreAuth, getStore } from './src/scripts/utils/store.js';
+
 document.addEventListener("DOMContentLoaded", function() {
+    const token = localStorage.getItem('JWT');
+    // if token exists, login was successful
+    if (token) {
+        // decode JWT profile data
+        const { displayName, emails, photos, id } = JSON.parse(window.atob(token.split('.')[1]));
+
+        updateStoreAuth({ signedIn: true, displayName, email: emails[0].value, avatar: photos[0].value, id });
+        console.log(getStore());
+        const store = getStore();
+        // set avatar
+        document.getElementById('google-avatar').src = store.userProfile.avatar;
+    }
     if ('serviceWorker' in navigator) {
         // register service worker
         navigator.serviceWorker.register('./sw.js')
@@ -9,22 +23,28 @@ document.addEventListener("DOMContentLoaded", function() {
                     userVisibleOnly: true,
                     applicationServerKey: urlBase64ToUint8Array(publicKey)
                 })
-                // .then(pushSubscription => {
-                //     // setup listeners for line push subscription
-                //     [...document.querySelectorAll('tube-line')].forEach(el => {
-                //         el.shadowRoot.querySelector('.subscribe').addEventListener('click', (e) => {
-                //             const line = e.target.getAttribute('line');
-                //             // post subscription
-                //             fetch('/subscribe',{ 
-                //                 method: 'POST',
-                //                 body: JSON.stringify({ pushSubscription, line }),
-                //                 headers: {
-                //                     'content-type': 'application/json'
-                //                 }
-                //             });
-                //         });
-                //     });
-                // })
+                .then(pushSubscription => {
+                    // setup listeners for line push subscription
+                    [...document.querySelectorAll('tube-line')].forEach(el => {
+                        el.shadowRoot.querySelector('.subscribe').addEventListener('click', (e) => {
+                            if (getStore().userProfile.signedIn) {
+                                const line = e.target.getAttribute('line');
+                                // post subscription
+                                fetch('/subscribe',{ 
+                                    method: 'POST',
+                                    body: JSON.stringify({ pushSubscription, line }),
+                                    headers: {
+                                        'content-type': 'application/json'
+                                    }
+                                });
+                            } else {
+                                alert('sign in')
+                                document.getElementById('sign-in')
+                                    .scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+                            }
+                        });
+                    });
+                })
             });
     }
     
@@ -43,3 +63,5 @@ document.addEventListener("DOMContentLoaded", function() {
         return outputArray;
     }
 });
+
+document.getElementById('logout').addEventListener('click', () => localStorage.removeItem('JWT'));
