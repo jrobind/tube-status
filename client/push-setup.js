@@ -65,3 +65,15 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.getElementById('logout').addEventListener('click', () => localStorage.removeItem('JWT'));
+document.getElementById('protected').addEventListener('click', () => {
+    const token = localStorage.getItem('JWT');
+    fetch('/protected', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then(success => alert('reached protected', success))
+    .catch(e => console.log(e));
+});
