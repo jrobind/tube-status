@@ -5,8 +5,10 @@ let store = {
     },
     userProfile: {
         signedIn: false,
-        name: null,
-        avatar: null
+        id: null,
+        displayName: null,
+        avatar: null,
+        email: null
     },
     subscribers: []
 }
@@ -17,16 +19,16 @@ export const updateStoreAuth = (data) => {
     const newStore = { ...store, userProfile:{ ...data } };
     store = newStore;
     // invoke subscribers
-    if (store.subscribers.length) store.subscribers.forEach(callback => callback());
-    return store;
+    // if (store.subscribers.length) store.subscribers.forEach(callback => callback());
+    // return store;
 }
 
 export const updateStore = (data) => {
     const newStore = { ...store, lineData:{ lines: {  ...data } } };
     store = newStore;
-    
-    if (store.subscribers.length) store.subscribers.forEach(callback => callback());
-    return store;
+
+    // if (store.subscribers.length) store.subscribers.forEach(callback => callback());
+    // return store;
 }
 
 export const subscribeToStore = (callbacks) => {
