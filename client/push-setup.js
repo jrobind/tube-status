@@ -64,7 +64,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-document.getElementById('logout').addEventListener('click', () => localStorage.removeItem('JWT'));
+document.getElementById('logout').addEventListener('click', () => {
+    localStorage.removeItem('JWT');
+    updateStoreAuth({ signedIn: false, displayName: null, email: null, avatar: null, id: null });
+    console.log(getStore())
+});
+
 document.getElementById('protected').addEventListener('click', () => {
     const token = localStorage.getItem('JWT');
     fetch('/protected', {
@@ -74,6 +79,12 @@ document.getElementById('protected').addEventListener('click', () => {
             Authorization: `Bearer ${token}`
         }
     })
-    .then(success => alert('reached protected', success))
+    .then(response => {
+        if (response.status === 401) {
+            alert('please login');
+        } else {
+            console.log(response, 'SUCCESS!')
+        }
+    })
     .catch(e => console.log(e));
 });
