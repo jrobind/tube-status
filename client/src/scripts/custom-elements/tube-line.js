@@ -40,11 +40,15 @@ export default class TubeLine extends HTMLElement {
      * @private
      */
     updateDOM_() {
+        const statusElement = this.querySelector('.tube-line-status');
+        const subscribeText = statusElement.querySelector('a');
         // need to update this to handle multiple disruptions
+        if (!this.lineStatus_) return;
         let status = this.lineStatus_.lineStatuses[0].statusSeverityDescription;
         if (!status) status = this.lineStatus_.lineStatuses[0].closureText;
-
-        this.querySelector('.tube-line-status').innerText = `${this.line_}: ${status}`;
+        // remove markup before updating
+        statusElement.querySelector('span') ? statusElement.innerHTML = '' : null;
+        this.querySelector('.tube-line-status').insertAdjacentHTML('afterbegin', `<span>${this.line_}: ${status}</span>${subscribeText}`);
     }
 
     /**
@@ -53,6 +57,7 @@ export default class TubeLine extends HTMLElement {
      */
     render_() {
         const template = document.createElement('template');
+
         template.innerHTML = `
             <style>
             .line-wrapper {
@@ -63,7 +68,8 @@ export default class TubeLine extends HTMLElement {
             </style>
             <div class="line-wrapper" current-status>
                 <slot name="line-status"></slot>
-                <div class="subscribe" line=${this.line_}>SUBSCRIBE TO ALERTS</div>
+                <slot name="title"></slot>
+                <slot name="subscribe"></slot>
             </div>
         `;
         const templateContent = template.content;
