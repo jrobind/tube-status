@@ -5,7 +5,7 @@ export function onSignIn(googleUser) {
 
   fetch('api/subscribe',{ 
     method: 'POST',
-    body: JSON.stringify({ token }),
+    body: JSON.stringify({ token, lines: 'central' }),
     headers: {
         'content-type': 'application/json'
     } 
