@@ -27,12 +27,10 @@ export default class TubeLine extends HTMLElement {
      * @private
      */
     processLineStatus_() {
-        console.log('update triggered in process line status')
+        // console.log('update triggered in process line status')
         for (let [key, value] of Object.entries(getStore().lineData.lines)) {
             if (value.id === this.line_) this.lineStatus_ = value;
         }
-
-        // console.log(this.lineStatus_)
     }
 
     /**
@@ -40,15 +38,20 @@ export default class TubeLine extends HTMLElement {
      * @private
      */
     updateDOM_() {
-        const statusElement = this.querySelector('.tube-line-status');
-        const subscribeText = statusElement.querySelector('a');
+        // console.log(this.lineStatus_, 'FROM UPDATE DOM');
+        const statusEl = this.querySelector('.tube-line-status .status-text');
+        const subscribeEl = this.querySelector('.tube-line-status .subscribe');
+        const subscribeText = subscribeEl.innerText;
+
         // need to update this to handle multiple disruptions
-        if (!this.lineStatus_) return;
         let status = this.lineStatus_.lineStatuses[0].statusSeverityDescription;
         if (!status) status = this.lineStatus_.lineStatuses[0].closureText;
         // remove markup before updating
-        statusElement.querySelector('span') ? statusElement.innerHTML = '' : null;
-        this.querySelector('.tube-line-status').insertAdjacentHTML('afterbegin', `<span>${this.line_}: ${status}</span>${subscribeText}`);
+        statusEl.innerText = '';
+        subscribeEl.innerText = '';
+
+        statusEl.innerText = `${this.line_}: ${status}`;
+        subscribeEl.innerText = subscribeText; 
     }
 
     /**
@@ -68,7 +71,7 @@ export default class TubeLine extends HTMLElement {
             </style>
             <div class="line-wrapper" current-status>
                 <slot name="line-status"></slot>
-                <slot name="title"></slot>
+                <slot name="status-text"></slot>
                 <slot name="subscribe"></slot>
             </div>
         `;
