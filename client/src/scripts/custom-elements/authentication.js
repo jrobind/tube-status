@@ -1,7 +1,7 @@
 import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
 
 /**
- * Line subscription custom element.
+ * Authentication custom element.
  */
 export default class Authentication extends HTMLElement {
     constructor() {
@@ -10,27 +10,35 @@ export default class Authentication extends HTMLElement {
         /** @private {string} */
         this.dest_ = this.getAttribute('dest');  
         /** @private {string} */
-        this.authStatus_ = this.getAttribute('auth-copy');         
+        this.authPath_ = this.getAttribute('auth-path');  
     }
 
     connectedCallback() {
         this.addEventListener('click', this.handleAuth_.bind(this));
     } 
 
+    // attributeChangedCallback(attrName, oldVal, newVal) {
+    //     if (attrName  === 'auth')
+    // }
+
     /**
-     * Handle authentication process with Google.
+     * Handle Google authentication process.
      * @private
      */
     handleAuth_() {
-        switch(this.authStatus_) {
+        switch(this.authPath_) {
             case 'login':
-                this.setAttribute('auth-copy', 'logout')
+                debugger;
                 window.location.href = this.dest_;
+                this.setAttribute('auth-path', 'logout');
+                break;
             case 'logout':
                 localStorage.removeItem('JWT');
                 updateStore('AUTH', { signedIn: false, displayName: null, email: null, avatar: null, id: null });
                 window.location.href = '/';
-            case 'line-auth':
+                this.setAttribute('auth-copy', 'login');
+                break;
+            case 'lineAuth':
                 // post subscription
                 fetch('/subscribe',{ 
                     method: 'POST',
@@ -38,7 +46,7 @@ export default class Authentication extends HTMLElement {
                     headers: {
                         'content-type': 'application/json'
                     }
-                })
+                });
         }
     }
 }
