@@ -14,11 +14,13 @@
     <link rel="manifest" href="./manifest.json">
   </head>
   <body>
+    <div class="loading">LOADING...</div>
     <div class="app-wrapper">
       <img id="google-avatar">
-      <a id="sign-in" href='/auth/google/callback'>Log in with Google</a>
+      <tube-status-authentication dest='/auth/google/callback' auth-path='login' >Log in with Google</tube-status-authentication>
+      <!-- <a id="sign-in">Log in with Google</a> -->
       <button id="protected" >Go To Protected Endpoint</button>
-      <button id="logout">Logout</button>
+      <!-- <button id="logout">Logout</button> -->
       <h1>TUBE STATUS</h1>
       <tube-status-wrapper>
         <tube-line line='bakerloo'>
