@@ -14,97 +14,94 @@
     <link rel="manifest" href="./manifest.json">
   </head>
   <body>
-    <div class="loading">LOADING...</div>
+    <tube-status-loading class="loading" hide></tube-status-loading>
     <div class="app-wrapper">
       <img id="google-avatar">
-      <tube-status-authentication dest='/auth/google/callback' auth-path='login' >Log in with Google</tube-status-authentication>
-      <!-- <a id="sign-in">Log in with Google</a> -->
-      <button id="protected" >Go To Protected Endpoint</button>
-      <!-- <button id="logout">Logout</button> -->
+      <tube-status-authentication dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
       <h1>TUBE STATUS</h1>
       <tube-status-wrapper>
         <tube-line line='bakerloo'>
           <div class="tube-line-status" slot="line-status">
-              <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <span class="status-text" slot="status-text"></span>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='central'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='circle'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='district'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='hammersmith-city'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='jubilee'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='metropolitan'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>     
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>    
           </div>
         </tube-line>
         <tube-line line='northern'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='piccadilly'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='victoria'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='waterloo-city'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='tfl-rail'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='london-overground'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe">sign-in to subscribe</a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
         <tube-line line='dlr'>
           <div class="tube-line-status" slot="line-status">
             <span class="status-text" slot="status-text"></span>
-            <a class="subscribe" slot="subscribe"></a>
+            <tube-status-authentication slot="subscribe" dest='/auth/google/callback' auth-path='lineAuth'></tube-status-authentication>
           </div>
         </tube-line>
       </tube-status-wrapper>
