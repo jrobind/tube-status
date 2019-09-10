@@ -9,6 +9,7 @@ let store = {
         avatar: null,
     },
     loadingState: false,
+    pushSubscription: null,
     subscribers: []
 }
 
@@ -18,7 +19,6 @@ export const updateStore = (action, data) => {
     switch(action) {
         case 'LINES':
             store = { ...store, lineData:{ lines: {  ...data } } };
-            // invoke subscribers
             store.subscribers.length && store.subscribers.forEach(callback => callback());
 
             return store;
@@ -28,6 +28,11 @@ export const updateStore = (action, data) => {
 
             return store;
         case 'LOADING':
+            store = { ...store, ...data };
+            store.subscribers.length && store.subscribers.forEach(callback => callback());
+
+            return store;
+        case 'PUSH-SUBSCRIPTION':
             store = { ...store, ...data };
             store.subscribers.length && store.subscribers.forEach(callback => callback());
 
