@@ -34,24 +34,18 @@ export default class TubeLine extends HTMLElement {
     }
 
     /**
-     * Updates DOM with every new line status update.
+     * Updates DOM with every new line status.
      * @private
      */
     updateDOM_() {
-        // console.log(this.lineStatus_, 'FROM UPDATE DOM');
         const statusEl = this.querySelector('.tube-line-status .status-text');
-        const subscribeEl = this.querySelector('.tube-line-status .subscribe');
-        const subscribeText = subscribeEl.innerText;
-
+        
         // need to update this to handle multiple disruptions
         let status = this.lineStatus_.lineStatuses[0].statusSeverityDescription;
         if (!status) status = this.lineStatus_.lineStatuses[0].closureText;
         // remove markup before updating
         statusEl.innerText = '';
-        subscribeEl.innerText = '';
-
         statusEl.innerText = `${this.line_}: ${status}`;
-        subscribeEl.innerText = subscribeText; 
     }
 
     /**
@@ -74,6 +68,7 @@ export default class TubeLine extends HTMLElement {
                 <slot name="status-text"></slot>
                 <slot name="subscribe"></slot>
             </div>
+
         `;
         const templateContent = template.content;
         this.attachShadow({mode: 'open'})
