@@ -12,7 +12,7 @@ export const pushSubscriptionSetup = () => {
                     applicationServerKey: convertUint8Array(publicKey)
                 })
                 .then(pushSubscription => {
-                    updateStore('PUSH-SUBSCRIPTION', {pushSubscription});
+                    updateStore('PUSH-SUBSCRIPTION', { pushSubscription });
                 }).catch(e => console.log(e))
             });
     }
