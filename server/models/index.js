@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const UserModel = require('./User');
+const LinesModel = require('./Lines');
 require('dotenv').config();
 
 const mongoSetup = () => {
@@ -15,4 +16,4 @@ const mongoSetup = () => {
 }
 
 // export model once created
-module.exports = { UserModel, mongoSetup } 
+module.exports = { UserModel, LinesModel, mongoSetup } 
