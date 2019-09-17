@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
 
 // User schema
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     googleId: String,
     name: String,
     email: String,
     avatar: String,
-    lines: Array
+    lines: [String]
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', UserSchema);
 
 module.exports = User;
