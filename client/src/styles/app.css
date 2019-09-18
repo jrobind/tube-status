@@ -1,3 +1,8 @@
+html, 
+body {
+    height: 100%;
+}
+
 #google-avatar {
     width: 95px;
     border-radius: 90px;
@@ -10,4 +15,27 @@
     font-size: 20px;
     font-weight: 500;
     padding-left: 10px;
+}
+
+.loading[hide],
+[hide] {
+    display: none;
+}
+
+.loading[show] {
+    display: block;
+    border: 8px solid rgba(0, 0, 0, 0.7);
+    border-top: 8px solid rgba(250, 250, 250, 0.7);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: calc(50% - 48px);
+    left: calc(50% - 48px);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
