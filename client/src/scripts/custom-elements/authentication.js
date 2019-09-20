@@ -12,7 +12,7 @@ export default class Authentication extends HTMLElement {
         /** @private {string} */
         this.authPath_ = this.getAttribute('auth-path');
         /** @private {string} */       
-        this.authenticationText_ = this.authPath_ === 'lineAuth' ? 'sign-in to subscribe' : 'Log in with Google';
+        this.authenticationText_ = this.authPath_ === 'subscribe' ? 'sign-in to subscribe' : 'Log in with Google';
     }
 
     connectedCallback() {
@@ -25,18 +25,24 @@ export default class Authentication extends HTMLElement {
     } 
 
     /**
-     * Attempts attribute & authentication text updates after authentication. 
+     * Attempts attribute & authentication text updates after authentication
      * @private
      */
     attemptUpdate_() {
-        if (getStore().userProfile.signedIn) {
-            if (this.authPath_ !== 'lineAuth') {
-                this.setAttribute('auth-path', 'logout');
-                this.authPath_ = this.getAttribute('auth-path');
-            }
-            this.authenticationText_ = this.authPath_ !== 'lineAuth' ? this.authPath_ : 'subscribe';
-            this.render_();
+        if (!getStore().userProfile.signedIn) return;
+
+        if (this.authPath_ === 'login') {
+            this.setAttribute('auth-path', 'logout')
+        } else if (this.authPath_ === 'logout') {
+            return;
+        } else {
+            this.setAttribute('auth-path', 'unsubscribe');
         }
+
+        this.authPath_ = this.getAttribute('auth-path');
+        this.authenticationText_ = this.authPath_;
+
+        this.render_();
     }
 
     /**
@@ -55,8 +61,11 @@ export default class Authentication extends HTMLElement {
                 updateStore('AUTH', { signedIn: false, displayName: null, email: null, avatar: null, id: null });
                 window.location.href = '/';
                 break;
-            case 'lineAuth':
+            case 'subscribe':
                 userProfile.signedIn ? this.handleSubscriptionRequest() : window.location.href = this.dest_;
+                break;
+            case 'unsubscribe':
+                // invoke handleSubscriptionRequest, but unsubscibe
                 break;
         }
     }
