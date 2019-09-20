@@ -9,7 +9,7 @@ module.exports = () => {
     
         // build db line data
         result.forEach(line => {
-            const status = Boolean(line.lineStatuses[0].statusSeverityDescription);
+            const status = line.lineStatuses[0].statusSeverityDescription === 'Good Service';
             const description = line.lineStatuses[0].statusSeverityDescription || line.lineStatuses[0].closureText;
             lineData[line.id] = { goodService: status, description };
         });
