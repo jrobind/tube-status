@@ -31,9 +31,9 @@ export default class TubeStatusWrapper extends HTMLElement {
     handleJWT_() {
         // if token exists, login was successful
         if (this.token_) {
-            const { photos, id } = JSON.parse(window.atob(this.token_.split('.')[1]));
+            const { photos, id, lines } = JSON.parse(window.atob(this.token_.split('.')[1]));
 
-            updateStore('AUTH', { signedIn: true, avatar: photos[0].value, id });
+            updateStore('AUTH', { signedIn: true, avatar: photos[0].value, id, lines });
             document.getElementById('google-avatar').src = getStore().userProfile.avatar;
         }       
     }
