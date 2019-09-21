@@ -13,13 +13,15 @@ export default class Authentication extends HTMLElement {
         this.authPath_ = this.getAttribute('auth-path');
         /** @private {string} */       
         this.authenticationText_ = this.authPath_ === 'subscribe' ? 'sign-in to subscribe' : 'Log in with Google';
+        /** @private {string} */
+        this.line_ = this.parentElement.parentElement.getAttribute('line');
     }
 
     connectedCallback() {
         // fetch('/protected', {
         //     headers: { 'Authorization':  `Bearer ${localStorage.getItem('JWT'))}`}
         // }).then(res => console.log(res))
-        subscribeToStore(this.attemptUpdate_.bind(this), this.handleSubscriptionRequest.bind(this));
+        subscribeToStore(this.attemptUpdate_.bind(this));
         this.render_();
         this.addEventListener('click', this.handleAuth_.bind(this));
     } 
@@ -29,14 +31,17 @@ export default class Authentication extends HTMLElement {
      * @private
      */
     attemptUpdate_() {
-        if (!getStore().userProfile.signedIn) return;
+        const { signedIn, lines } = getStore().userProfile;
+
+        if (!signedIn) return;
 
         if (this.authPath_ === 'login') {
             this.setAttribute('auth-path', 'logout')
         } else if (this.authPath_ === 'logout') {
             return;
         } else {
-            this.setAttribute('auth-path', 'unsubscribe');
+            // check if line subscription exists for current line
+            lines.includes(this.line_) ? this.setAttribute('auth-path', 'unsubscribe') : this.setAttribute('auth-path', 'subscribe');
         }
 
         this.authPath_ = this.getAttribute('auth-path');
@@ -58,7 +63,7 @@ export default class Authentication extends HTMLElement {
                 break;
             case 'logout':
                 localStorage.removeItem('JWT');
-                updateStore('AUTH', { signedIn: false, displayName: null, email: null, avatar: null, id: null });
+                updateStore('AUTH', { signedIn: false, avatar: null, id: null });
                 window.location.href = '/';
                 break;
             case 'subscribe':
@@ -76,16 +81,19 @@ export default class Authentication extends HTMLElement {
      */
     handleSubscriptionRequest() {
         const { userProfile, pushSubscription } = getStore();
-        const line = this.parentElement.parentElement.getAttribute('line');
 
         if (userProfile.signedIn && pushSubscription) {
             fetch('api/subscribe',{ 
                 method: 'POST',
-                body: JSON.stringify({ pushSubscription, line }),
+                body: JSON.stringify({ pushSubscription, line: this.line_ }),
                 headers: {
                     'content-type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('JWT')}`
                 }
+            })
+            .then(res => {
+                updateStore('LINE_SUBSCRIPTION', { lines: res.lines });
+                console.log('REACHINg');
             });
         }
     }
