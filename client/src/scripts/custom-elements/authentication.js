@@ -18,12 +18,9 @@ export default class Authentication extends HTMLElement {
     }
 
     connectedCallback() {
-        // fetch('/protected', {
-        //     headers: { 'Authorization':  `Bearer ${localStorage.getItem('JWT'))}`}
-        // }).then(res => console.log(res))
         subscribeToStore(this.attemptUpdate_.bind(this));
-        this.render_();
         this.addEventListener('click', this.handleAuth_.bind(this));
+        this.render_();
     } 
 
     /**
@@ -31,7 +28,7 @@ export default class Authentication extends HTMLElement {
      * @private
      */
     attemptUpdate_() {
-        const { signedIn, lines } = getStore().userProfile;
+        const { userProfile: { signedIn }, lineSubscriptions } = getStore();
 
         if (!signedIn) return;
 
@@ -41,7 +38,7 @@ export default class Authentication extends HTMLElement {
             return;
         } else {
             // check if line subscription exists for current line
-            lines.includes(this.line_) ? this.setAttribute('auth-path', 'unsubscribe') : this.setAttribute('auth-path', 'subscribe');
+            lineSubscriptions.includes(this.line_) ? this.setAttribute('auth-path', 'unsubscribe') : this.setAttribute('auth-path', 'subscribe');
         }
 
         this.authPath_ = this.getAttribute('auth-path');
@@ -79,22 +76,30 @@ export default class Authentication extends HTMLElement {
      * Handles line subscription request. 
      * @private
      */
-    handleSubscriptionRequest() {
-        const { userProfile, pushSubscription } = getStore();
+    async handleSubscriptionRequest() {
+        const { userProfile, pushSubscription, lineSubscriptions } = getStore();
+        const fetchOptions = { 
+            method: 'POST',
+            body: JSON.stringify({ pushSubscription, line: this.line_ }),
+            headers: {
+            'content-type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('JWT')}`
+            }
+        };
+        // activate loading state
+        updateStore('LOADING', { loadingState: { state: true, type: 'app'} });
 
         if (userProfile.signedIn && pushSubscription) {
-            fetch('api/subscribe',{ 
-                method: 'POST',
-                body: JSON.stringify({ pushSubscription, line: this.line_ }),
-                headers: {
-                    'content-type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('JWT')}`
-                }
-            })
-            .then(res => {
-                updateStore('LINE_SUBSCRIPTION', { lines: res.lines });
-                console.log('REACHINg');
-            });
+            const subscriptionResponse = await fetch('api/subscribe', fetchOptions).catch(this.handleError_);
+            const deserialised = await subscriptionResponse.json();
+            // push new line subscription to stored array
+            lineSubscriptions.push(deserialised.lines);
+
+            // set a minimum loading wheel time
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            updateStore('LINE-SUBSCRIPTION', { lineSubscriptions });
+            updateStore('LOADING', { loadingState: { state: false, type: 'app' } }); 
         }
     }
 
@@ -104,5 +109,10 @@ export default class Authentication extends HTMLElement {
      */
     render_() {
         this.innerHTML = this.authenticationText_;
+    }
+
+    /** @private */
+    handleError_(e) {
+        console.error(e);
     }
 }
