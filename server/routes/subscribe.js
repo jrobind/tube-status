@@ -27,9 +27,8 @@ router.post('/subscribe', passport.authenticate('jwt', { session: false }), (req
         if (err) console.log('cannot verify jwt');
         const googleId = decoded._json.sub;
         const lines = req.body.line || [];
-        console.log(googleId, 'from post subscription route')
 
-        db.UserModel.findOneAndUpdate(googleId, { $push: { lines } },
+        db.UserModel.findOneAndUpdate({ googleId }, { $push: { lines }},
             (err, success) => {
                 if (err) {
                     console.log('Failed to update');
@@ -42,8 +41,26 @@ router.post('/subscribe', passport.authenticate('jwt', { session: false }), (req
 });
 
 // remove line subscription
-router.put('/subscribe', passport.authenticate('jwt', { session: false }), (req, res) => {
-
+router.delete('/subscribe', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log('REACHING')
+    jwt.verify(req.headers.authorization.split(' ')[1], 'secret', (err,  decoded) => {
+        if (err) console.log('cannot verify jwt');
+        const googleId = decoded._json.sub;
+        const line = req.body.line;
+        // db.customers.update(
+        //     { "_id" : 654321  },
+        //     { "$pullAll" : { "interested_by" :  ["sports","music"]}  }
+        //   );
+        db.UserModel.findOneAndUpdate({ googleId }, { $pullAll: { lines: [line] }},
+            (err, success) => {
+                if (err) {
+                    console.log('Failed to update');
+                } else {
+                    console.log('Successfully removed line', success);
+                    res.json({ lines: line });
+                }
+        });
+    });
 });
 
 module.exports = router;
