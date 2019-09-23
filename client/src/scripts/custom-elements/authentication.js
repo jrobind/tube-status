@@ -1,5 +1,8 @@
 import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
 
+/** @type {number} */
+const LOADING_DELAY = 500;
+
 /**
  * Authentication custom element.
  */
@@ -67,7 +70,7 @@ export default class Authentication extends HTMLElement {
                 userProfile.signedIn ? this.handleSubscriptionRequest() : window.location.href = this.dest_;
                 break;
             case 'unsubscribe':
-                // invoke handleSubscriptionRequest, but unsubscibe
+                userProfile.signedIn ? this.handleSubscriptionRequest('unsubscribe') : window.location.href = this.dest_;
                 break;
         }
     }
@@ -76,11 +79,13 @@ export default class Authentication extends HTMLElement {
      * Handles line subscription request. 
      * @private
      */
-    async handleSubscriptionRequest() {
+    async handleSubscriptionRequest(subType) {
         const { userProfile, pushSubscription, lineSubscriptions } = getStore();
-        const fetchOptions = { 
-            method: 'POST',
-            body: JSON.stringify({ pushSubscription, line: this.line_ }),
+        const method = !subType ? 'POST' : 'DELETE';
+        const body = !subType ? JSON.stringify({ pushSubscription, line: this.line_ }) : JSON.stringify({ line: this.line_ });
+        const fetchOptions = {
+            method,
+            body,
             headers: {
             'content-type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('JWT')}`
@@ -92,11 +97,11 @@ export default class Authentication extends HTMLElement {
         if (userProfile.signedIn && pushSubscription) {
             const subscriptionResponse = await fetch('api/subscribe', fetchOptions).catch(this.handleError_);
             const deserialised = await subscriptionResponse.json();
-            // push new line subscription to stored array
-            lineSubscriptions.push(deserialised.lines);
+            // push new line subscription to stored array if subscribing, otherwise remove unsubscribed line
+            !subType ? lineSubscriptions.push(deserialised.lines) : lineSubscriptions.splice(lineSubscriptions.indexOf(deserialised.lines), 1);
 
             // set a minimum loading wheel time
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
 
             updateStore('LINE-SUBSCRIPTION', { lineSubscriptions });
             updateStore('LOADING', { loadingState: { state: false, type: 'app' } }); 
