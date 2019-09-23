@@ -19,14 +19,18 @@ export default class Loading extends HTMLElement {
      * @private
      */
     handleLoading_() {
-        if (getStore().loadingState) {
-            this.appWrapper_.setAttribute('hide', '');
-            this.removeAttribute('hide');
-            this.setAttribute('show', '');
-        } else {
-            this.appWrapper_.removeAttribute('hide');
-            this.removeAttribute('show');
-            this.setAttribute('hide', '');
+        const { loadingState } = getStore();
+        if (loadingState.type === 'app') {
+            // app loading
+            if (loadingState.state) {
+                this.appWrapper_.setAttribute('hide', '');
+                this.removeAttribute('hide');
+                this.setAttribute('show', '');          
+            } else {
+                this.appWrapper_.removeAttribute('hide');
+                this.removeAttribute('show');
+                this.setAttribute('hide', '');
+            }
         }
     }
 
