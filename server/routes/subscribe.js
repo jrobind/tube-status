@@ -47,10 +47,7 @@ router.delete('/subscribe', passport.authenticate('jwt', { session: false }), (r
         if (err) console.log('cannot verify jwt');
         const googleId = decoded._json.sub;
         const line = req.body.line;
-        // db.customers.update(
-        //     { "_id" : 654321  },
-        //     { "$pullAll" : { "interested_by" :  ["sports","music"]}  }
-        //   );
+
         db.UserModel.findOneAndUpdate({ googleId }, { $pullAll: { lines: [line] }},
             (err, success) => {
                 if (err) {
