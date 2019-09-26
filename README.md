@@ -3,8 +3,4 @@ Status updates are sourced via the Transport for London Unified API. Please see:
 
 ## Todo:
 
-* setup db to store user session details including line subscriptions
 * send push notification to web & device when subscribed line status changes
-* setup backend middleware to handle protected requests, i.e. calls to line subscriptions
-* add app loading wheel wheel when fetching line data
-
