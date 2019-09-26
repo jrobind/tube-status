@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema({
     name: String,
     email: String,
     avatar: String,
-    lines: [String]
+    lines: [String],
+    pushSubscription: Object
 });
 
 const User = mongoose.model('User', UserSchema);
