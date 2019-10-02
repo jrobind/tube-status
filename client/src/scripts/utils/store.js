@@ -38,7 +38,6 @@ export const updateStore = (action, data) => {
             return store;
         case 'PUSH-SUBSCRIPTION':
             store = { ...store, ...data };
-            store.subscribers.length && store.subscribers.forEach(callback => callback());
 
             return store;
         case 'LINE-SUBSCRIPTION':
