@@ -1,5 +1,4 @@
 import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
-import { pushSubscriptionSetup } from '../utils/push.js';
 
 /** @type {number} */
 const FETCH_INTERVAL = 60000;
@@ -18,7 +17,6 @@ export default class TubeStatusWrapper extends HTMLElement {
         this.getAllLineData_().then(res => {
             this.handleJWT_();
             this.getLineSubscriptions_();
-            pushSubscriptionSetup();
             updateStore('LOADING', { loadingState: { state: false, type: 'app' } });
         });
         // get data every 60 seconds
