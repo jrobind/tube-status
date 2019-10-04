@@ -7,7 +7,7 @@ const router = express.Router();
 
 // get user's line subscriptions
 router.get('/subscribe', passport.authenticate('jwt', { session: false }), middleware.jwtVerify, (req, res) => {
-    const googleId = res.decoded._json.sub;
+    const googleId = res.locals.decoded._json.sub;
     // find current user line subscriptions and send to client
     db.UserModel.findOne({ googleId }, (err, resp) => {
         if (resp) {
@@ -20,7 +20,7 @@ router.get('/subscribe', passport.authenticate('jwt', { session: false }), middl
 
 // create a new line subscription
 router.post('/subscribe', passport.authenticate('jwt', { session: false }), middleware.jwtVerify, (req, res) => {
-    const googleId = res.decoded._json.sub;
+    const googleId = res.locals.decoded._json.sub;
     const lines = req.body.line || [];
     const pushSubscription = req.body.pushSubscription;
     // save new line subscription and push subscription object to user
@@ -37,7 +37,7 @@ router.post('/subscribe', passport.authenticate('jwt', { session: false }), midd
 
 // remove line subscription
 router.delete('/subscribe', passport.authenticate('jwt', { session: false }), middleware.jwtVerify, (req, res) => {
-    const googleId = res.decoded._json.sub;
+    const googleId = res.locals.decoded._json.sub;
     const line = req.body.line;
 
     db.UserModel.findOneAndUpdate({ googleId }, { $pullAll: { lines: [line] }},
