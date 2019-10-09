@@ -39,10 +39,30 @@ export default class TubeLine extends HTMLElement {
      */
     updateDOM_() {
         const statusEl = this.querySelector('.tube-line-status .status-text');
+        const lineStatuses = this.lineStatus_.lineStatuses[0];
         
         // need to update this to handle multiple disruptions
-        let status = this.lineStatus_.lineStatuses[0].statusSeverityDescription;
-        if (!status) status = this.lineStatus_.lineStatuses[0].closureText;
+        let status = lineStatuses.statusSeverityDescription ? lineStatuses.statusSeverityDescription : lineStatuses.closureText;
+        // part-suspended = 5, severe delays = 4, no-service = 3, minor delays = 2, good-service = 1
+
+        switch(status) {
+            case 'Part Suspended':
+                this.setAttribute('score', 5);
+                break;
+            case 'Severe Delays':
+                this.setAttribute('score', 4);
+                break;
+            case 'No Service':
+                this.setAttribute('score', 3);
+                break;
+            case 'Minor Delays':
+                this.setAttribute('score', 2);
+                break;
+            case 'Good Service':
+                this.setAttribute('score', 1);
+                break;
+        }
+
         // remove markup before updating
         statusEl.innerText = '';
         statusEl.innerText = `${this.line_}: ${status}`;
