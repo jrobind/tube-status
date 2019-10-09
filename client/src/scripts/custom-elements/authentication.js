@@ -83,7 +83,7 @@ export default class Authentication extends HTMLElement {
         const { userProfile, pushSubscription, lineSubscriptions } = getStore();
         const method = !subType ? 'POST' : 'DELETE';
         const body = !subType ? JSON.stringify({ pushSubscription, line: this.line_ }) : JSON.stringify({ line: this.line_ });
-        const fetchOptions = {
+        const options = {
             method,
             body,
             headers: {
@@ -95,7 +95,7 @@ export default class Authentication extends HTMLElement {
         updateStore('LOADING', { loadingState: { state: true, type: 'app'} });
 
         if (userProfile.signedIn && pushSubscription) {
-            const subscriptionResponse = await fetch('api/subscribe', fetchOptions).catch(this.handleError_);
+            const subscriptionResponse = await fetch('api/subscribe', options).catch(this.handleError_);
             const deserialised = await subscriptionResponse.json();
             // push new line subscription to stored array if subscribing, otherwise remove unsubscribed line
             !subType ? lineSubscriptions.push(deserialised.lines) : lineSubscriptions.splice(lineSubscriptions.indexOf(deserialised.lines), 1);
