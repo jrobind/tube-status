@@ -8,7 +8,7 @@ const jwtVerify = (req, res, next) => {
             res.status(401).json({ err, message: 'user not authorised' });
             return;
         } else {
-            res.decoded = decoded;
+            res.locals.decoded = decoded;
             console.log(res, 'reaching')
             next();
         } 
