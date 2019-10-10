@@ -1,19 +1,15 @@
 const express = require("express");
 const webpush = require("web-push");
+const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
-const session = require('express-session');
 const passport = require('passport');  
 const jwt = require('jsonwebtoken');
-const passportJWT = require("passport-jwt");
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+const JWTStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const db = require('./models');
+const db = require('./models'); 
+const buildLine = require('./utlis/build-line');
 require('dotenv').config({path: '../.env'});
-
-const jwtOptions = {};
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = 'secret';
 
 // require routes
 const subscribe = require('./routes/subscribe');
@@ -21,6 +17,10 @@ const line = require('./routes/lines');
 
 const app = express();
 
+app.use(express.static('../client'));
+app.use(bodyParser.json());
+db.mongoSetup();
+app.use(passport.initialize()); 
 app.use('/api/', subscribe);
 app.use('/api/', line);
 
@@ -28,40 +28,20 @@ app.use('/api/', line);
 const publicKey = 'BAyM-TL7OKAfqC9A9AkUnHqyzf3Cw3yEkFmvNCg56H6GjRMxUOyW-YK4_DJ_BdFRuSFB-lxJpqXjyxFVX_hdGe4';
 const privateKey = process.env.PRIVATE_KEY;
 
-webpush.setVapidDetails("mailto:test@test.com", publicKey, privateKey);
+webpush.setVapidDetails("mailto:test@test.com", publicKey, privateKey); 
 
-// set static path
-app.use(express.static('../client'));
-app.use(bodyParser.json());
-db.mongoSetup();
+// setup initial line db data
+buildLine();
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-})); 
-app.use(passport.initialize());  
-app.use(passport.session()); 
-
-passport.serializeUser((user, done) => {  
-    done(null, user);
-});
-  
-passport.deserializeUser((userDataFromCookie, done) => {  
-    done(null, userDataFromCookie);
-});
-
-const accessProtectionMiddleware = (req, res, next) => {  
-    if (req.isAuthenticated()) {
-        console.log('reaching! auth middleware')
-      next();
-    } else {
-      console.log('NOT WORKING not authed')
-      res.status(403).json({
-        message: 'must be logged in to continue',
-      });
+// jwt middleware setup for protected routes 
+passport.use(new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: 'secret'
+    },
+    (jwtPayload, cb) => {
+        return cb(null, jwtPayload);
     }
-  };
+));
 
 // set up passport strategy
 passport.use(new GoogleStrategy({
@@ -77,25 +57,50 @@ passport.use(new GoogleStrategy({
     },
   ));
 
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/', session: true }), (req, res) => {
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/', session: false }), async (req, res) => {
     console.log('wooo we authenticated, here is our user object:', req.user);
-    const token = jwt.sign(req.user, 'secret');
+    const googleId = req.user.id;
+    const profileData = { 
+        googleId, // store user in db using unique Google id
+        name: req.user.displayName,
+        email: req.user.emails[0].value,
+        avatar: req.user.photos[0].value,
+    };
+    // check if user exists. If not, then add to db.
+    await db.UserModel.findOne({ googleId }, (err, resp) => {
+        let lines;
+        if (!resp) {
+            const newUser = new db.UserModel(profileData);
+            newUser.save()
+                .then((newUser) => {
+                    console.log('User added to db', newUser);
+                    // add user line data to req.user so we can sign token send back to client
+                    lines = newUser.lines;
+                });
+        } else {
+            lines = resp.lines;
+        }
+        // add user line data to req.user so we can sign token send back to client
+        req.user.lines = lines;
+    });
+
     const htmlWithEmbeddedJWT = `
     <html>
         <script>
             // Save JWT to localStorage
-            window.localStorage.setItem('JWT', '${token}');
+            window.localStorage.setItem('JWT', '${jwt.sign(req.user, 'secret')}');
             // Redirect browser to root of application
             window.location.href = '/';
         </script>
         </html>
     `;
+
     res.send(htmlWithEmbeddedJWT);
   }
 );
   
 // A secret endpoint accessible only to logged-in users
-app.get('/protected', accessProtectionMiddleware, (req, res) => {
+app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
     console.log('protected accessed')  
     res.json({
         message: 'You have accessed the protected endpoint!',
@@ -103,11 +108,35 @@ app.get('/protected', accessProtectionMiddleware, (req, res) => {
     });
 });
 
-// logout
-app.get('/logout', (req, res) => {
-    req.logout();
-    console.log('logged out')
-    res.json({message: 'logged out'});
-});
+// run line status check every two minutes and send push notification to relevant line subscribers   
+setInterval(async () => {
+    const response = await fetch('http://localhost:4500/api/lines').catch(e => console.log(e));
+    const result = await response.json();
+    let lineDbData;
+    // check if there is a status diff, query users with related line subscription and send notification
+    await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
+
+    result.forEach(line => {
+        const id =  line.id;
+        const status = line.lineStatuses[0].statusSeverityDescription === 'Good Service';
+        const description = line.lineStatuses[0].statusSeverityDescription || line.lineStatuses[0].closureText;
+        // lineDbData[0][id].goodService !== status
+        if (true) {
+            // query users and send notification, then update line data to reflect new status
+            db.UserModel.find({ 'lines': { $in: id } }, (err, resp) => {
+                if (resp.length) {
+                    const { pushSubscription } = resp[0]; 
+                    const payload = JSON.stringify({ line: id, status: description });
+                    // send push notification
+                    webpush
+                        .sendNotification(pushSubscription, payload)
+                        .catch(err => console.error(err));
+                }
+            });
+        }
+    });
+    // update db with new line data
+    buildLine();
+}, 12000);
 
 app.listen(4500, () => console.log(`Server started on port 4500`));
