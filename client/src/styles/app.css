@@ -1,8 +1,11 @@
 html, 
 body {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
+/* avatar and google sign in styles */
 #google-avatar {
     width: 95px;
     border-radius: 90px;
@@ -17,6 +20,33 @@ body {
     padding-left: 10px;
 }
 
+/* tube line styles */
+tube-status-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+tube-line[score="5"] {
+    order: 1;
+}
+
+tube-line[score="4"] {
+    order: 2;
+}
+
+tube-line[score="3"] {
+    order: 3;
+}
+
+tube-line[score="2"] {
+    order: 4;
+}
+
+tube-line[score="1"] {
+    order: 5;
+}   
+
+/* loading wheel styles */
 .loading[hide],
 [hide] {
     display: none;
