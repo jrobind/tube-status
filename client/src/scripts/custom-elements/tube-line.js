@@ -46,6 +46,12 @@ export default class TubeLine extends HTMLElement {
         // part-suspended = 5, severe delays = 4, no-service = 3, minor delays = 2, good-service = 1
 
         switch(status) {
+            case 'Planned Closure':
+                this.setAttribute('score', 5);
+                break;         
+            case 'Service Closed':
+                this.setAttribute('score', 5);
+                break;
             case 'Part Suspended':
                 this.setAttribute('score', 5);
                 break;
@@ -77,11 +83,14 @@ export default class TubeLine extends HTMLElement {
 
         template.innerHTML = `
             <style>
-            .line-wrapper {
-                background: red;
-                width: 100%;
-                height: 60px;
-            }
+                .line-wrapper {
+                    background: rgba(0, 0, 0, 0.85);
+                    color: rgba(250, 250, 250, 0.9);
+                    height: 60px;
+                    padding: 5px;
+                    margin: 5px;
+                    font-size: 18px;
+                }
             </style>
             <div class="line-wrapper" current-status>
                 <slot name="line-status"></slot>
