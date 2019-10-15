@@ -46,6 +46,9 @@ export default class TubeLine extends HTMLElement {
         // part-suspended = 5, severe delays = 4, no-service = 3, minor delays = 2, good-service = 1
 
         switch(status) {
+            case 'Part Closure':
+                this.setAttribute('score', 5);
+                break;    
             case 'Planned Closure':
                 this.setAttribute('score', 5);
                 break;         
