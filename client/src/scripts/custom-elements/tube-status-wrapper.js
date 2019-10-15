@@ -29,14 +29,14 @@ export default class TubeStatusWrapper extends HTMLElement {
      */
     async getLineSubscriptions_() {
         if (getStore().userProfile.signedIn) {
-            const fetchOptions = { 
+            const options = { 
                 method: 'GET',
                 headers: {
                 'content-type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('JWT')}`
                 }
             };
-            const subscriptionResults = await fetch('api/subscribe', fetchOptions).catch(this.handleError_);
+            const subscriptionResults = await fetch('api/subscribe', options).catch(this.handleError_);
             const deserialised = await subscriptionResults.json();
 
             updateStore('LINE-SUBSCRIPTION', { lineSubscriptions: deserialised.lines });
