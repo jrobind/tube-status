@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const jwtVerify = (req, res, next) => {
-    jwt.verify(req.headers.authorization.split(' ')[1], 'secret', (err,  decoded) => {
+    jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET, (err,  decoded) => {
         if (err) {
             console.log('cannot verify jwt'); 
             // send 401 back to user and return

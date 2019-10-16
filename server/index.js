@@ -36,7 +36,7 @@ buildLine();
 // jwt middleware setup for protected routes 
 passport.use(new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: 'secret'
+        secretOrKey: process.env.JWT_SECRET
     },
     (jwtPayload, cb) => {
         return cb(null, jwtPayload);
@@ -88,7 +88,7 @@ app.get('/auth/google/callback', passport.authenticate('google', { failureRedire
     <html>
         <script>
             // Save JWT to localStorage
-            window.localStorage.setItem('JWT', '${jwt.sign(req.user, 'secret')}');
+            window.localStorage.setItem('JWT', '${jwt.sign(req.user, process.env.JWT_SECRET)}');
             // Redirect browser to root of application
             window.location.href = '/';
         </script>
