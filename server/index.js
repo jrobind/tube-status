@@ -120,8 +120,8 @@ setInterval(async () => {
         const id =  line.id;
         const status = line.lineStatuses[0].statusSeverityDescription === 'Good Service';
         const description = line.lineStatuses[0].statusSeverityDescription || line.lineStatuses[0].closureText;
-        // lineDbData[0][id].goodService !== status
-        if (true) {
+
+        if (lineDbData[0][id].goodService !== status) {
             // query users and send notification, then update line data to reflect new status
             db.UserModel.find({ 'lines': { $in: id } }, (err, resp) => {
                 if (resp.length) {
@@ -137,6 +137,6 @@ setInterval(async () => {
     });
     // update db with new line data
     buildLine();
-}, 12000);
+}, 120000);
 
 app.listen(4500, () => console.log(`Server started on port 4500`));
