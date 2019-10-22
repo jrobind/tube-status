@@ -119,5 +119,6 @@ export default class Authentication extends HTMLElement {
     /** @private */
     handleError_(e) {
         console.error(e);
+        alert('Unable to subscribe to line at this time.');
     }
 }
