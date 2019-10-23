@@ -66,8 +66,27 @@ export default class TubeStatusWrapper extends HTMLElement {
 
         const lines = await fetch('api/lines').catch(this.handleError_);
         const deserialised = await lines.json();
+        const lineInformation = this.formatLineInformation_(deserialised);
         // update store with successful API response
+        // return updateStore('LINES', { lineData: deserialised, lineInformation });
         return updateStore('LINES', deserialised);
+    }
+
+    /**
+     * Formats line information ready for store updates.
+     * @param {Object} lines
+     * @private
+     */
+    formatLineInformation_(lines) {
+        return lines.reduce((cache, line) => {
+            const status = line.lineStatuses[0];
+            cache[line.id] = { 
+                status: status.statusSeverityDescription,
+                reason: status.reason ? status.reason : null
+             };
+            return cache;
+        }, {});
+        console.log(formatted);
     }
 
     /**
