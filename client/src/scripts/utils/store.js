@@ -14,6 +14,7 @@ let store = {
     },
     pushSubscription: null,
     lineSubscriptions: [],
+    lineInformation: null,
     subscribers: []
 }
 
@@ -22,7 +23,11 @@ export const getStore = () => store;
 export const updateStore = (action, data) => {
     switch(action) {
         case 'LINES':
-            store = { ...store, lineData:{ lines: {  ...data } } };
+            store = { 
+                ...store,
+                lineInformation:{ ...data.lineInformation },
+                lineData:{ lines: {  ...data.deserialised } }
+            };
             store.subscribers.length && store.subscribers.forEach(callback => callback());
 
             return store;
