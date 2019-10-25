@@ -60,6 +60,8 @@ export default class TubeLine extends HTMLElement {
         // remove markup before updating
         statusEl.innerText = '';
         statusEl.innerText = `${this.line_}: ${status}`;
+        // line should appear clickable if there are delays/disruptions
+        reason ? this.classList.add('active') : this.classList.remove('active');
     }
 
     /**
