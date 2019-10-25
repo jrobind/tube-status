@@ -17,20 +17,9 @@ export default class TubeLine extends HTMLElement {
 
     connectedCallback() {
         // subscription order matters. DOM updates depend on the processing of line status.
-        subscribeToStore([this.processLineStatus_.bind(this), this.updateDOM_.bind(this)]);
+        subscribeToStore(this.updateDOM_.bind(this));
         this.tubeStatusWrapper_ = document.querySelector('tube-status-wrapper');
         this.render_();
-    }
-
-    /**
-     * Sets current line status data for custom element.
-     * @private
-     */
-    processLineStatus_() {
-        // console.log('update triggered in process line status')
-        for (let [key, value] of Object.entries(getStore().lineData.lines)) {
-            if (value.id === this.line_) this.lineStatus_ = value;
-        }
     }
 
     /**
@@ -38,30 +27,26 @@ export default class TubeLine extends HTMLElement {
      * @private
      */
     updateDOM_() {
+        const { status, reason } = getStore().lineInformation[this.line_];
         const statusEl = this.querySelector('.tube-line-status .status-text');
-        const lineStatuses = this.lineStatus_.lineStatuses[0];
-        
-        // need to update this to handle multiple disruptions
-        let status = lineStatuses.statusSeverityDescription ? lineStatuses.statusSeverityDescription : lineStatuses.closureText;
-        // part-suspended = 5, severe delays = 4, no-service = 3, minor delays = 2, good-service = 1
-
+        // set score attribute on line so we can order with flexbox
         switch(status) {
+            case 'No Service':
+                this.setAttribute('score', 6);
+                break;
+            case 'Service Closed':
+                this.setAttribute('score', 6);
+                break;
             case 'Part Closure':
                 this.setAttribute('score', 5);
                 break;    
             case 'Planned Closure':
                 this.setAttribute('score', 5);
                 break;         
-            case 'Service Closed':
-                this.setAttribute('score', 5);
-                break;
             case 'Part Suspended':
-                this.setAttribute('score', 5);
-                break;
-            case 'Severe Delays':
                 this.setAttribute('score', 4);
                 break;
-            case 'No Service':
+            case 'Severe Delays':
                 this.setAttribute('score', 3);
                 break;
             case 'Minor Delays':
