@@ -21,6 +21,15 @@ body {
 }
 
 /* tube line styles */
+tube-line.active {
+    cursor: pointer;
+}
+
+tube-line.active:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: 0.2s;
+}
+
 tube-status-wrapper {
     display: flex;
     flex-direction: column;
