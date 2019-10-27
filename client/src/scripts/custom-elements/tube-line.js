@@ -13,6 +13,8 @@ export default class TubeLine extends HTMLElement {
         this.tubeStatusWrapper_ = null;
         /** @private {object} */
         this.lineStatus_ = null;
+        // listen for clicks so we can fire our own  click event
+        this.addEventListener('click', this.emitEvent_.bind(this));
     }
 
     connectedCallback() {
@@ -20,6 +22,16 @@ export default class TubeLine extends HTMLElement {
         subscribeToStore(this.updateDOM_.bind(this));
         this.tubeStatusWrapper_ = document.querySelector('tube-status-wrapper');
         this.render_();
+    }
+
+    /**
+     * Emits custom click event for modal custom element.
+     * @private
+     */
+    emitEvent_() {
+        const customEvent = new Event('line-click');
+  
+        document.dispatchEvent(customEvent);
     }
 
     /**
