@@ -88,3 +88,14 @@ tube-line[score="1"] {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* modal styles */
+tube-status-modal[toggle-state='show'] {
+    min-height: 200px;
+    min-width: 300px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    background: firebrick;
+}

@@ -16,9 +16,10 @@
   <body>
     <tube-status-loading class="loading" hide></tube-status-loading>
     <div class="app-wrapper">
-      <img id="google-avatar">
+      <img id="google-avatar"> 
       <tube-status-authentication dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
       <h1>TUBE STATUS</h1>
+      <tube-status-modal></tube-status-modal>
       <tube-status-wrapper>
         <tube-line line='bakerloo'>
           <div class="tube-line-status" slot="line-status">
