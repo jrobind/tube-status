@@ -22,14 +22,14 @@ export default class Loading extends HTMLElement {
         const { loadingState } = getStore();
         if (loadingState.type === 'app') {
             // app loading
-            if (loadingState.state) {
-                this.appWrapper_.setAttribute('hide', '');
-                this.removeAttribute('hide');
-                this.setAttribute('show', '');          
+            if (loadingState.state) { 
+                this.appWrapper_.classList.add('app-wrapper--hidden');
+                this.classList.remove('tube-status-loading--hidden');
+                this.classList.add('tube-status-loading--active');         
             } else {
-                this.appWrapper_.removeAttribute('hide');
-                this.removeAttribute('show');
-                this.setAttribute('hide', '');
+                this.appWrapper_.classList.remove('app-wrapper--hidden');
+                this.classList.remove('tube-status-loading--active');  
+                this.classList.add('tube-status-loading--hidden')
             }
         }
     }
