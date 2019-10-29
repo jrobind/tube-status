@@ -13,7 +13,7 @@ export default class TubeLine extends HTMLElement {
         this.tubeStatusWrapper_ = null;
         /** @private {object} */
         this.lineStatus_ = null;
-        // listen for clicks so we can fire our own  click event
+        // listen for clicks so we can fire our own click event
         this.addEventListener('click', this.emitEvent_.bind(this));
     }
 
@@ -40,7 +40,7 @@ export default class TubeLine extends HTMLElement {
      */
     updateDOM_() {
         const { status, reason } = getStore().lineInformation[this.line_];
-        const statusEl = this.querySelector('.tube-line-status .status-text');
+        const statusEl = this.querySelector('.tube-line-data-wrapper__status');
         // set score attribute on line so we can order with flexbox
         switch(status) {
             case 'No Service':
@@ -73,7 +73,7 @@ export default class TubeLine extends HTMLElement {
         statusEl.innerText = '';
         statusEl.innerText = `${this.line_}: ${status}`;
         // line should appear clickable if there are delays/disruptions
-        reason ? this.classList.add('active') : this.classList.remove('active');
+        reason ? this.classList.add('tube-line--active') : this.classList.remove('tube-line--active');
     }
 
     /**
@@ -85,7 +85,7 @@ export default class TubeLine extends HTMLElement {
 
         template.innerHTML = `
             <style>
-                .line-wrapper {
+                .tube-line-data-wrapper {
                     background: rgba(0, 0, 0, 0.85);
                     color: rgba(250, 250, 250, 0.9);
                     height: 60px;
@@ -94,8 +94,7 @@ export default class TubeLine extends HTMLElement {
                     font-size: 18px;
                 }
             </style>
-            <div class="line-wrapper" current-status>
-                <slot name="line-status"></slot>
+            <div class="tube-line-data-wrapper" current-status>
                 <slot name="status-text"></slot>
                 <slot name="subscribe"></slot>
             </div>
