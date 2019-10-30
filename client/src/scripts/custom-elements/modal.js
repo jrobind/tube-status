@@ -13,7 +13,7 @@ export default class Modal extends HTMLElement {
     }
 
     connectedCallback() {
-        this.setAttribute('toggle-state', 'false');
+        this.classList.add('tube-status-modal--hidden');
     }
 
     /**
@@ -29,9 +29,14 @@ export default class Modal extends HTMLElement {
      * @private
      */
     toggleModal_() {
-        const currentVal  = this.getAttribute('toggle-state');
-        const newState = currentVal === 'false' ? 'true' : 'false';
+        const isHidden = this.classList.contains('tube-status-modal--hidden');
 
-        this.setAttribute('toggle-state', newState);
+        if (isHidden) {
+            this.classList.remove('tube-status-modal--hidden');
+            this.classList.add('tube-status-modal--active');
+        } else {
+            this.classList.remove('tube-status-modal--active');
+            this.classList.add('tube-status-modal--hidden');
+        }
     }
 }
