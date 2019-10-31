@@ -51,9 +51,10 @@ export default class TubeStatusWrapper extends HTMLElement {
         // if token exists, login was successful
         if (this.token_) {
             const { photos, id } = JSON.parse(window.atob(this.token_.split('.')[1]));
+            const avatar = document.querySelector('.avatar__image');
 
             updateStore('AUTH', { signedIn: true, avatar: photos[0].value, id });
-            document.getElementById('google-avatar').src = getStore().userProfile.avatar;
+            avatar.src = getStore().userProfile.avatar;
         }       
     }
     
@@ -85,7 +86,6 @@ export default class TubeStatusWrapper extends HTMLElement {
              };
             return cache;
         }, {});
-        console.log(formatted);
     }
 
     /**
