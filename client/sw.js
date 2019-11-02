@@ -12,8 +12,13 @@ const contentToCache = [
 ];
 
 self.addEventListener('push', (e) => {
-		const { line, status } =  e.data.json();
-    self.registration.showNotification(`${line} line`, { body: status });
+    const { line, status } =  e.data.json();
+    const options = {
+        body: status,
+        requireInteraction: true
+    };
+
+    self.registration.showNotification(`${line} line`, options);
 });
 
 self.addEventListener('install', (e) => {
@@ -37,8 +42,8 @@ self.addEventListener('fetch', (e) => {
 	e.respondWith(async function() {
 		const cachedResponse = await caches.match(e.request);
 
-    if (cachedResponse) return cachedResponse;
-    // If fetch throws an exception then render custom offline page
-    return fetch(e.request).catch((e) => caches.match('./offline.html'));
+		if (cachedResponse) return cachedResponse;
+		// If fetch throws an exception then render custom offline page
+		return fetch(e.request).catch((e) => caches.match('./offline.html'));
   }());
 });
