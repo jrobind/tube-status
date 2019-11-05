@@ -1,6 +1,6 @@
 import { updateStore } from './src/scripts/utils/store.js';
 
-const PUBLIC_KEY = 'BAyM-TL7OKAfqC9A9AkUnHqyzf3Cw3yEkFmvNCg56H6GjRMxUOyW-YK4_DJ_BdFRuSFB-lxJpqXjyxFVX_hdGe4';
+const PUBLIC_KEY = 'BKpELtYde7iajTdW7hw1LOIksmgzApC5IMLUtwDkqDA_fdqWmdQ3FqU2azo0LH0G-2cIqq11gRrxCLtFj-pPSmE';
 
 if ("serviceWorker" in navigator) {
     pushSubscriptionSetup().catch(handleError);
@@ -9,13 +9,15 @@ if ("serviceWorker" in navigator) {
 async function pushSubscriptionSetup() {
     // register service worker
     const register = await navigator.serviceWorker.register('./sw.js').catch(handleError);
-    // register for push
-    const pushSubscription = await register.pushManager.subscribe({ 
-        userVisibleOnly: true,
-        applicationServerKey: convertUint8Array(PUBLIC_KEY)
-    }).catch(handleError);
-    // update client store with the push subscription object
-    updateStore('PUSH-SUBSCRIPTION', { pushSubscription });
+    // register for push once registration is active
+    if (register.active) {
+        const pushSubscription = await register.pushManager.subscribe({ 
+            userVisibleOnly: true,
+            applicationServerKey: convertUint8Array(PUBLIC_KEY)
+        }).catch(handleError);
+        // update client store with the push subscription object
+        updateStore('PUSH-SUBSCRIPTION', { pushSubscription });
+    }
 }
 
 function convertUint8Array(base64String) {
