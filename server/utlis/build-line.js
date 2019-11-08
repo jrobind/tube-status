@@ -2,7 +2,7 @@ const db = require('../models');
 const fetch = require("node-fetch");
 
 module.exports = async () => {
-    const url = 'http://localhost:4500/api/lines'; 
+    const url = 'http://localhost:4000/api/lines'; 
     const response = await fetch(url).catch(e => console.log(e));
     const result = await response.json();
     const lineData = {};
