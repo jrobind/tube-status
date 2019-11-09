@@ -4,6 +4,7 @@
   "description": "PWA providing current London tube line status",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -39,5 +40,8 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "web-push": "^3.3.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }
