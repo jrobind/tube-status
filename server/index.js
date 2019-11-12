@@ -124,7 +124,7 @@ setInterval(async () => {
         const id = line.id;
         const diffExists = lineDbData[0][id].description !== statusSeverityDescription;
 
-        if (true) {
+        if (diffExists) {
             // query users and send notification
             // update line data to reflect new status
             db.UserModel.find({ 'lines': { $in: id } }, (err, resp) => {
