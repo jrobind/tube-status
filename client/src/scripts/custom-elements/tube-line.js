@@ -26,12 +26,16 @@ export default class TubeLine extends HTMLElement {
 
     /**
      * Emits custom click event for modal custom element.
+     * @param {Object} e
      * @private
      */
-    emitEvent_() {
-        const customEvent = new Event('line-click');
+    emitEvent_(e) {
+        const customEvent = new CustomEvent('line-click', {
+            bubbles: true,
+            detail: { line: e.target.getAttribute('line') }
+        });
   
-        document.dispatchEvent(customEvent);
+        this.dispatchEvent(customEvent);
     }
 
     /**
@@ -86,7 +90,6 @@ export default class TubeLine extends HTMLElement {
         template.innerHTML = `
             <style>
                 .tube-line-data-wrapper {
-                    background: rgba(0, 0, 0, 0.85);
                     color: rgba(250, 250, 250, 0.9);
                     height: 60px;
                     padding: 5px;
