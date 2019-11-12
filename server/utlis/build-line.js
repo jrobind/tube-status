@@ -6,12 +6,15 @@ module.exports = async () => {
     const response = await fetch(url).catch(e => console.log(e));
     const result = await response.json();
     const lineData = {};
-
     // build db line data
     result.forEach(line => {
-        const status = line.lineStatuses[0].statusSeverityDescription === 'Good Service';
-        const description = line.lineStatuses[0].statusSeverityDescription || line.lineStatuses[0].closureText;
-        lineData[line.id] = { goodService: status, description };
+        const { statusSeverityDescription, reason } = line.lineStatuses[0];
+
+        lineData[line.id] = { 
+            goodService: statusSeverityDescription === 'Good Service',
+            description: statusSeverityDescription,
+            reason
+        };
     }); 
 
     db.LinesModel.findOneAndUpdate({}, lineData, (err, resp) => {
