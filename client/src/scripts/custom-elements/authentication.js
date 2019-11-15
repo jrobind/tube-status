@@ -12,12 +12,15 @@ export default class Authentication extends HTMLElement {
 
         /** @private {string} */
         this.dest_ = this.getAttribute('dest');  
+
         /** @private {string} */
         this.authPath_ = this.getAttribute('auth-path');
+
         /** @private {string} */       
         this.authenticationText_ = this.authPath_ === 'subscribe' ? 'sign-in to subscribe' : 'Log in with Google';
+
         /** @private {string} */
-        this.line_ = this.parentElement.getAttribute('line');
+        this.line_ = this.parentElement.parentElement.getAttribute('line');
     }
 
     connectedCallback() {
