@@ -35,9 +35,20 @@ body {
     border-radius: 90px;
 }
 
-/* tube line styles */
+/* tube-status-wrapper styles */
+.tube-status-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* tube-line styles */
 .tube-line {
+    color: rgba(250, 250, 250, 0.9);
+    height: 60px;
+    padding: 5px;
     margin: 5px;
+    font-size: 18px;
+    display: flex;
 }
 
 .tube-line[line='london-overground'] {
@@ -96,20 +107,6 @@ body {
     background-color: var(--bakerloo-color);
 }
 
-.tube-line--active {
-    cursor: pointer;
-}
-
-.tube-line--active:hover {
-    background-color: rgba(0, 0, 0, 0.7);
-    transition: 0.2s;
-}
-
-.tube-status-wrapper {
-    display: flex;
-    flex-direction: column;
-}
-
 .tube-line[score="6"] {
     order: 1;
 }
@@ -133,6 +130,19 @@ body {
 .tube-line[score="1"] {
     order: 6;
 } 
+
+.tube-line--active {
+    cursor: pointer;
+}
+
+.tube-line--active:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: 0.2s;
+}
+
+.tube-line-info__reason {
+    margin: 0 0 0 10px;
+}
 
 /* footer styles */
 .footer-reference {
