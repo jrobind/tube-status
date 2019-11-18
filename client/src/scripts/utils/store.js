@@ -18,8 +18,17 @@ let store = {
   subscribers: []
 }
 
+/**
+ * Returns client store.
+ * @returns {object}
+ */
 export const getStore = () => store;
 
+/**
+ * Updates client store based on action.
+ * @param {string} action
+ * @param {object} data
+ */
 export const updateStore = (action, data) => {
   switch(action) {
     case 'LINES':
@@ -53,6 +62,10 @@ export const updateStore = (action, data) => {
   }
 }
 
+/**
+ * Adds store subscription callbacks. Once updates are made to the store, subscribers are invoked.
+ * @param {function} callbacks
+ */
 export const subscribeToStore = (callbacks) => {
   if (Array.isArray(callbacks)) {
     callbacks.forEach(callback => store.subscribers.push(callback));
