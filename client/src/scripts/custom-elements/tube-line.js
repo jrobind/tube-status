@@ -63,7 +63,7 @@ export default class TubeLine extends HTMLElement {
     // set score attribute on line so we can order with flexbox
     this.setScoreAttribute_(status);
     // line should appear clickable if there are delays/disruptions
-    reason ? this.classList.add(`.${CSS_CLASS.ACTIVE}`) : this.classList.remove(`.${CSS_CLASS.ACTIVE}`);
+    reason ? this.classList.add(CSS_CLASS.ACTIVE) : this.classList.remove(CSS_CLASS.ACTIVE);
 
     this.subStatusEl_.textContent = '';
     this.reasonTitleEl_.textContent = '';
