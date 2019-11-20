@@ -122,7 +122,7 @@ setInterval(async () => {
     result.forEach(line => {
         const { statusSeverityDescription, reason } = line.lineStatuses[0];
         const id = line.id;
-        const diffExists = lineDbData[0][id].description !== statusSeverityDescription;
+        const diffExists = lineDbData ? lineDbData[0][id].description !== statusSeverityDescription : null;
 
         if (diffExists) {
             // query users and send notification
