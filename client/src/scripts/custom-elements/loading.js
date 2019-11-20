@@ -11,7 +11,13 @@ export default class Loading extends HTMLElement {
   }
 
   connectedCallback() {
+    const { loadingState } = getStore();
+  
     subscribeToStore(this.handleLoading_.bind(this));
+
+    if (loadingState.type === 'line') {
+      this.handleLoading_();
+    }
   } 
 
   /**
@@ -19,18 +25,19 @@ export default class Loading extends HTMLElement {
    * @private
    */
   handleLoading_() {
-    const { loadingState } = getStore();
-    if (loadingState.type === 'app') {
+    const { loadingState: { type,  state } } = getStore();
+    const isLoadingTypeApp = type === 'app';
+    const isLoading = state;
+    
+    if (isLoading) {
       // app loading
-      if (loadingState.state) { 
-        this.appWrapper_.classList.add('app-wrapper--hidden');
-        this.classList.remove('tube-status-loading--hidden');
-        this.classList.add('tube-status-loading--active');         
-      } else {
-        this.appWrapper_.classList.remove('app-wrapper--hidden');
-        this.classList.remove('tube-status-loading--active');  
-        this.classList.add('tube-status-loading--hidden');
-      }
+      isLoadingTypeApp && this.appWrapper_.classList.add('app-wrapper--hidden');
+      this.classList.remove('tube-status-loading--hidden');
+      this.classList.add('tube-status-loading--active');         
+    } else {
+      isLoadingTypeApp && this.appWrapper_.classList.remove('app-wrapper--hidden');
+      this.classList.remove('tube-status-loading--active');  
+      this.classList.add('tube-status-loading--hidden');
     }
   }
 
