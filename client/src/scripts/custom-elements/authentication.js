@@ -52,7 +52,7 @@ export default class Authentication extends HTMLElement {
   }
 
   /**
-   * Handle Google authentication process.
+   * Handles Google authentication process.
    * @private
    */
   handleAuth_() {
@@ -93,7 +93,7 @@ export default class Authentication extends HTMLElement {
       }
     };
     // activate loading state
-    updateStore('LOADING', { loadingState: { state: true, type: 'app'} });
+    updateStore('LOADING', { loadingState: { state: true, type: 'line'} });
 
     if (userProfile.signedIn && pushSubscription) {
       const subscriptionResponse = await fetch('api/subscribe', options).catch(this.handleError_);
@@ -105,7 +105,7 @@ export default class Authentication extends HTMLElement {
       await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
 
       updateStore('LINE-SUBSCRIPTION', { lineSubscriptions });
-      updateStore('LOADING', { loadingState: { state: false, type: 'app' } }); 
+      updateStore('LOADING', { loadingState: { state: false, type: 'line' } }); 
     }
   }
 
