@@ -10,7 +10,8 @@ let store = {
   },
   loadingState: {
     state: false,
-    type: null
+    type: null,
+    line: null,
   },
   pushSubscription: null,
   lineSubscriptions: [],
