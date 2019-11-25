@@ -67,8 +67,7 @@ export default class Authentication extends HTMLElement {
         window.location.href = this.dest_;
         break;
       case 'logout':
-        localStorage.removeItem('JWT');
-        updateStore('AUTH', { signedIn: false, avatar: null, id: null });
+        this.handleLogout_();
         window.location.href = '/';
         break;
       case 'subscribe':
@@ -80,7 +79,30 @@ export default class Authentication extends HTMLElement {
     }
   }
 
-    /**
+  /**
+   * Handles the user logout process. 
+   * @private
+   */
+  async handleLogout_() {
+    const options = {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('JWT')}`
+      }
+    };
+
+    // update login status on the server
+    const logoutResponse = await fetch('api/logout', options).catch(this.handleError_);
+    const deserialised = await logoutResponse.json();
+
+    if (deserialised) {
+      localStorage.removeItem('JWT');
+      updateStore('AUTH', { signedIn: false, avatar: null, id: null });
+    }
+  }
+
+  /**
    * Handles line subscription request. 
    * @private
    */
