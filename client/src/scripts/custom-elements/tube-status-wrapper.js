@@ -13,14 +13,15 @@ export default class TubeStatusWrapper extends HTMLElement {
     this.token_ = localStorage.getItem('JWT');
   }
 
-  connectedCallback() {
-    this.getAllLineData_().then(res => {
-      this.handleJWT_();
-      this.getLineSubscriptions_();
-      updateStore('LOADING', { loadingState: { state: false, type: 'app' } });
-    });
+  async connectedCallback() {
+    await this.getAllLineData_();
+    await this.handleJWT_();
+    await this.getLineSubscriptions_();
+
+    updateStore('LOADING', { loadingState: { state: false, type: 'app', line: null } });
+
     // get data every 60 seconds
-    // this.initialise_();
+    // this.fetchInterval_();
   }
 
   /**
@@ -64,7 +65,7 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getAllLineData_() {
-    updateStore('LOADING', { loadingState: { state: true, type: 'app' } });
+    updateStore('LOADING', { loadingState: { state: true, type: 'app', line: null } });
 
     const lines = await fetch('api/lines').catch(this.handleError_);
     const deserialised = await lines.json();
@@ -94,9 +95,9 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Sets up the API fetch interval process.
    * @private
    */
-  initialise_() {
+  fetchInterval_() {
     setInterval(() => {
-      this.getAllLineData_().then(updateStore('LOADING', { loadingState: { state: false, type: 'app' } }));
+      this.getAllLineData_().then(updateStore('LOADING', { loadingState: { state: false, type: 'app', line: null } }));
     }, FETCH_INTERVAL);
   }
 
