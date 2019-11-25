@@ -1,12 +1,18 @@
 import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
+import Loading from './loading.js';
 
-const CSS_CLASS= {
+const cssClass = {
   STATUS_WRAPPER: 'tube-status-wrapper',
   SUB_STATUS: 'tube-line-sub__status',
+  LINE_SUB: 'tube-line-sub',
   INFO_REASON_TITLE: 'tube-line-info__reason-title',
   INFO_REASON_CONTEXT: 'tube-line-info__reason-context',
-  ACTIVE: 'tube-line--active'
+  ACTIVE: 'tube-line--active',
 };
+
+const cssSelector = {
+  STATUS_LOADING: 'tube-status-loading',
+}
 
 /**
  * Tube line custom element.
@@ -29,28 +35,35 @@ export default class TubeLine extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.reasonContextEl_;
-
-    // listen for clicks so we can fire our own click event
-    this.addEventListener('click', this.handleClick_.bind(this));
   }
 
   connectedCallback() {
-    // subscription order matters. DOM updates depend on the processing of line status.
     subscribeToStore(this.updateDOM_.bind(this));
 
-    this.tubeStatusWrapper_ = document.querySelector(`.${CSS_CLASS.STATUS_WRAPPER}`);
-    this.subStatusEl_ = this.querySelector(`.${CSS_CLASS.SUB_STATUS}`);
-    this.reasonTitleEl_ = this.querySelector(`.${CSS_CLASS.INFO_REASON_TITLE}`);
-    this.reasonContextEl_ = this.querySelector(`.${CSS_CLASS.INFO_REASON_CONTEXT}`);
+    this.tubeStatusWrapper_ = document.querySelector(`.${cssClass.STATUS_WRAPPER}`);
+    this.subStatusEl_ = this.querySelector(`.${cssClass.SUB_STATUS}`);
+    this.reasonTitleEl_ = this.querySelector(`.${cssClass.INFO_REASON_TITLE}`);
+    this.reasonContextEl_ = this.querySelector(`.${cssClass.INFO_REASON_CONTEXT}`);
   }
 
   /**
-   * Emits custom click event for modal custom element.
-   * @param {object} e
+   * Renders loading wheel to tube-line element.
    * @private
    */
-  handleClick_(e) {
+  handleLoading_() {
+    const { loadingState: { type, line, state } }  = getStore();
+    const lineSubEl = this.querySelector(`.${cssClass.LINE_SUB}`);
+    const subStatusEl = this.querySelector(`.${cssClass.SUB_STATUS}`);
+    const statusLoadingEl = lineSubEl.querySelector(cssSelector.STATUS_LOADING);
+    const loadingElement = new Loading();
 
+    // remove loading element if it exists
+    if (statusLoadingEl) lineSubEl.removeChild(statusLoadingEl);
+
+    // return if loading state is false
+    if (!state) return;
+
+    if (type === 'line' && this.line_ === line) subStatusEl.insertAdjacentElement('afterend', loadingElement);
   }
 
   /**
@@ -60,10 +73,12 @@ export default class TubeLine extends HTMLElement {
   updateDOM_() {
     const { status, reason } = getStore().lineInformation[this.line_];
 
+    this.handleLoading_();
+
     // set score attribute on line so we can order with flexbox
     this.setScoreAttribute_(status);
     // line should appear clickable if there are delays/disruptions
-    reason ? this.classList.add(CSS_CLASS.ACTIVE) : this.classList.remove(CSS_CLASS.ACTIVE);
+    reason ? this.classList.add(cssClass.ACTIVE) : this.classList.remove(cssClass.ACTIVE);
 
     this.subStatusEl_.textContent = '';
     this.reasonTitleEl_.textContent = '';

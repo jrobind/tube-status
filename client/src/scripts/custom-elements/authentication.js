@@ -2,6 +2,10 @@ import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
 
 /** @type {number} */
 const LOADING_DELAY = 500;
+/** @type {string} */
+const SIGN_IN_TEXT = 'sign-in to subscribe';
+/** @type {string} */
+const LOGIN_TEXT = 'Log in with Google';
 
 /**
  * Authentication custom element.
@@ -17,7 +21,7 @@ export default class Authentication extends HTMLElement {
     this.authPath_ = this.getAttribute('auth-path');
 
     /** @private {string} */       
-    this.authenticationText_ = this.authPath_ === 'subscribe' ? 'sign-in to subscribe' : 'Log in with Google';
+    this.authenticationText_ = this.authPath_ === 'subscribe' ? SIGN_IN_TEXT : LOGIN_TEXT;
 
     /** @private {string} */
     this.line_ = this.parentElement.parentElement.getAttribute('line');
@@ -93,7 +97,7 @@ export default class Authentication extends HTMLElement {
       }
     };
     // activate loading state
-    updateStore('LOADING', { loadingState: { state: true, type: 'line'} });
+    updateStore('LOADING', { loadingState: { state: true, type: 'line', line: this.line_ } });
 
     if (userProfile.signedIn && pushSubscription) {
       const subscriptionResponse = await fetch('api/subscribe', options).catch(this.handleError_);
@@ -105,7 +109,7 @@ export default class Authentication extends HTMLElement {
       await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
 
       updateStore('LINE-SUBSCRIPTION', { lineSubscriptions });
-      updateStore('LOADING', { loadingState: { state: false, type: 'line' } }); 
+      updateStore('LOADING', { loadingState: { state: false, type: null, line: null } }); 
     }
   }
 
