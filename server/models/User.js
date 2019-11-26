@@ -7,7 +7,8 @@ const UserSchema = new mongoose.Schema({
     email: String,
     avatar: String,
     lines: [String],
-    pushSubscription: Object
+    pushSubscription: Object,
+    signedIn: Boolean
 });
 
 const User = mongoose.model('User', UserSchema);
