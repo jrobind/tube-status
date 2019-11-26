@@ -10,11 +10,13 @@ const JWTStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const db = require('./models'); 
 const buildLine = require('./utlis/build-line');
+const middleware = require('./middleware');
 require('dotenv').config({path: '../.env'});
 
 // require routes
 const subscribe = require('./routes/subscribe');
 const line = require('./routes/lines');
+const logout = require('./routes/logout');
 
 const app = express();
 
@@ -24,6 +26,7 @@ db.mongoSetup();
 app.use(passport.initialize()); 
 app.use('/api/', subscribe);
 app.use('/api/', line);
+app.use('/api/', logout);
 
 // vapid keys
 const publicKey = 'BKpELtYde7iajTdW7hw1LOIksmgzApC5IMLUtwDkqDA_fdqWmdQ3FqU2azo0LH0G-2cIqq11gRrxCLtFj-pPSmE';
@@ -68,6 +71,7 @@ app.get('/auth/google/callback',
             name: req.user.displayName,
             email: req.user.emails[0].value,
             avatar: req.user.photos[0].value,
+            signedIn: true
         };
         // check if user exists. If not, then add to db.
         await db.UserModel.findOne({ googleId }, (err, resp) => {
@@ -82,8 +86,12 @@ app.get('/auth/google/callback',
                     });
             } else {
                 lines = resp.lines;
+                // set signed in status
+                db.UserModel.updateOne({ googleId }, { $set: {signedIn: true } }, (err, resp) => {
+                    if (resp) console.log('updated signed in status', resp);
+                });
             }
-            // add user line data to req.user so we can sign token send back to client
+            // add user line data to req.user so we can sign token and send back to client
             req.user.lines = lines;
     });
 
@@ -103,7 +111,7 @@ app.get('/auth/google/callback',
 );
   
 // A secret endpoint accessible only to logged-in users
-app.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/protected', passport.authenticate('jwt', { session: false }), middleware.jwtVerify, (req, res) => {
     console.log('protected accessed')  
     res.json({
         message: 'You have accessed the protected endpoint!',
@@ -122,12 +130,12 @@ setInterval(async () => {
     result.forEach(line => {
         const { statusSeverityDescription, reason } = line.lineStatuses[0];
         const id = line.id;
+        // check the current line severity description (from api call) against the stored db entry
         const diffExists = lineDbData ? lineDbData[0][id].description !== statusSeverityDescription : null;
 
         if (diffExists) {
             // query users and send notification
-            // update line data to reflect new status
-            db.UserModel.find({ 'lines': { $in: id } }, (err, resp) => {
+            db.UserModel.find({ 'lines': { $in: id }, 'signedIn': { $in: true } }, (err, resp) => {
                 if (resp.length) {
                     const { pushSubscription } = resp[0]; 
                     const payload = JSON.stringify({
@@ -143,7 +151,7 @@ setInterval(async () => {
             });
         }
     });
-    // update db with new line data
+    // update line data to reflect new status
     buildLine();
 }, 120000);
 
