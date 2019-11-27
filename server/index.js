@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const JWTStrategy = require('passport-jwt').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const CronJob = require('cron').CronJob;
 const db = require('./models'); 
 const buildLine = require('./utlis/build-line');
 const middleware = require('./middleware');
@@ -119,8 +120,8 @@ app.get('/protected', passport.authenticate('jwt', { session: false }), middlewa
     });
 });
 
-// run line status check every two minutes and send push notification to relevant line subscribers   
-setInterval(async () => {
+// run line status check every minute and send push notification to relevant line subscribers 
+const job = new CronJob('0 */1 * * * *', async () => {
     const response = await fetch('http://localhost:4000/api/lines').catch(e => console.log(e));
     const result = await response.json();
     let lineDbData;
@@ -153,7 +154,10 @@ setInterval(async () => {
     });
     // update line data to reflect new status
     buildLine();
-}, 120000);
+});
+
+// start cron job
+job.start();  
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './client/index.html'));
