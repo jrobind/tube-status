@@ -1,4 +1,5 @@
 :root {
+  --body-background-color: #fdfdfd;
   --london-overground-color: #e86a10;
   --central-color: #dc241f;
   --bakerloo-color: #894e24;
@@ -14,6 +15,7 @@
   --tfl-rail-color: #0019a8;
   --dlr-color: #00afad;
   --tram-color: #6c0;
+  --line-info-background-color: #fefefe;
 }
 
 html, 
@@ -21,6 +23,10 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
+  background-color: var(--body-background-color);
 }
 
 /* avatar and google sign in styles */
@@ -43,67 +49,68 @@ body {
 
 /* tube-line styles */
 .tube-line {
-  color: rgba(250, 250, 250, 0.9);
-  height: 60px;
-  padding: 5px;
-  margin: 5px;
+  height: 78px;
+  margin: 7px 14px;
   font-size: 18px;
   display: flex;
+  background-color: var(--tube-line-background-color);
+  border-radius: 10px;
+  box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.1);
 }
 
-.tube-line[line='london-overground'] {
+.tube-line[line='london-overground'] .tube-line-sub__status {
   background-color: var(--london-overground-color);
 }
 
-.tube-line[line='dlr'] {
+.tube-line[line='dlr'] .tube-line-sub__status {
   background-color: var(--dlr-color);
 }
 
-.tube-line[line='tfl-rail'] {
+.tube-line[line='tfl-rail'] .tube-line-sub__status {
   background-color: var(--tfl-rail-color);
 }
 
-.tube-line[line='waterloo-city'] {
+.tube-line[line='waterloo-city'] .tube-line-sub__status {
   background-color: var(--waterloo-city-color);
 }
 
-.tube-line[line='victoria'] {
+.tube-line[line='victoria'] .tube-line-sub__status {
   background-color: var(--victoria-color);
 }
 
-.tube-line[line='piccadilly'] {
+.tube-line[line='piccadilly'] .tube-line-sub__status {
   background-color: var(--piccadilly-color);
 }
 
-.tube-line[line='northern'] {
+.tube-line[line='northern'] .tube-line-sub__status {
   background-color: var(--northern-color);
 }
 
-.tube-line[line='metropolitan'] {
+.tube-line[line='metropolitan'] .tube-line-sub__status {
   background-color: var(--metropolitan-color);
 }
 
-.tube-line[line='jubilee'] {
+.tube-line[line='jubilee'] .tube-line-sub__status {
   background-color: var(--jubilee-color);
 }
 
-.tube-line[line='hammersmith-city'] {
+.tube-line[line='hammersmith-city'] .tube-line-sub__status {
   background-color: var(--hammersmith-city-color);
 }
 
-.tube-line[line='district'] {
+.tube-line[line='district'] .tube-line-sub__status {
   background-color: var(--district-color);
 }
 
-.tube-line[line='circle'] {
+.tube-line[line='circle'] .tube-line-sub__status {
   background-color: var(--circle-color);
 }
 
-.tube-line[line='central'] {
+.tube-line[line='central'] .tube-line-sub__status {
   background-color: var(--central-color);
 }
 
-.tube-line[line='bakerloo'] {
+.tube-line[line='bakerloo'] .tube-line-sub__status {
   background-color: var(--bakerloo-color);
 }
 
@@ -148,6 +155,28 @@ body {
 .tube-line-info__reason-title,
 .tube-line-info__reason-context {
   margin: 0 0 0 10px;
+}
+
+.tube-line-sub__status {
+  color: rgba(250, 250, 250, 1);
+  height: 100%;
+  display: inline-block;
+  width: 300px;
+  border-right: 2px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 0 5px -5px rgba(0, 0, 0, 1);
+  border-top-right-radius: 60px;
+  border-bottom-right-radius: 60px;
+}
+
+/* delays present on line */
+.tube-line--active .tube-line-info__reason-title::after {
+  content: '';
+  background-image: url(/images/error.svg);
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  background-repeat: no-repeat;
+  margin-left: 5px;
 }
 
 /* footer styles */
