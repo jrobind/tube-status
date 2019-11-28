@@ -125,7 +125,7 @@ const job = new CronJob('0 */1 * * * *', async () => {
     const response = await fetch('http://localhost:4000/api/lines').catch(e => console.log(e));
     const result = await response.json();
     let lineDbData;
-    // check if there is a status diff, query users with related line subscription and send notification
+    // retrieve current stored lines from db
     await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
 
     result.forEach(line => {
