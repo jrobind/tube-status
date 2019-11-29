@@ -12,7 +12,7 @@ const cssClass = {
 
 const cssSelector = {
   STATUS_LOADING: 'tube-status-loading',
-}
+};
 
 /**
  * Tube line custom element.
