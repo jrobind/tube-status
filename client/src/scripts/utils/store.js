@@ -10,7 +10,6 @@ let store = {
   },
   loadingState: {
     state: false,
-    type: null,
     line: null,
   },
   pushSubscription: null,
@@ -38,28 +37,49 @@ export const updateStore = (action, data) => {
         lineInformation:{ ...data.lineInformation },
         lineData:{ lines: {  ...data.deserialised } }
       };
-      store.subscribers.length && store.subscribers.forEach(callback => callback());
+      handleSubscriberCalls(action);
 
       return store;
     case 'AUTH':
       store = { ...store, userProfile:{ ...data } };
-      store.subscribers.length && store.subscribers.forEach(callback => callback());
+      handleSubscriberCalls(action);
 
       return store;
-    case 'LOADING':
+    case 'LOADING-APP':
       store = { ...store, ...data };
-      store.subscribers.length && store.subscribers.forEach(callback => callback());
+      handleSubscriberCalls(action);
+
+      return store;
+    case 'LOADING-LINE':
+      store = { ...store, ...data };
+      handleSubscriberCalls(action);
 
       return store;
     case 'PUSH-SUBSCRIPTION':
       store = { ...store, ...data };
+      handleSubscriberCalls(action);
 
       return store;
     case 'LINE-SUBSCRIPTION':
       store = { ...store, ...data };
-      store.subscribers.length && store.subscribers.forEach(callback => callback());
+      handleSubscriberCalls(action);
 
       return store;
+  }
+}
+
+/**
+ * Invokes relevant subscribers after store updates.
+ * @param {string} action
+ */
+const handleSubscriberCalls = (subscriberAction) => {
+  const { subscribers } = store;
+  const hasSubscribers = subscribers.length;
+
+  if (hasSubscribers) {
+    subscribers.forEach(({ callback, action }) => {
+      action === subscriberAction && callback();
+    });
   }
 }
 
