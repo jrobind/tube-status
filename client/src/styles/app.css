@@ -15,7 +15,7 @@
   --tfl-rail-color: #0019a8;
   --dlr-color: #00afad;
   --tram-color: #6c0;
-  --line-info-background-color: #fefefe;
+  --line-info-background-color: #fdfdfd;
 }
 
 html, 
@@ -30,13 +30,13 @@ body {
 }
 
 /* avatar and google sign in styles */
-.avatar {
+.tube-status-header__avatar {
   position: absolute;
   top: 8px;
   right: 8px;
 }
 
-.avatar__image {
+.tube-status-header__avatar-image {
   width: 95px;
   border-radius: 90px;
 }
@@ -187,15 +187,16 @@ body {
 
 /* loading wheel styles */
 .tube-line-sub .tube-status-loading--active-line + tube-status-authentication,
-.tube-status-loading--hidden,
-.tube-status-modal--hidden,
-.app-wrapper--hidden {
+.tube-status-loading,
+.tube-status-modal,
+.app-wrapper.app-wrapper--hidden {
   display: none;
 }
 
-.tube-line-sub .tube-status-loading--hidden + tube-status-authentication,
+.tube-line-sub .tube-status-loading + tube-status-authentication,
 .tube-status-loading--active,
-.tube-status-loading--active-line {
+.tube-status-loading--active-line,
+.app-wrapper {
   display: block;
 }
 
