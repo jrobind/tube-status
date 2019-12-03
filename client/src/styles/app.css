@@ -29,16 +29,25 @@ body {
   background-color: var(--body-background-color);
 }
 
-/* avatar and google sign in styles */
+/* header styles */
+.tube-status-header {
+  display: inline-block;
+  min-height: 120px;
+  width: 100%;
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+  margin-bottom: 45px;
+  padding: 15px;
+}
+
 .tube-status-header__avatar {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 15px;
+  right: 15px;
 }
 
 .tube-status-header__avatar-image {
-  width: 95px;
-  border-radius: 90px;
+  width: 75px;
+  border-radius: 80px;
 }
 
 /* tube-status-wrapper styles */
