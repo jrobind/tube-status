@@ -1,10 +1,10 @@
 import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
 
-/** @type {number} */
+/** @const {number} */
 const LOADING_DELAY = 500;
-/** @type {string} */
+/** @const {string} */
 const SIGN_IN_TEXT = 'sign-in to subscribe';
-/** @type {string} */
+/** @const {string} */
 const LOGIN_TEXT = 'Log in with Google';
 
 /**
@@ -25,19 +25,39 @@ export default class Authentication extends HTMLElement {
 
     /** @private {string} */
     this.line_ = this.parentElement.parentElement.getAttribute('line');
+
+    /** @private {string} */
+    this.token_ = localStorage.getItem('JWT');
   }
 
   connectedCallback() {
-    subscribeToStore(this.attemptUpdate_.bind(this));
+    subscribeToStore({ 
+      callback: this.attemptTextUpdate_.bind(this),
+      action: 'LINE-SUBSCRIPTION'
+    });
     this.addEventListener('click', this.handleAuth_.bind(this));
+    this.handleJWT_();
     this.render_();
-  } 
+  }
+
+  /**
+   * Verify existence of JWT and parse if present.
+   * @private
+   */
+  async handleJWT_() {
+    // if token exists, login was successful
+    if (this.token_) {
+      const { photos, id } = JSON.parse(window.atob(this.token_.split('.')[1]));
+
+      updateStore('AUTH', { signedIn: true, avatar: photos[0].value, id });
+    }       
+  }
 
   /**
    * Attempts attribute & authentication text updates after authentication
    * @private
    */
-  attemptUpdate_() {
+  attemptTextUpdate_() {
     const { userProfile: { signedIn }, lineSubscriptions } = getStore();
 
     if (!signedIn || this.authPath_ === 'logout') return;
@@ -46,7 +66,11 @@ export default class Authentication extends HTMLElement {
       this.setAttribute('auth-path', 'logout');
     } else {
       // check if line subscription exists for current line
-      lineSubscriptions.includes(this.line_) ? this.setAttribute('auth-path', 'unsubscribe') : this.setAttribute('auth-path', 'subscribe');
+      if (lineSubscriptions.includes(this.line_)) {
+        this.setAttribute('auth-path', 'unsubscribe');
+      } else {
+        this.setAttribute('auth-path', 'subscribe');
+      }
     }
 
     this.authPath_ = this.getAttribute('auth-path');
@@ -68,13 +92,12 @@ export default class Authentication extends HTMLElement {
         break;
       case 'logout':
         this.handleLogout_();
-        window.location.href = '/';
         break;
       case 'subscribe':
-        userProfile.signedIn ? this.handleSubscriptionRequest() : window.location.href = this.dest_;
+        userProfile.signedIn ? this.handleSubscriptionRequest_() : window.location.href = this.dest_;
         break;
       case 'unsubscribe':
-        userProfile.signedIn ? this.handleSubscriptionRequest('unsubscribe') : window.location.href = this.dest_;
+        userProfile.signedIn ? this.handleSubscriptionRequest_('unsubscribe') : window.location.href = this.dest_;
         break;
     }
   }
@@ -84,6 +107,8 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleLogout_() {
+    updateStore('LOADING', { loadingState: { state: true, line: null } });
+
     const options = {
       method: 'POST',
       headers: {
@@ -94,11 +119,16 @@ export default class Authentication extends HTMLElement {
 
     // update login status on the server
     const logoutResponse = await fetch('api/logout', options).catch(this.handleError_);
-    const deserialised = await logoutResponse.json();
+    const status = logoutResponse.status;
 
-    if (deserialised) {
+    if (status === 200) {
       localStorage.removeItem('JWT');
       updateStore('AUTH', { signedIn: false, avatar: null, id: null });
+      // set authentication text back to login
+      this.authenticationText_ = LOGIN_TEXT;
+      this.authPath_ = 'login';
+      this.render_();
+      updateStore('LOADING', { loadingState: { state: false, line: null } });
     }
   }
 
@@ -106,7 +136,7 @@ export default class Authentication extends HTMLElement {
    * Handles line subscription request. 
    * @private
    */
-  async handleSubscriptionRequest(subType) {
+  async handleSubscriptionRequest_(subType) {
     const { userProfile, pushSubscription, lineSubscriptions } = getStore();
     const method = !subType ? 'POST' : 'DELETE';
     const body = !subType ? JSON.stringify({ pushSubscription, line: this.line_ }) : JSON.stringify({ line: this.line_ });
@@ -118,20 +148,25 @@ export default class Authentication extends HTMLElement {
         'Authorization': `Bearer ${localStorage.getItem('JWT')}`
       }
     };
+
     // activate loading state
-    updateStore('LOADING', { loadingState: { state: true, type: 'line', line: this.line_ } });
+    updateStore('LOADING', { loadingState: { state: true, line: this.line_ } });
 
     if (userProfile.signedIn && pushSubscription) {
       const subscriptionResponse = await fetch('api/subscribe', options).catch(this.handleError_);
       const deserialised = await subscriptionResponse.json();
-      // push new line subscription to stored array if subscribing, otherwise remove unsubscribed line
-      !subType ? lineSubscriptions.push(deserialised.lines) : lineSubscriptions.splice(lineSubscriptions.indexOf(deserialised.lines), 1);
 
+      // push new line subscription to stored array if subscribing, otherwise remove unsubscribed line
+      if (!subType) {
+        lineSubscriptions.push(deserialised.lines);
+      } else {
+        lineSubscriptions.splice(lineSubscriptions.indexOf(deserialised.lines), 1);
+      }
       // set a minimum loading wheel time
       await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
 
       updateStore('LINE-SUBSCRIPTION', { lineSubscriptions });
-      updateStore('LOADING', { loadingState: { state: false, type: null, line: null } }); 
+      updateStore('LOADING', { loadingState: { state: false, line: this.line_ } }); 
     }
   }
 
@@ -145,7 +180,6 @@ export default class Authentication extends HTMLElement {
 
   /** @private */
   handleError_(e) {
-    console.error(e);
-    alert('Unable to subscribe to line at this time.');
+    console.error(`Unable to subscribe to line at this time. ${e}`);
   }
 }
