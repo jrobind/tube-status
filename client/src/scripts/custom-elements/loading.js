@@ -4,7 +4,6 @@ const cssClass = {
   LOADING_ACTIVE: 'tube-status-loading--active',
   LOADING_LINE_ACTIVE: 'tube-status-loading--active-line',
   APP_HIDDEN: 'app-wrapper--hidden',
-  LINE_HIDDEN: 'tube-status-loading--hidden',
 };
 
 const cssSelector = {
@@ -18,49 +17,52 @@ export default class Loading extends HTMLElement {
   constructor() {
     super();
 
-    this.appWrapper_ = document.querySelector(cssSelector.APP_WRAPPER);
+    /** @private {HTMLElement} */
+    this.appWrapper_;
+
+    /** @private {string} */
+    this.line_ = this.parentElement.parentElement.getAttribute('line');
   }
 
   connectedCallback() {
-    const { loadingState } = getStore();
-  
-    subscribeToStore(this.handleLoading_.bind(this));
+    const isApp = this.hasAttribute('app');
+    const action = isApp ? 'LOADING-APP' : 'LOADING';
+    const callback = isApp ? this.handleLoadingApp_.bind(this) : this.handleLoading_.bind(this);
+    this.appWrapper_ = document.querySelector(cssSelector.APP_WRAPPER);
 
-    if (loadingState.type === 'line') {
-      this.handleLoading_();
-    }
+    subscribeToStore({ callback, action });
   } 
 
   /**
-   * Handles loading logic. 
+   * Handles loading app logic. 
    * @private
    */
-  handleLoading_() {
-    const { loadingState: { type,  state } } = getStore();
-    const isLoadingTypeApp = type === 'app';
-    const activeClass = isLoadingTypeApp ? cssClass.LOADING_ACTIVE : cssClass.LOADING_LINE_ACTIVE;
-    const isLoading = state;
-
-    // exit if line loading context
-    if (this.hasAttribute('base') && !isLoadingTypeApp) return;
+  handleLoadingApp_() {
+    const { loadingState: { state } } = getStore();
     
-    if (isLoading) {
-      // app loading
-      isLoadingTypeApp && this.appWrapper_.classList.add(cssClass.APP_HIDDEN);
-      this.classList.remove(cssClass.LINE_HIDDEN);
-      this.classList.add(activeClass);         
+    if (state) {
+      this.appWrapper_.classList.add(cssClass.APP_HIDDEN);
+      this.classList.add(cssClass.LOADING_ACTIVE); 
     } else {
-      isLoadingTypeApp && this.appWrapper_.classList.remove(cssClass.APP_HIDDEN);
-      this.classList.remove(activeClass);  
-      this.classList.add(cssClass.LINE_HIDDEN);
+      this.appWrapper_.classList.remove(cssClass.APP_HIDDEN);
+      this.classList.remove(cssClass.LOADING_ACTIVE);
     }
   }
 
-  /**
-   * Renders link authentication text. 
+/**
+   * Handles loading line logic. 
    * @private
    */
-  render_() {
-    this.innerHTML = this.authenticationText_;
+  handleLoading_() {
+    const { loadingState: { state, line } } = getStore();
+
+    // proceed if this loading element matches the line 
+    if (this.line_ !== line) return;
+
+    if (state) {
+      this.classList.add(cssClass.LOADING_LINE_ACTIVE); 
+    } else {
+      this.classList.remove(cssClass.LOADING_LINE_ACTIVE);
+    }
   }
 }
