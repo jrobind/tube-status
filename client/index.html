@@ -14,25 +14,27 @@
     <link rel="manifest" href="./manifest.json">
   </head>
   <body>
+    <!-- header -->
+    <tube-status-header class="tube-status-header">
+      <h1 class="tube-status-header__heading">TUBE STATUS</h1>
+      <tube-status-authentication class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
+      <tube-status-loading class="tube-status-loading"></tube-status-loading>
+      <div class="tube-status-header__avatar">
+          <img class="tube-status-header__avatar-image"> 
+      </div>
+    </tube-status-header>
     <!-- loading and modal elements -->
-    <tube-status-loading class="tube-status-loading" base></tube-status-loading>
+    <tube-status-loading class="tube-status-loading" app></tube-status-loading>
     <tube-status-modal class="tube-status-modal"></tube-status-modal>
     <!-- main content wrapper -->
     <div class="app-wrapper">
-      <!-- header -->
-      <tube-status-header class="tube-status-header">
-        <h1 class="tube-status-header__heading">TUBE STATUS</h1>
-        <tube-status-authentication class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
-        <div class="tube-status-header__avatar">
-            <img class="tube-status-header__avatar-image"> 
-        </div>
-      </tube-status-header>
       <!-- tube wrapper -->
       <tube-status-wrapper class="tube-status-wrapper">
         <tube-line class="tube-line" line='bakerloo'>
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -44,6 +46,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
             <div class="tube-line-info">
               <div class="tube-line-info__reason-title"></div>
@@ -55,6 +58,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -66,6 +70,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -77,6 +82,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -88,6 +94,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -99,6 +106,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -110,6 +118,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
               <div class="tube-line-info__reason-title"></div>
@@ -121,6 +130,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -132,6 +142,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -143,6 +154,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -154,6 +166,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -165,6 +178,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -176,6 +190,7 @@
           <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-authentication dest='/auth/google/callback' auth-path='subscribe'></tube-status-authentication>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
