@@ -15,7 +15,7 @@
   --tfl-rail-color: #0019a8;
   --dlr-color: #00afad;
   --tram-color: #6c0;
-  --line-info-background-color: #fdfdfd;
+  --default-white-background: #fff;
 }
 
 html, 
@@ -31,9 +31,9 @@ body {
 
 /* header styles */
 .tube-status-header {
-  display: inline-block;
+  background-color: var(--default-white-background);
+  display: block;
   min-height: 120px;
-  width: 100%;
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   margin-bottom: 45px;
   padding: 15px;
@@ -62,7 +62,7 @@ body {
   margin: 7px 14px;
   font-size: 18px;
   display: flex;
-  background-color: var(--tube-line-background-color);
+  background-color: var(--default-white-background);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.1);
 }
