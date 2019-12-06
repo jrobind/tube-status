@@ -9,9 +9,11 @@ router.post('/logout', passport.authenticate('jwt', { session: false }), middlew
   const googleId = res.locals.decoded._json.sub;
 
   db.UserModel.updateOne({ googleId }, { $set: {signedIn: false } }, (err, resp) => {
-    if (!err) {
+    if (err) {
+      res.status(400).send({ error: 'Failed to log out.' });
+    } else {
       console.log('Successfully updated signed in status', resp);
-      res.json({ message: 'You have logged out.' });
+      res.status(200).send({ message: 'You have logged out.'});
     }
   });
 });
