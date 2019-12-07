@@ -1,28 +1,28 @@
 export const initialStore = {
-  /** @private {object} */
+  /** @type {object} */
   lineData: {
     lines: {}
   },
 
-  /** @private {object} */
+  /** @type {object} */
   userProfile: {
     signedIn: false,
     id: null,
     avatar: null,
   },
 
-  /** @private {object} */
+  /** @type {object} */
   loadingState: {
     state: false,
     line: null,
   },
 
-  /** @private {object} */
+  /** @type {object} */
   pushSubscription: null,
 
-  /** @private {array} */
+  /** @type {array} */
   lineSubscriptions: [],
 
-  /** @private {object} */
+  /** @type {object} */
   lineInformation: null,
 };
