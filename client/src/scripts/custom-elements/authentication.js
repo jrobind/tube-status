@@ -1,4 +1,5 @@
-import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
+import { store } from '../utils/client-store.js';
+const { updateStore, subscribeToStore, getStore } = store;
 
 /** @const {number} */
 const LOADING_DELAY = 500;
@@ -49,7 +50,10 @@ export default class Authentication extends HTMLElement {
     if (this.token_) {
       const { photos, id } = JSON.parse(window.atob(this.token_.split('.')[1]));
 
-      updateStore('AUTH', { signedIn: true, avatar: photos[0].value, id });
+      updateStore({
+        action: 'AUTH',
+        data: { signedIn: true, avatar: photos[0].value, id }
+      });
     }       
   }
 
@@ -107,7 +111,10 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleLogout_() {
-    updateStore('LOADING', { loadingState: { state: true, line: null } });
+    updateStore({
+      action: 'LOADING',
+      data: { loadingState: { state: true, line: null } }
+    });
 
     const options = {
       method: 'POST',
@@ -123,12 +130,19 @@ export default class Authentication extends HTMLElement {
 
     if (status === 200) {
       localStorage.removeItem('JWT');
-      updateStore('AUTH', { signedIn: false, avatar: null, id: null });
+      updateStore({
+        action: 'AUTH',
+        data: { signedIn: false, avatar: null, id: null }
+      });
       // set authentication text back to login
       this.authenticationText_ = LOGIN_TEXT;
       this.authPath_ = 'login';
       this.render_();
-      updateStore('LOADING', { loadingState: { state: false, line: null } });
+
+      updateStore({
+        action: 'LOADING', 
+        data: { loadingState: { state: false, line: null } }
+      });
     }
   }
 
@@ -150,7 +164,10 @@ export default class Authentication extends HTMLElement {
     };
 
     // activate loading state
-    updateStore('LOADING', { loadingState: { state: true, line: this.line_ } });
+    updateStore({
+      action: 'LOADING', 
+      data: { loadingState: { state: true, line: this.line_ } }
+    });
 
     if (userProfile.signedIn && pushSubscription) {
       const subscriptionResponse = await fetch('api/subscribe', options).catch(this.handleError_);
@@ -165,8 +182,14 @@ export default class Authentication extends HTMLElement {
       // set a minimum loading wheel time
       await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
 
-      updateStore('LINE-SUBSCRIPTION', { lineSubscriptions });
-      updateStore('LOADING', { loadingState: { state: false, line: this.line_ } }); 
+      updateStore({
+        action: 'LINE-SUBSCRIPTION',
+        data: { lineSubscriptions }
+      });
+      updateStore({
+        action: 'LOADING',
+        data: { loadingState: { state: false, line: this.line_ } }
+      }); 
     }
   }
 

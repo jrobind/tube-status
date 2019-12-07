@@ -1,4 +1,5 @@
-import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
+import { store } from '../utils/client-store.js';
+const { updateStore, subscribeToStore, getStore } = store;
 
 /** @type {number} */
 const FETCH_INTERVAL = 60000;
@@ -15,11 +16,12 @@ export default class TubeStatusWrapper extends HTMLElement {
 
   async connectedCallback() {
     await this.getAllLineData_();
-    await this.handleJWT_();
     await this.getLineSubscriptions_();
-
-    updateStore('LOADING', { loadingState: { state: false, type: 'app', line: null } });
-
+    updateStore({
+      action: 'LOADING-APP',
+      data: { loadingState: { state: false, line: null } }
+    });
+    console.log(getStore())
     // get data every 60 seconds
     // this.fetchInterval_();
   }
@@ -29,7 +31,9 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getLineSubscriptions_() {
-    if (getStore().userProfile.signedIn) {
+    const { userProfile: { signedIn } } = getStore();
+
+    if (signedIn) {
       const options = { 
         method: 'GET',
         headers: {
@@ -40,23 +44,11 @@ export default class TubeStatusWrapper extends HTMLElement {
       const subscriptionResults = await fetch('api/subscribe', options).catch(this.handleError_);
       const deserialised = await subscriptionResults.json();
 
-      updateStore('LINE-SUBSCRIPTION', { lineSubscriptions: deserialised.lines });
+      updateStore({
+        action: 'LINE-SUBSCRIPTION',
+        data: { lineSubscriptions: deserialised.lines }
+      });
     }      
-  }
-
-  /**
-   * Verify existence of JWT and parse if present.
-   * @private
-   */
-  async handleJWT_() {
-    // if token exists, login was successful
-    if (this.token_) {
-      const { photos, id } = JSON.parse(window.atob(this.token_.split('.')[1]));
-      const avatar = document.querySelector('.avatar__image');
-
-      updateStore('AUTH', { signedIn: true, avatar: photos[0].value, id });
-      avatar.src = getStore().userProfile.avatar;
-    }       
   }
   
   /**
@@ -65,13 +57,20 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getAllLineData_() {
-    updateStore('LOADING', { loadingState: { state: true, type: 'app', line: null } });
+    updateStore({
+      action: 'LOADING-APP',
+      data: { loadingState: { state: true, line: null } }
+    });
 
     const lines = await fetch('api/lines').catch(this.handleError_);
     const deserialised = await lines.json();
+    console.log(deserialised);
     const lineInformation = this.formatLineInformation_(deserialised);
     // update store with successful API response  
-    return updateStore('LINES', { deserialised, lineInformation });
+    return updateStore({
+      action: 'LINES',
+      data: { deserialised, lineInformation }
+    });
   }
 
   /**
@@ -96,8 +95,12 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   fetchInterval_() {
-    setInterval(() => {
-      this.getAllLineData_().then(updateStore('LOADING', { loadingState: { state: false, type: 'app', line: null } }));
+    setInterval(async () => {
+      await this.getAllLineData_();
+      updateStore({
+        action: 'LOADING-APP',
+        data: { loadingState: { state: false, line: null } }
+      });
     }, FETCH_INTERVAL);
   }
 

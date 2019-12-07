@@ -1,4 +1,5 @@
-import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
+import { store } from '../utils/client-store.js';
+const { updateStore, subscribeToStore, getStore } = store;
 
 const cssSelector = {
   HEADER_AUTHENTICATION: '.tube-status-header__authentication',
@@ -29,7 +30,7 @@ export default class Header extends HTMLElement {
     });
     this.avatarEl_ = this.querySelector(cssSelector.HEADER_AVATAR);
     this.authenticationEl_ = this.querySelector(cssSelector.HEADER_AUTHENTICATION);
-    this.updateAvatar_();
+    this.updateAvatar_(); 
   }
 
   /**
@@ -38,6 +39,7 @@ export default class Header extends HTMLElement {
    */
   updateAvatar_() {
     const { userProfile: { signedIn, avatar } } = getStore();
+
     if (signedIn) {
       this.avatarEl_.src = avatar;
     } else {

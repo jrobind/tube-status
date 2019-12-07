@@ -1,4 +1,5 @@
-import { subscribeToStore, updateStore, getStore } from '../utils/store.js';
+import { store } from '../utils/client-store.js';
+const { updateStore, subscribeToStore, getStore } = store;
 
 const cssClass = {
   STATUS_WRAPPER: 'tube-status-wrapper',

@@ -1,4 +1,5 @@
-import { updateStore } from './src/scripts/utils/store.js';
+import { store } from './src/scripts/utils/client-store.js';
+const { updateStore, subscribeToStore, getStore } = store;
 
 const PUBLIC_KEY = 'BKpELtYde7iajTdW7hw1LOIksmgzApC5IMLUtwDkqDA_fdqWmdQ3FqU2azo0LH0G-2cIqq11gRrxCLtFj-pPSmE';
 
@@ -16,7 +17,7 @@ async function pushSubscriptionSetup() {
             applicationServerKey: convertUint8Array(PUBLIC_KEY)
         }).catch(handleError);
         // update client store with the push subscription object
-        updateStore('PUSH-SUBSCRIPTION', { pushSubscription });
+        updateStore({ action: 'PUSH-SUBSCRIPTION', data: { pushSubscription }});
     }
 }
 
