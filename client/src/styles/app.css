@@ -33,12 +33,13 @@ body {
 .tube-status-header {
   background-color: var(--default-white-background);
   display: block;
-  min-height: 120px;
+  min-height: 100px;
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   margin-bottom: 45px;
   padding: 15px;
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 
 .tube-status-header__avatar {
@@ -56,12 +57,13 @@ body {
 .tube-status-wrapper {
   display: flex;
   flex-direction: column;
+  margin: 0 25px;
 }
 
 /* tube-line styles */
 .tube-line {
   height: 78px;
-  margin: 7px 14px;
+  margin: 8px 14px;
   font-size: 18px;
   display: flex;
   background-color: var(--default-white-background);
@@ -158,6 +160,10 @@ body {
   transition: 0.2s;
 }
 
+.tube-line-sub {
+  position: relative;
+}
+
 .tube-line-sub,
 .tube-line-info {
   flex: 50%;
@@ -177,6 +183,21 @@ body {
   box-shadow: 5px 0 5px -5px rgba(0, 0, 0, 1);
   border-top-right-radius: 60px;
   border-bottom-right-radius: 60px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.tube-line tube-status-authentication {
+  position: absolute;
+  top: 0;
+  left: 300px;
+}
+
+.tube-line-sub__status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: capitalize;
 }
 
 /* delays present on line */
@@ -196,6 +217,12 @@ body {
   flex-direction: column;
 }
 
+footer {
+  border-top: 1px solid #d8d8d8;
+  padding: 40px;
+  margin: 70px 39px 0 39px;
+}
+
 /* loading wheel styles */
 .tube-line-sub .tube-status-loading--active-line + tube-status-authentication,
 .tube-status-loading,
@@ -209,6 +236,12 @@ body {
 .tube-status-loading--active-line,
 .app-wrapper {
   display: block;
+}
+
+.tube-status-loading--active-line {
+  position: absolute;
+  top: 0;
+  left: 300px;
 }
 
 .tube-status-loading--active {
