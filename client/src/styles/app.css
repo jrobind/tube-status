@@ -153,11 +153,8 @@ body {
 
 .tube-line--active {
   cursor: pointer;
-}
-
-.tube-line--active:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-  transition: 0.2s;
+  height: auto;
+  min-height: 78px;
 }
 
 .tube-line-sub {
@@ -179,8 +176,7 @@ body {
   height: 100%;
   display: inline-block;
   width: 300px;
-  border-right: 2px solid rgba(0, 0, 0, 0.5);
-  box-shadow: 5px 0 5px -5px rgba(0, 0, 0, 1);
+  box-shadow: 5px 0 5px -5px rgba(0, 0, 0, 0.7);
   border-top-right-radius: 60px;
   border-bottom-right-radius: 60px;
   border-bottom-left-radius: 10px;
@@ -238,12 +234,6 @@ footer {
   display: block;
 }
 
-.tube-status-loading--active-line {
-  position: absolute;
-  top: 0;
-  left: 300px;
-}
-
 .tube-status-loading--active {
   border: 8px solid rgba(0, 0, 0, 0.7);
   border-top: 8px solid rgba(250, 250, 250, 0.7);
@@ -256,13 +246,20 @@ footer {
   left: calc(50% - 48px);
 }
 
-.tube-status-loading--active-line {
+.tube-status-loading--active-line,
+.tube-status-loading--active-header {
   border: 4px solid rgba(0, 0, 0, 0.7);
   border-top: 4px solid rgba(250, 250, 250, 0.7);
   border-radius: 50%;
   width: 25px;
   height: 25px;
   animation: spin 1s linear infinite;
+}
+
+.tube-status-loading--active-line {
+  position: absolute;
+  top: 0;
+  left: 300px;
 }
 
 /* modal styles */
