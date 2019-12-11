@@ -1,7 +1,7 @@
 export const initialStore = {
   /** @type {object} */
   lineData: {
-    lines: {}
+    lines: {},
   },
 
   /** @type {object} */

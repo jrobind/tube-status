@@ -1,5 +1,5 @@
-import { store } from '../utils/client-store.js';
-const { updateStore, subscribeToStore, getStore } = store;
+import {store} from "../utils/client-store.js";
+const {updateStore, getStore} = store;
 
 /** @type {number} */
 const FETCH_INTERVAL = 60000;
@@ -8,20 +8,22 @@ const FETCH_INTERVAL = 60000;
  * Tube status wrapper custom element.
  */
 export default class TubeStatusWrapper extends HTMLElement {
+  /** Create tube status wrapper custom element. */
   constructor() {
     super();
 
-    this.token_ = localStorage.getItem('JWT');
+    this.token_ = localStorage.getItem("JWT");
   }
 
+  /** Called every time element is inserted to DOM. */
   async connectedCallback() {
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
     updateStore({
-      action: 'LOADING-APP',
-      data: { loadingState: { state: false, line: null } }
+      action: "LOADING-APP",
+      data: {loadingState: {state: false, line: null}},
     });
-    console.log(getStore())
+    console.log(getStore());
     // get data every 60 seconds
     // this.fetchInterval_();
   }
@@ -31,60 +33,62 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getLineSubscriptions_() {
-    const { userProfile: { signedIn } } = getStore();
+    const {userProfile: {signedIn}} = getStore();
 
     if (signedIn) {
-      const options = { 
-        method: 'GET',
+      const options = {
+        method: "GET",
         headers: {
-          'content-type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('JWT')}`
-        }
+          "content-type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
+        },
       };
-      const subscriptionResults = await fetch('api/subscribe', options).catch(this.handleError_);
+      const subscriptionResults = await fetch("api/subscribe", options)
+        .catch(this.handleError_);
       const deserialised = await subscriptionResults.json();
 
       updateStore({
-        action: 'LINE-SUBSCRIPTION',
-        data: { lineSubscriptions: deserialised.lines }
+        action: "LINE-SUBSCRIPTION",
+        data: {lineSubscriptions: deserialised.lines},
       });
-    }      
+    }
   }
-  
+
   /**
    * Handles the fetching of all API tube data.
-   * @returns {object}
+   * @return {object}
    * @private
    */
   async getAllLineData_() {
     updateStore({
-      action: 'LOADING-APP',
-      data: { loadingState: { state: true, line: null } }
+      action: "LOADING-APP",
+      data: {loadingState: {state: true, line: null}},
     });
 
-    const lines = await fetch('api/lines').catch(this.handleError_);
+    const lines = await fetch("api/lines").catch(this.handleError_);
     const deserialised = await lines.json();
     console.log(deserialised);
     const lineInformation = this.formatLineInformation_(deserialised);
-    // update store with successful API response  
+    // update store with successful API response
     return updateStore({
-      action: 'LINES',
-      data: { deserialised, lineInformation }
+      action: "LINES",
+      data: {deserialised, lineInformation},
     });
   }
 
   /**
    * Formats line information ready for store updates.
    * @param {object} lines
-   * @returns {object}
+   * @return {object}
    * @private
    */
   formatLineInformation_(lines) {
     return lines.reduce((cache, line) => {
       const status = line.lineStatuses[0];
-      cache[line.id] = { 
+
+      cache[line.id] = {
         status: status.statusSeverityDescription,
-        reason: status.reason ? status.reason : null
+        reason: status.reason ? status.reason : null,
       };
       return cache;
     }, {});
@@ -98,8 +102,8 @@ export default class TubeStatusWrapper extends HTMLElement {
     setInterval(async () => {
       await this.getAllLineData_();
       updateStore({
-        action: 'LOADING-APP',
-        data: { loadingState: { state: false, line: null } }
+        action: "LOADING-APP",
+        data: {loadingState: {state: false, line: null}},
       });
     }, FETCH_INTERVAL);
   }
@@ -111,6 +115,6 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   handleError_(e) {
     console.error(e);
-    alert('Unable to retrieve API data.');
+    alert("Unable to retrieve API data.");
   }
 }

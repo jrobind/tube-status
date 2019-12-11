@@ -1,11 +1,11 @@
-import { storeUpdater } from './store-updater.js';
-import { initialStore } from './initial-store.js';
+import {storeUpdater} from "./store-updater.js";
+import {initialStore} from "./initial-store.js";
 
 /**
  * Creates client store.
  * @param {function} storeUpdater
  * @param {object} initialStore
- * @returns {object}
+ * @return {object}
  */
 const createStore = (storeUpdater, initialStore) => {
   const subscribers = [];
@@ -13,7 +13,7 @@ const createStore = (storeUpdater, initialStore) => {
 
   /**
    * Returns client store.
-   * @returns {object}
+   * @return {object}
    */
   const getStore = () => {
     return currentStore;
@@ -21,7 +21,7 @@ const createStore = (storeUpdater, initialStore) => {
 
   /**
    * Invokes relevant subscribers after store updates.
-   * @param {string} subcriberAction
+   * @param {string} update
    */
   const updateStore = (update) => {
     const hasSubscribers = subscribers.length;
@@ -29,7 +29,7 @@ const createStore = (storeUpdater, initialStore) => {
     currentStore = storeUpdater(currentStore, update);
 
     if (hasSubscribers) {
-      subscribers.forEach(({ callback, action }) => {
+      subscribers.forEach(({callback, action}) => {
         action === update.action && callback();
       });
     }
@@ -42,14 +42,14 @@ const createStore = (storeUpdater, initialStore) => {
    */
   const subscribeToStore = (callbacks) => {
     if (Array.isArray(callbacks)) {
-      callbacks.forEach(callback => subscribers.push(callback));
+      callbacks.forEach((callback) => subscribers.push(callback));
     } else {
       subscribers.push(callbacks);
     }
   };
 
-  return { getStore, updateStore, subscribeToStore };
-}
+  return {getStore, updateStore, subscribeToStore};
+};
 
 // initialise client store
 const clientStore = createStore(storeUpdater, initialStore);
