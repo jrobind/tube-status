@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
+import {actions} from "../constants.js";
 const {updateStore, getStore} = store;
 
 /** @type {number} */
@@ -21,7 +22,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
     updateStore({
-      action: "LOADING-APP",
+      action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
     console.log(getStore());
@@ -42,7 +43,7 @@ export default class TubeStatusWrapper extends HTMLElement {
 
       if (result.lines) {
         updateStore({
-          action: "LINE-SUBSCRIPTION",
+          action: actions.LINE_SUBSCRIPTION,
           data: {lineSubscriptions: result.lines},
         });
       } else {
@@ -58,7 +59,7 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   async getAllLineData_() {
     updateStore({
-      action: "LOADING-APP",
+      action: actions.LOADING_APP,
       data: {loadingState: {state: true, line: null}},
     });
 
@@ -73,7 +74,7 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     // update store with successful API response
     return updateStore({
-      action: "LINES",
+      action: actions.LINES,
       data: {result, lineInformation},
     });
   }
@@ -104,7 +105,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     setInterval(async () => {
       await this.getAllLineData_();
       updateStore({
-        action: "LOADING-APP",
+        action: actions.LOADING_APP,
         data: {loadingState: {state: false, line: null}},
       });
     }, FETCH_INTERVAL);
