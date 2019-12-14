@@ -1,4 +1,5 @@
 import {store} from "../utils/client-store.js";
+import {actions, delayTypes} from "../constants.js";
 const {subscribeToStore, getStore} = store;
 
 /**
@@ -42,7 +43,7 @@ export default class TubeLine extends HTMLElement {
   connectedCallback() {
     subscribeToStore({
       callback: this.updateDOM_.bind(this),
-      action: "LINES",
+      action: actions.LINES,
     });
     this.tubeStatusWrapper_ = document.querySelector(
       `.${cssClass.STATUS_WRAPPER}`);
@@ -86,28 +87,28 @@ export default class TubeLine extends HTMLElement {
    */
   setScoreAttribute_(status) {
     switch (status) {
-    case "No Service":
+    case delayTypes.NO_SERVICE:
       this.setAttribute("score", "6");
       break;
-    case "Service Closed":
+    case delayTypes.SERVICE_CLOSED:
       this.setAttribute("score", "6");
       break;
-    case "Part Closure":
+    case delayTypes.PART_CLOSURE:
       this.setAttribute("score", "5");
       break;
-    case "Planned Closure":
+    case delayTypes.PLANNED_CLOSURE:
       this.setAttribute("score", "5");
       break;
-    case "Part Suspended":
+    case delayTypes.PART_SUSPENDED:
       this.setAttribute("score", "4");
       break;
-    case "Severe Delays":
+    case delayTypes.SEVERE_DELAYS:
       this.setAttribute("score", "3");
       break;
-    case "Minor Delays":
+    case delayTypes.MINOR_DELAYS:
       this.setAttribute("score", "2");
       break;
-    case "Good Service":
+    case delayTypes.GOOD_SERVICE:
       this.setAttribute("score", "1");
       break;
     }

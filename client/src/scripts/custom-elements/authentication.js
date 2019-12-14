@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiLogout, apiSubscribe, apiUnsubscribe} from "../utils/api.js";
+import {actions} from "../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
 /** @const {number} */
@@ -39,7 +40,7 @@ export default class Authentication extends HTMLElement {
   connectedCallback() {
     subscribeToStore({
       callback: this.attemptTextUpdate_.bind(this),
-      action: "LINE-SUBSCRIPTION",
+      action: actions.LINE_SUBSCRIPTION,
     });
     this.addEventListener("click", this.handleAuth_.bind(this));
     this.handleJWT_();
@@ -56,7 +57,7 @@ export default class Authentication extends HTMLElement {
       const {photos, id} = JSON.parse(window.atob(this.token_.split(".")[1]));
 
       updateStore({
-        action: "AUTH",
+        action: actions.AUTHENTICATION,
         data: {signedIn: true, avatar: photos[0].value, id},
       });
     }
@@ -122,7 +123,7 @@ export default class Authentication extends HTMLElement {
    */
   async handleLogout_() {
     updateStore({
-      action: "LOADING",
+      action: actions.LOADING,
       data: {loadingState: {state: true, line: null}},
     });
 
@@ -131,7 +132,7 @@ export default class Authentication extends HTMLElement {
     if (result === 200) {
       localStorage.removeItem("JWT");
       updateStore({
-        action: "AUTH",
+        action: actions.AUTHENTICATION,
         data: {signedIn: false, avatar: null, id: null},
       });
       // set authentication text back to login
@@ -140,7 +141,7 @@ export default class Authentication extends HTMLElement {
       this.render_();
 
       updateStore({
-        action: "LOADING",
+        action: actions.LOADING,
         data: {loadingState: {state: false, line: null}},
       });
       // reload page to reset line subscription states
@@ -161,7 +162,7 @@ export default class Authentication extends HTMLElement {
 
     // activate loading state
     updateStore({
-      action: "LOADING",
+      action: actions.LOADING,
       data: {loadingState: {state: true, line: this.line_}},
     });
 
@@ -185,11 +186,11 @@ export default class Authentication extends HTMLElement {
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
 
       updateStore({
-        action: "LINE-SUBSCRIPTION",
+        action: actions.LINE_SUBSCRIPTION,
         data: {lineSubscriptions},
       });
       updateStore({
-        action: "LOADING",
+        action: actions.LOADING,
         data: {loadingState: {state: false, line: this.line_}},
       });
     }

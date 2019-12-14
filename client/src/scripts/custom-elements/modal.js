@@ -1,4 +1,5 @@
 import {store} from "../utils/client-store.js";
+import {customEvents} from "../constants.js";
 
 /**
  * Modal custom element.
@@ -14,7 +15,8 @@ export default class Modal extends HTMLElement {
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
     // setup click event listener
-    document.addEventListener("line-click", this.toggleModal_.bind(this));
+    document.addEventListener(
+      customEvents.LINE_CLICK, this.toggleModal_.bind(this));
   }
 
   /**

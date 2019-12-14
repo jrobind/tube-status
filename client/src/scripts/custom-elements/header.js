@@ -1,4 +1,5 @@
 import {store} from "../utils/client-store.js";
+import {actions} from "../constants.js";
 const {subscribeToStore, getStore} = store;
 
 /**
@@ -32,7 +33,7 @@ export default class Header extends HTMLElement {
   connectedCallback() {
     subscribeToStore({
       callback: this.updateAvatar_.bind(this),
-      action: "AUTH",
+      action: actions.AUTHENTICATION,
     });
     this.avatarEl_ = /** @type {HTMLImageElement} */ (
       this.querySelector(cssSelector.HEADER_AVATAR));

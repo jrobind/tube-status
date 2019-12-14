@@ -1,4 +1,5 @@
 import {store} from "../utils/client-store.js";
+import {actions} from "../constants.js";
 const {subscribeToStore, getStore} = store;
 
 /**
@@ -39,7 +40,7 @@ export default class Loading extends HTMLElement {
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
     const isApp = this.hasAttribute("app");
-    const action = isApp ? "LOADING-APP" : "LOADING";
+    const action = isApp ? actions.LOADING_APP : actions.LOADING;
     const callback = isApp ?
       this.handleLoadingApp_.bind(this) :
       this.handleLoading_.bind(this);
