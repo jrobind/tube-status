@@ -1,5 +1,7 @@
-const version = "v1-tube-status";
-const contentToCache = [
+/** @const {string} */
+const VERSION = "v1-tube-status";
+/** @const {array<string>} */
+const CONTENT_TO_CACHE = [
   "./index.html",
   "./offline.html",
   "./src/styles/app.css",
@@ -11,7 +13,11 @@ const contentToCache = [
   "./images/train-splash-screen.png",
 ];
 
+/**
+ * Handles service worker push event.
+ */
 self.addEventListener("push", (e) => {
+  console.log(e);
   const {line, status} = e.data.json();
   const options = {
     body: status,
@@ -21,23 +27,33 @@ self.addEventListener("push", (e) => {
   self.registration.showNotification(`${line} line`, options);
 });
 
+/**
+ * Handles service worker install event.
+ */
 self.addEventListener("install", (e) => {
   e.waitUntil(async function() {
-    const cacheOpen = await caches.open(version);
-    return await cacheOpen.addAll(contentToCache);
+    const cacheOpen = await caches.open(VERSION);
+    return await cacheOpen.addAll(CONTENT_TO_CACHE);
   }());
 });
 
+/**
+ * Handles service worker activation event.
+ */
 self.addEventListener("activate", (e) => {
   e.waitUntil(async function() {
     const keys = await caches.keys();
     // clear out old cache resources
     return await Promise.all(keys.map((key) => {
-      if (version.indexOf(key) === -1) return caches.delete(key);
+      if (VERSION.indexOf(key) === -1) return caches.delete(key);
     }));
   }());
 });
 
+/**
+ * Handles service worker fetch event.
+ * Intercept request, and serve cached content if we have it.
+ */
 self.addEventListener("fetch", (e) => {
   e.respondWith(async function() {
     const cachedResponse = await caches.match(e.request);

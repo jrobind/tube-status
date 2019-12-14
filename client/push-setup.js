@@ -1,7 +1,7 @@
 import {store} from "./src/scripts/utils/client-store.js";
 const {updateStore} = store;
 
-// eslint-disable-next-line
+/** @const {string} */ // eslint-disable-next-line
 const PUBLIC_KEY = "BKpELtYde7iajTdW7hw1LOIksmgzApC5IMLUtwDkqDA_fdqWmdQ3FqU2azo0LH0G-2cIqq11gRrxCLtFj-pPSmE";
 
 if ("serviceWorker" in navigator) {
@@ -10,11 +10,13 @@ if ("serviceWorker" in navigator) {
 
 /**
  * Creates push subscription object and updates client store.
+ * @async
  * @private
  */
 async function pushSubscriptionSetup() {
   // register service worker
-  const register = await navigator.serviceWorker.register("./sw.js")
+  const register = await /** @type {Promise} */ (
+    navigator.serviceWorker.register("./sw.js"))
     .catch(handleError);
   // register for push once registration is active
   if (register.active) {
@@ -30,7 +32,7 @@ async function pushSubscriptionSetup() {
 /**
  * Converts a base64 string into a binary Uint8 Array.
  * @param {string} base64String
- * @return {array}
+ * @return {object}
  * @private
  */
 function convertUint8Array(base64String) {

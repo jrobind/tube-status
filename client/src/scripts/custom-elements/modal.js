@@ -69,6 +69,6 @@ export default class Modal extends HTMLElement {
    * @private
    */
   disconnectedCallback() {
-    this.removeEventListener(this.handleAuth_);
+    this.removeEventListener("line-click", this.toggleModal_);
   }
 }

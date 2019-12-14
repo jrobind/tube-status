@@ -21,7 +21,7 @@ const createStore = (storeUpdater, initialStore) => {
 
   /**
    * Invokes relevant subscribers after store updates.
-   * @param {string} update
+   * @param {object} update
    */
   const updateStore = (update) => {
     const hasSubscribers = subscribers.length;

@@ -1,4 +1,5 @@
 import {store} from "../utils/client-store.js";
+import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
 const {updateStore, getStore} = store;
 
 /** @type {number} */
@@ -30,33 +31,29 @@ export default class TubeStatusWrapper extends HTMLElement {
 
   /**
    * Fetch users line subscriptions (if any).
+   * @async
    * @private
    */
   async getLineSubscriptions_() {
     const {userProfile: {signedIn}} = getStore();
 
     if (signedIn) {
-      const options = {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
-        },
-      };
-      const subscriptionResults = await fetch("api/subscribe", options)
-        .catch(this.handleError_);
-      const deserialised = await subscriptionResults.json();
+      const result = await apiGetLineSubscriptions();
 
-      updateStore({
-        action: "LINE-SUBSCRIPTION",
-        data: {lineSubscriptions: deserialised.lines},
-      });
+      if (result.lines) {
+        updateStore({
+          action: "LINE-SUBSCRIPTION",
+          data: {lineSubscriptions: result.lines},
+        });
+      } else {
+        this.handleError_(result);
+      }
     }
   }
 
   /**
    * Handles the fetching of all API tube data.
-   * @return {object}
+   * @return {Promise}
    * @private
    */
   async getAllLineData_() {
@@ -65,14 +62,19 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    const lines = await fetch("api/lines").catch(this.handleError_);
-    const deserialised = await lines.json();
-    console.log(deserialised);
-    const lineInformation = this.formatLineInformation_(deserialised);
+    const result = await apiGetAllLineData();
+    let lineInformation;
+
+    if (Array.isArray(result)) {
+      lineInformation = this.formatLineInformation_(result);
+    } else {
+      this.handleError_(result);
+    }
+
     // update store with successful API response
     return updateStore({
       action: "LINES",
-      data: {deserialised, lineInformation},
+      data: {result, lineInformation},
     });
   }
 
@@ -109,7 +111,7 @@ export default class TubeStatusWrapper extends HTMLElement {
   }
 
   /**
-   * Formats line information ready for store updates.
+   * Handles api fetch errors.
    * @param {object} e
    * @private
    */

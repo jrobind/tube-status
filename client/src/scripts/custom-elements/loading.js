@@ -1,6 +1,10 @@
 import {store} from "../utils/client-store.js";
 const {subscribeToStore, getStore} = store;
 
+/**
+ * CSS classes.
+ * @enum {string}
+ */
 const cssClass = {
   LOADING_ACTIVE: "tube-status-loading--active",
   LOADING_LINE_ACTIVE: "tube-status-loading--active-line",
@@ -9,6 +13,10 @@ const cssClass = {
   APP_HIDDEN: "app-wrapper--hidden",
 };
 
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
 const cssSelector = {
   APP_WRAPPER: ".app-wrapper",
 };

@@ -1,6 +1,10 @@
 import {store} from "../utils/client-store.js";
 const {subscribeToStore, getStore} = store;
 
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
 const cssSelector = {
   HEADER_AUTHENTICATION: ".tube-status-header__authentication",
   HEADER_AVATAR: ".tube-status-header__avatar-image",
@@ -30,7 +34,8 @@ export default class Header extends HTMLElement {
       callback: this.updateAvatar_.bind(this),
       action: "AUTH",
     });
-    this.avatarEl_ = this.querySelector(cssSelector.HEADER_AVATAR);
+    this.avatarEl_ = /** @type {HTMLImageElement} */ (
+      this.querySelector(cssSelector.HEADER_AVATAR));
     this.authenticationEl_ = this.querySelector(
       cssSelector.HEADER_AUTHENTICATION);
     this.updateAvatar_();

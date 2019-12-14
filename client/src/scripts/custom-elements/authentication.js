@@ -1,4 +1,5 @@
 import {store} from "../utils/client-store.js";
+import {apiLogout, apiSubscribe, apiUnsubscribe} from "../utils/api.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
 /** @const {number} */
@@ -116,6 +117,7 @@ export default class Authentication extends HTMLElement {
 
   /**
    * Handles the user logout process.
+   * @async
    * @private
    */
   async handleLogout_() {
@@ -123,20 +125,10 @@ export default class Authentication extends HTMLElement {
       action: "LOADING",
       data: {loadingState: {state: true, line: null}},
     });
-    const options = {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
-      },
-    };
 
-    // update login status on the server
-    const logoutResponse = await fetch("api/logout", options)
-      .catch(this.handleError_);
-    const status = logoutResponse.status;
+    const result = await apiLogout();
 
-    if (status === 200) {
+    if (result === 200) {
       localStorage.removeItem("JWT");
       updateStore({
         action: "AUTH",
@@ -153,28 +145,19 @@ export default class Authentication extends HTMLElement {
       });
       // reload page to reset line subscription states
       window.location.href = "/";
+    } else {
+      this.handleError_(result);
     }
   }
 
   /**
    * Handles line subscription request.
-   * @param {string} subType
+   * @async
+   * @param {string=} subType
    * @private
    */
   async handleSubscriptionRequest_(subType) {
     const {userProfile, pushSubscription, lineSubscriptions} = getStore();
-    const method = !subType ? "POST" : "DELETE";
-    const body = !subType ?
-      JSON.stringify({pushSubscription, line: this.line_}) :
-      JSON.stringify({line: this.line_});
-    const options = {
-      method,
-      body,
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
-      },
-    };
 
     // activate loading state
     updateStore({
@@ -183,17 +166,20 @@ export default class Authentication extends HTMLElement {
     });
 
     if (userProfile.signedIn && pushSubscription) {
-      const subscriptionResponse = await fetch("api/subscribe", options)
-        .catch(this.handleError_);
-      const deserialised = await subscriptionResponse.json();
-
       // push new line subscription to stored array if subscribing,
       // otherwise remove unsubscribed line
       if (!subType) {
-        lineSubscriptions.push(deserialised.lines);
+        const result = await apiSubscribe(pushSubscription, this.line_);
+
+        result.lines ?
+          lineSubscriptions.push(result.lines) :
+          this.handleError_(result);
       } else {
-        lineSubscriptions.splice(
-          lineSubscriptions.indexOf(deserialised.lines), 1);
+        const result = await apiUnsubscribe(this.line_);
+
+        result.lines ?
+          lineSubscriptions.splice(lineSubscriptions.indexOf(result.lines), 1) :
+          this.handleError_(result);
       }
       // set a minimum loading wheel time
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
@@ -231,6 +217,6 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   disconnectedCallback() {
-    this.removeEventListener(this.handleAuth_);
+    this.removeEventListener("click", this.handleAuth_);
   }
 }

@@ -1,3 +1,7 @@
+/**
+ * Client store action types.
+ * @enum {string}
+ */
 export const ACTIONS = {
   LINES: "LINES",
   AUTHENTICATION: "AUTHENTICATION",

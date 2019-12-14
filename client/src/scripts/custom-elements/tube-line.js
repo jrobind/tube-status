@@ -1,6 +1,10 @@
 import {store} from "../utils/client-store.js";
 const {subscribeToStore, getStore} = store;
 
+/**
+ * CSS classes.
+ * @enum {string}
+ */
 const cssClass = {
   STATUS_WRAPPER: "tube-status-wrapper",
   SUB_STATUS: "tube-line-sub__status",
@@ -83,28 +87,28 @@ export default class TubeLine extends HTMLElement {
   setScoreAttribute_(status) {
     switch (status) {
     case "No Service":
-      this.setAttribute("score", 6);
+      this.setAttribute("score", "6");
       break;
     case "Service Closed":
-      this.setAttribute("score", 6);
+      this.setAttribute("score", "6");
       break;
     case "Part Closure":
-      this.setAttribute("score", 5);
+      this.setAttribute("score", "5");
       break;
     case "Planned Closure":
-      this.setAttribute("score", 5);
+      this.setAttribute("score", "5");
       break;
     case "Part Suspended":
-      this.setAttribute("score", 4);
+      this.setAttribute("score", "4");
       break;
     case "Severe Delays":
-      this.setAttribute("score", 3);
+      this.setAttribute("score", "3");
       break;
     case "Minor Delays":
-      this.setAttribute("score", 2);
+      this.setAttribute("score", "2");
       break;
     case "Good Service":
-      this.setAttribute("score", 1);
+      this.setAttribute("score", "1");
       break;
     }
   }
