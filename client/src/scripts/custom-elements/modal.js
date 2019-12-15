@@ -1,5 +1,24 @@
 import {store} from "../utils/client-store.js";
-import {customEvents} from "../constants.js";
+import {customEvents, actions} from "../constants.js";
+
+/**
+ * CSS classes.
+ * @enum {string}
+ */
+const cssClass = {
+  MODAL_ACTIVE: "tube-status-modal--active",
+  MODAL_CAPTION: "tube-status-modal__caption",
+  MODAL_ICON: "tube-status-modal__icon",
+  OVERLAY_DIM: "dim",
+};
+
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
+const cssSelector = {
+  OVERLAY: ".overlay",
+};
 
 /**
  * Modal custom element.
@@ -9,11 +28,12 @@ export default class Modal extends HTMLElement {
   constructor() {
     super();
 
-    this.appWrapper_ = document.querySelector(".app-wrapper");
+    this.overlay_;
   }
 
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
+    this.overlay_ = document.querySelector(cssSelector.OVERLAY);
     // setup click event listener
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
@@ -26,44 +46,70 @@ export default class Modal extends HTMLElement {
    */
   populateModal_(line) {
     const {reason} = store.getStore().lineInformation[line];
+    const context = document.createElement("div");
 
-    const caption = document.createElement("div");
-    caption.classList.add("tube-status-modal__caption");
-    caption.textContent = reason;
+    context.classList.add(cssClass.MODAL_CAPTION);
+    context.textContent = reason;
 
-    this.render_(caption);
+    this.render_(context);
   }
 
   /**
    * Shows modal with line information releavnt to clicked line.
-   * @param {Object} e
+   * @param {CustomEvent} e
    * @private
    */
   toggleModal_(e) {
-    const isHidden = this.classList.contains("tube-status-modal--hidden");
-    const line = e.detail.line;
+    const {line} = e.detail;
 
-    if (isHidden) {
-      this.setAttribute("isHidden", "false");
-
-      this.classList.remove("tube-status-modal--hidden");
-      this.classList.add("tube-status-modal--active");
+    if (line) {
+      this.overlay_.classList.add(cssClass.OVERLAY_DIM);
+      this.classList.add(cssClass.MODAL_ACTIVE);
       this.populateModal_(line);
     } else {
-      this.setAttribute("isHidden", "true");
-
-      this.classList.remove("tube-status-modal--active");
-      this.classList.add("tube-status-modal--hidden");
+      this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
+      this.classList.remove(cssClass.MODAL_ACTIVE);
     }
   }
 
   /**
    * Renders inner modal content depending on use case.
-   * @param {Element} content
+   * @param {Element} context
    * @private
    */
-  render_(content) {
-    this.appendChild(content);
+  render_(context) {
+    const captionEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
+    const modalIcon = document.createElement("div");
+
+    modalIcon.classList.add(cssClass.MODAL_ICON);
+    modalIcon.addEventListener("click", this.toggleModal_.bind(this));
+
+    if (captionEl) {
+      const contextEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
+      const modalIconEl = this.querySelector(`.${cssClass.MODAL_ICON}`);
+
+      // remove existing markup before appending new context
+      this.removeContent_({
+        parent: this,
+        children: [contextEl, modalIconEl],
+      });
+      this.appendChild(modalIcon);
+      this.appendChild(context);
+    } else {
+      this.appendChild(modalIcon);
+      this.appendChild(context);
+    }
+  }
+
+  /**
+   * Removes existing markup from Modal.
+   * @param {object} elements
+   * @private
+   */
+  removeContent_(elements) {
+    const {parent, children} = elements;
+
+    children.forEach((el) => parent.removeChild(el));
   }
 
   /**
@@ -71,6 +117,6 @@ export default class Modal extends HTMLElement {
    * @private
    */
   disconnectedCallback() {
-    this.removeEventListener("line-click", this.toggleModal_);
+    document.removeEventListener(actions.LINE_CLICK, this.toggleModal_);
   }
 }
