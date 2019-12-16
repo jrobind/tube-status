@@ -1,6 +1,9 @@
 import {store} from "../utils/client-store.js";
-import {actions, delayTypes} from "../constants.js";
+import {actions, delayTypes, customEvents} from "../constants.js";
 const {subscribeToStore, getStore} = store;
+
+/** @const {string} */
+const AUTH_ELEMENT_NAME = "TUBE-STATUS-AUTHENTICATION";
 
 /**
  * CSS classes.
@@ -11,7 +14,6 @@ const cssClass = {
   SUB_STATUS: "tube-line-sub__status",
   LINE_SUB: "tube-line-sub",
   INFO_REASON_TITLE: "tube-line-info__reason-title",
-  INFO_REASON_CONTEXT: "tube-line-info__reason-context",
   ACTIVE: "tube-line--active",
 };
 
@@ -34,9 +36,6 @@ export default class TubeLine extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.reasonTitleEl_;
-
-    /** @private {HTMLElement} */
-    this.reasonContextEl_;
   }
 
   /** Called every time element is inserted to DOM. */
@@ -45,14 +44,32 @@ export default class TubeLine extends HTMLElement {
       callback: this.updateDOM_.bind(this),
       action: actions.LINES,
     });
+    this.addEventListener("click", this.handleClick_.bind(this));
     this.tubeStatusWrapper_ = document.querySelector(
       `.${cssClass.STATUS_WRAPPER}`);
     this.subStatusEl_ = this.querySelector(
       `.${cssClass.SUB_STATUS}`);
     this.reasonTitleEl_ = this.querySelector(
       `.${cssClass.INFO_REASON_TITLE}`);
-    this.reasonContextEl_ = this.querySelector(
-      `.${cssClass.INFO_REASON_CONTEXT}`);
+  }
+
+  /**
+   * Dispatches custom click event to toggle app modal.
+   * @param {Event} e
+   * @private
+   */
+  handleClick_(e) {
+    const target = /** @type {HTMLElement} */ (e.target);
+    const detail = {detail: {line: this.line_}};
+    const isActive = this.classList.contains(cssClass.ACTIVE);
+    const isAuthEl = target.nodeName === AUTH_ELEMENT_NAME;
+
+    // return if the line is not active or the element clicked
+    // is an authentication custom element
+    if (!isActive || isAuthEl) return;
+
+    document.dispatchEvent(
+      new CustomEvent(customEvents.LINE_CLICK, detail));
   }
 
   /**
@@ -71,13 +88,10 @@ export default class TubeLine extends HTMLElement {
 
     this.subStatusEl_.textContent = "";
     this.reasonTitleEl_.textContent = "";
-    this.reasonContextEl_.textContent = "";
 
     // update line text content
     this.subStatusEl_.textContent = `${this.line_}`;
     this.reasonTitleEl_.textContent = status;
-    // update reason if delays/disruption exists
-    if (reason) this.reasonContextEl_.textContent = reason;
   }
 
   /**

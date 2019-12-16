@@ -16,6 +16,7 @@
   --dlr-color: #00afad;
   --tram-color: #6c0;
   --default-white-background: #fff;
+  --disruption-background-color: #fbf7e7;
 }
 
 html, 
@@ -172,12 +173,31 @@ body {
 } 
 
 .tube-line--active {
-  cursor: pointer;
+  background-color: var(--disruption-background-color);
   height: auto;
   min-height: 78px;
+  cursor: pointer;
+  transition-duration: .25s;
 }
 
-.tube-line-sub {
+.tube-line--active:hover {
+  transform: translateY(-4px);
+  transition-duration: .25s;
+}
+
+.tube-line--active .tube-line-info::after {
+  content: "";
+  background-image: url("/images/launch.svg");
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  background-repeat: no-repeat;
+  right: 15px;
+  background-size: 100%;
+}
+
+.tube-line-sub,
+.tube-line-info {
   position: relative;
 }
 
@@ -206,9 +226,7 @@ body {
 }
 
 .tube-line tube-status-authentication {
-  position: absolute;
-  top: 0;
-  left: 300px;
+  margin-left: 50px;
 }
 
 .tube-line-sub__status {
