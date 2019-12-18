@@ -51,7 +51,7 @@ export default class Authentication extends HTMLElement {
    * Verify existence of JWT and parse if present.
    * @private
    */
-  async handleJWT_() {
+  handleJWT_() {
     // if token exists, login was successful
     if (this.token_) {
       const {photos, id} = JSON.parse(window.atob(this.token_.split(".")[1]));
