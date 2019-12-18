@@ -2,76 +2,76 @@ const mongoose = require("mongoose");
 
 // Lines schema
 const LinesSchema = new mongoose.Schema({
-  "bakerloo": {
+  "bakerloo": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "central": {
+  }],
+  "central": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "circle": {
+  }],
+  "circle": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "district": {
+  }],
+  "district": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "hammersmith-city": {
+  }],
+  "hammersmith-city": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "jubilee": {
+  }],
+  "jubilee": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "metropolitan": {
+  }],
+  "metropolitan": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "northern": {
+  }],
+  "northern": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "piccadilly": {
+  }],
+  "piccadilly": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "victoria": {
+  }],
+  "victoria": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "waterloo-city": {
+  }],
+  "waterloo-city": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "tfl-rail": {
+  }],
+  "tfl-rail": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "london-overground": {
+  }],
+  "london-overground": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
-  "dlr": {
+  }],
+  "dlr": [{
     goodService: Boolean,
     description: String,
     reason: String,
-  },
+  }],
 });
 
 const Lines = mongoose.model("Lines", LinesSchema);

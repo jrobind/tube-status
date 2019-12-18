@@ -137,39 +137,48 @@ const job = new CronJob("0 */1 * * * *", async () => {
   const response = await fetch("http://localhost:4000/api/lines").catch((e) => console.log(e));
   const result = await response.json();
   let lineDbData;
+  let diffExists;
+
   // retrieve current stored lines from db
   await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
 
   result.forEach((line) => {
-    const {statusSeverityDescription, reason} = line.lineStatuses[0];
-    const id = line.id;
-    // check the current line severity description (from api call)
-    // against the stored db entry
-    const diffExists = lineDbData ?
-      lineDbData[0][id].description !== statusSeverityDescription :
-      null;
+    line.lineStatuses.forEach((status) => {
+      const {statusSeverityDescription, reason} = status;
 
-    if (diffExists) {
-      // query users and send notification
-      db.UserModel.find(
-        {"lines": {$in: id}, "signedIn": {$in: true}},
-        (err, resp) => {
-          if (resp.length) {
-            const {pushSubscription} = resp[0];
-            const payload = JSON.stringify({
-              line: id,
-              // if delays, send the reason. Otherwise send default description
-              status: reason ? reason : statusSeverityDescription,
-            });
-            // send push notification
-            webpush
-              .sendNotification(pushSubscription, payload)
-              .then((res) => console.log(res))
-              .catch((err) => console.error(err));
-          }
-        },
-      );
-    }
+      // check the current line severity description (from api call)
+      // against the stored db entry
+      if (lineDbData) {
+        const dbLine = lineDbData[0][line.id];
+
+        diffExists = Boolean(dbLine.filter((data) => {
+          return data.description !== statusSeverityDescription;
+        }).length);
+      }
+
+      if (diffExists) {
+        // query users and send notification
+        db.UserModel.find(
+          {"lines": {$in: line.id}, "signedIn": {$in: true}},
+          (err, resp) => {
+            if (resp.length) {
+              const {pushSubscription} = resp[0];
+              const payload = JSON.stringify({
+                line: line.id,
+                // if delays, send the reason.
+                // Otherwise, send default description
+                status: reason ? reason : statusSeverityDescription,
+              });
+              // send push notification
+              webpush
+                .sendNotification(pushSubscription, payload)
+                .then((res) => console.log(res))
+                .catch((err) => console.error(err));
+            }
+          },
+        );
+      }
+    });
   });
   // update line data to reflect new status
   buildLine();

@@ -6,15 +6,18 @@ module.exports = async () => {
   const response = await fetch(url).catch((e) => console.log(e));
   const result = await response.json();
   const lineData = {};
+
   // build db line data
   result.forEach((line) => {
-    const {statusSeverityDescription, reason} = line.lineStatuses[0];
+    line.lineStatuses.forEach((status) => {
+      const {statusSeverityDescription, reason} = status;
 
-    lineData[line.id] = {
-      goodService: statusSeverityDescription === "Good Service",
-      description: statusSeverityDescription,
-      reason,
-    };
+      lineData[line.id] = [{
+        goodService: statusSeverityDescription === "Good Service",
+        description: statusSeverityDescription,
+        reason: reason || null,
+      }];
+    });
   });
 
   db.LinesModel.findOneAndUpdate({}, lineData, (err, resp) => {
