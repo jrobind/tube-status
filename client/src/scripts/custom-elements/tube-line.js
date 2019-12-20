@@ -77,21 +77,31 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   updateDOM_() {
-    const {status, reason} = getStore().lineInformation[this.line_];
+    const lineInfo = getStore().lineInformation[this.line_];
 
-    // set score attribute on line so we can order with flexbox
-    this.setScoreAttribute_(status);
-    // line should appear clickable if there are delays/disruptions
-    reason ?
-      this.classList.add(cssClass.ACTIVE) :
-      this.classList.remove(cssClass.ACTIVE);
+    lineInfo.forEach((info, i)=> {
+      const {status, reason} = info;
+      const last = i === lineInfo.length -1;
+      const pipe = last ? "" : " | ";
 
-    this.subStatusEl_.textContent = "";
-    this.reasonTitleEl_.textContent = "";
+      // set score attribute on line so we can order with flexbox
+      this.setScoreAttribute_(status);
 
-    // update line text content
-    this.subStatusEl_.textContent = `${this.line_}`;
-    this.reasonTitleEl_.textContent = status;
+      // line should appear clickable if there are delays/disruptions
+      reason ?
+        this.classList.add(cssClass.ACTIVE) :
+        this.classList.remove(cssClass.ACTIVE);
+
+      // if there are multiple disruptions, we don't want to reset
+      // the reason text content
+      if (lineInfo.length <= 1) {
+        this.reasonTitleEl_.textContent = "";
+      }
+
+      this.subStatusEl_.textContent = "";
+      this.subStatusEl_.textContent += `${this.line_}`;
+      this.reasonTitleEl_.textContent += ` ${status} ${pipe}`;
+    });
   }
 
   /**

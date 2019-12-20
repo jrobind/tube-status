@@ -11,12 +11,18 @@ module.exports = async () => {
   result.forEach((line) => {
     line.lineStatuses.forEach((status) => {
       const {statusSeverityDescription, reason} = status;
-
-      lineData[line.id] = [{
+      const id = line.id;
+      const data = {
         goodService: statusSeverityDescription === "Good Service",
         description: statusSeverityDescription,
         reason: reason || null,
-      }];
+      };
+
+      if (line.lineStatuses.length > 1 && lineData[id]) {
+        lineData[id].push(data);
+      } else {
+        lineData[id] = [data];
+      }
     });
   });
 

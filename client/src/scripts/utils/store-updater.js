@@ -10,7 +10,7 @@ export const storeUpdater = (store, {action, data}) => {
     store = {
       ...store,
       lineInformation: {...data.lineInformation},
-      lineData: {lines: {...data.deserialised}},
+      lineData: {lines: {...data.result}},
     };
 
     return store;

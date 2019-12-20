@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {customEvents, actions} from "../constants.js";
+const {getStore} = store;
 
 /**
  * CSS classes.
@@ -45,13 +46,18 @@ export default class Modal extends HTMLElement {
    * @param {string} line
    */
   populateModal_(line) {
-    const {reason} = store.getStore().lineInformation[line];
+    const lineInfo = getStore().lineInformation[line];
     const context = document.createElement("div");
 
-    context.classList.add(cssClass.MODAL_CAPTION);
-    context.textContent = reason;
+    lineInfo.forEach((info) => {
+      const {reason} = info;
+      const duplicateReason = context.textContent.trimLeft() === reason;
 
-    this.render_(context);
+      context.classList.add(cssClass.MODAL_CAPTION);
+      !duplicateReason ? context.textContent += ` ${reason}` : null;
+
+      this.render_(context);
+    });
   }
 
   /**

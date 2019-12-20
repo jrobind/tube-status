@@ -25,7 +25,7 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
-    console.log(getStore());
+    console.log(getStore())
     // get data every 60 seconds
     // this.fetchInterval_();
   }
@@ -87,12 +87,20 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   formatLineInformation_(lines) {
     return lines.reduce((cache, line) => {
-      const status = line.lineStatuses[0];
-
-      cache[line.id] = {
-        status: status.statusSeverityDescription,
-        reason: status.reason ? status.reason : null,
-      };
+      line.lineStatuses.forEach((status) => {
+        const {statusSeverityDescription, reason} = status;
+        const id = line.id;
+        const lineData = {
+          status: statusSeverityDescription,
+          reason: reason || null,
+        };
+        // if line already exists then we have multiple disruptions
+        if (cache[id]) {
+          cache[id].push(lineData);
+        } else {
+          cache[id] = [lineData];
+        }
+      });
       return cache;
     }, {});
   }

@@ -143,7 +143,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
   await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
 
   result.forEach((line) => {
-    line.lineStatuses.forEach((status) => {
+    line.lineStatuses.forEach((status, i) => {
       const {statusSeverityDescription, reason} = status;
 
       // check the current line severity description (from api call)
@@ -151,9 +151,9 @@ const job = new CronJob("0 */1 * * * *", async () => {
       if (lineDbData) {
         const dbLine = lineDbData[0][line.id];
 
-        diffExists = Boolean(dbLine.filter((data) => {
-          return data.description !== statusSeverityDescription;
-        }).length);
+        diffExists = !dbLine[i] ?
+          true :
+          dbLine[i].description !== statusSeverityDescription;
       }
 
       if (diffExists) {
