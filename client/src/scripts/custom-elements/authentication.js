@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
-import {apiLogout, apiSubscribe, apiUnsubscribe} from "../utils/api.js";
-import {actions} from "../constants.js";
+import {apiLogout, apiUnsubscribe} from "../utils/api.js";
+import {actions, customEvents} from "../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
 /** @const {number} */
@@ -105,15 +105,26 @@ export default class Authentication extends HTMLElement {
       break;
     case "subscribe":
       userProfile.signedIn ?
-        this.handleSubscriptionRequest_() :
+        this.emit_() :
         window.location.href = this.dest_;
       break;
     case "unsubscribe":
       userProfile.signedIn ?
-        this.handleSubscriptionRequest_("unsubscribe") :
+        this.handleUnSubscribeRequest_() :
         window.location.href = this.dest_;
       break;
     }
+  }
+
+  /**
+   * Emits a custom event to be consumed by the Modal element.
+   * @private
+   */
+  emit_() {
+    const detail = {detail: {line: this.line_}};
+
+    document.dispatchEvent(
+      new CustomEvent(customEvents.SUBSCRIBE, detail));
   }
 
   /**
@@ -151,14 +162,13 @@ export default class Authentication extends HTMLElement {
     }
   }
 
-  /**
-   * Handles line subscription request.
+/**
+   * Handles line unsubscribe requests.
    * @async
-   * @param {string=} subType
    * @private
    */
-  async handleSubscriptionRequest_(subType) {
-    const {userProfile, pushSubscription, lineSubscriptions} = getStore();
+  async handleUnSubscribeRequest_() {
+    const {lineSubscriptions} = getStore();
 
     // activate loading state
     updateStore({
@@ -166,34 +176,23 @@ export default class Authentication extends HTMLElement {
       data: {loadingState: {state: true, line: this.line_}},
     });
 
-    if (userProfile.signedIn && pushSubscription) {
-      // push new line subscription to stored array if subscribing,
-      // otherwise remove unsubscribed line
-      if (!subType) {
-        const result = await apiSubscribe(pushSubscription, this.line_);
+    const result = await apiUnsubscribe(this.line_);
 
-        result.lines ?
-          lineSubscriptions.push(result.lines) :
-          this.handleError_(result);
-      } else {
-        const result = await apiUnsubscribe(this.line_);
+    result.lines ?
+      lineSubscriptions.splice(lineSubscriptions.indexOf(result.lines), 1) :
+      this.handleError_(result);
 
-        result.lines ?
-          lineSubscriptions.splice(lineSubscriptions.indexOf(result.lines), 1) :
-          this.handleError_(result);
-      }
-      // set a minimum loading wheel time
-      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
+    // set a minimum loading wheel time
+    await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
 
-      updateStore({
-        action: actions.LINE_SUBSCRIPTION,
-        data: {lineSubscriptions},
-      });
-      updateStore({
-        action: actions.LOADING,
-        data: {loadingState: {state: false, line: this.line_}},
-      });
-    }
+    updateStore({
+      action: actions.LINE_SUBSCRIPTION,
+      data: {lineSubscriptions},
+    });
+    updateStore({
+      action: actions.LOADING,
+      data: {loadingState: {state: false, line: this.line_}},
+    });
   }
 
   /**

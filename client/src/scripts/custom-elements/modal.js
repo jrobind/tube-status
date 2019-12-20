@@ -1,6 +1,7 @@
 import {store} from "../utils/client-store.js";
+import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
-const {getStore} = store;
+const {getStore, updateStore} = store;
 
 /**
  * CSS classes.
@@ -35,9 +36,43 @@ export default class Modal extends HTMLElement {
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
     this.overlay_ = document.querySelector(cssSelector.OVERLAY);
-    // setup click event listener
+
+    // setup listeners
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
+    document.addEventListener(
+      customEvents.SUBSCRIBE, this.handleSubscriptionRequest_.bind(this));
+  }
+
+/**
+   * Handles line subscription request.
+   * @async
+   * @param {CustomEvent} e
+   * @private
+   */
+  async handleSubscriptionRequest_(e) {
+    const {userProfile, pushSubscription, lineSubscriptions} = getStore();
+    const {line} = e.detail;
+
+    // remove content, then show modal
+    this.removeContent_();
+    this.overlay_.classList.add(cssClass.OVERLAY_DIM);
+    this.classList.add(cssClass.MODAL_ACTIVE);
+
+    if (userProfile.signedIn && pushSubscription) {
+      // push new line subscription to stored array if subscribing,
+      // otherwise remove unsubscribed line
+      const result = await apiSubscribe(pushSubscription, line);
+
+      result.lines ?
+        lineSubscriptions.push(result.lines) :
+        this.handleError_(result);
+
+      updateStore({
+        action: actions.LINE_SUBSCRIPTION,
+        data: {lineSubscriptions},
+      });
+    }
   }
 
   /**
@@ -91,14 +126,8 @@ export default class Modal extends HTMLElement {
     modalIcon.addEventListener("click", this.toggleModal_.bind(this));
 
     if (captionEl) {
-      const contextEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
-      const modalIconEl = this.querySelector(`.${cssClass.MODAL_ICON}`);
-
       // remove existing markup before appending new context
-      this.removeContent_({
-        parent: this,
-        children: [contextEl, modalIconEl],
-      });
+      this.removeContent_();
       this.appendChild(modalIcon);
       this.appendChild(context);
     } else {
@@ -109,13 +138,24 @@ export default class Modal extends HTMLElement {
 
   /**
    * Removes existing markup from Modal.
-   * @param {object} elements
    * @private
    */
-  removeContent_(elements) {
-    const {parent, children} = elements;
+  removeContent_() {
+    const contextEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
+    const modalIconEl = this.querySelector(`.${cssClass.MODAL_ICON}`);
+    const parent = this;
+    const children = [contextEl, modalIconEl]
 
     children.forEach((el) => parent.removeChild(el));
+  }
+
+  /**
+   * Handles api fetch errors.
+   * @param {object} e
+   * @private
+   */
+  handleError_(e) {
+    console.error(`Unable to subscribe to line at this time. ${e}`);
   }
 
   /**
@@ -123,6 +163,9 @@ export default class Modal extends HTMLElement {
    * @private
    */
   disconnectedCallback() {
-    document.removeEventListener(actions.LINE_CLICK, this.toggleModal_);
+    document.removeEventListener(
+      actions.LINE_CLICK, this.toggleModal_);
+    document.removeEventListener(
+      actions.SUBSCRIBE, this.handleSubscriptionRequest_);
   }
 }
