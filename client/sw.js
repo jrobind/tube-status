@@ -1,6 +1,4 @@
-/** @const {string} */
 const VERSION = "v1-tube-status";
-/** @const {array<string>} */
 const CONTENT_TO_CACHE = [
   "./index.html",
   "./offline.html",
