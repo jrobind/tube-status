@@ -71,7 +71,6 @@ export const apiGetAllLineData = async () => {
   const lines = await fetch("api/lines")
     .catch((e) => e);
 
-  console.log(lines);
   return await lines.json();
 };
 
