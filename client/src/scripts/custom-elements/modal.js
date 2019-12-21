@@ -29,6 +29,7 @@ export default class Modal extends HTMLElement {
   constructor() {
     super();
 
+    /** @private {HTMLElement} */
     this.overlay_;
   }
 
