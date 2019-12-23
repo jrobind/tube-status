@@ -28,6 +28,7 @@ body {
 
 body {
   background-color: var(--body-background-color);
+  font-family: Courier, monospace;
 }
 
 /* overlay */
