@@ -162,7 +162,7 @@ export default class Authentication extends HTMLElement {
     }
   }
 
-/**
+  /**
    * Handles line unsubscribe requests.
    * @async
    * @private

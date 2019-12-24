@@ -12,7 +12,6 @@ export default class Week extends HTMLElement {
 
     /** @private {array} */
     this.days_;
-
   }
 
   /** Called every time element is inserted to DOM. */
@@ -39,6 +38,6 @@ export default class Week extends HTMLElement {
    * @private
    */
   render_() {
-  
+
   }
 }

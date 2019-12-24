@@ -53,7 +53,7 @@ export default class Modal extends HTMLElement {
     this.overlay_;
 
     /** @private {string} */
-    this.line_;   
+    this.line_;
   }
 
   /** Called every time element is inserted to DOM. */
@@ -69,7 +69,7 @@ export default class Modal extends HTMLElement {
       customEvents.DAYS, this.storeSubscriptionData_.bind(this));
   }
 
-/**
+  /**
    * Stores subscription data returned from week and days
    * custom elements.
    * @param {CustomEvent} e
@@ -79,7 +79,7 @@ export default class Modal extends HTMLElement {
 
   }
 
-/**
+  /**
    * Renders markup allowing users to specify
    * subscription timeframes.
    * @param {CustomEvent} e
@@ -129,7 +129,7 @@ export default class Modal extends HTMLElement {
     this.appendChild(subWrapper);
   }
 
-/**
+  /**
    * Handles line subscription request.
    * @async
    * @param {CustomEvent} e
@@ -234,7 +234,7 @@ export default class Modal extends HTMLElement {
    */
   removeContent_() {
     const children = Array.from(this.childNodes)
-      .filter((node) => node.nodeName !== cssSelector.WEEK_ELEMENT)
+      .filter((node) => node.nodeName !== cssSelector.WEEK_ELEMENT);
 
     children.forEach((el) => this.removeChild(el));
   }
