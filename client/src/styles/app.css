@@ -28,6 +28,7 @@ body {
 
 body {
   background-color: var(--body-background-color);
+  font-family: Courier, monospace;
 }
 
 /* overlay */
@@ -307,7 +308,7 @@ footer {
 }
 
 .tube-status-modal--active {
-  display: block;
+  display: flex;
   min-height: 200px;
   min-width: 300px;
   position: fixed;
@@ -343,6 +344,29 @@ footer {
   background-image: url("/images/cancel.svg");
   position: absolute;
   right: 5px;
+}
+
+.tube-status-modal-sub {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 27px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.tube-status-modal-sub__title {
+  margin-bottom: 25px;
+}
+
+.tube-status-modal-sub__select {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+
+.tube-status-modal-sub__btn {
+  align-self: center;
+  min-width: 150px;
 }
 
 /* animation */

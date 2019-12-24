@@ -25,7 +25,7 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
-    console.log(getStore())
+    console.log(getStore());
     // get data every 60 seconds
     // this.fetchInterval_();
   }

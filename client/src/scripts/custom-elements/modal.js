@@ -3,6 +3,18 @@ import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
 const {getStore, updateStore} = store;
 
+/** @const {string} */
+const MODAL_SUB_TITLE_TEXT = "Specify your subscription times:";
+
+/** @const {string} */
+const MODAL_DAYS_BTN_TEXT = "Select days";
+
+/** @const {string} */
+const MODAL_TIMES_BTN_TEXT = "Select times";
+
+/** @const {string} */
+const MODAL_SUB_BTN_TEXT = "Subscribe";
+
 /**
  * CSS classes.
  * @enum {string}
@@ -12,6 +24,12 @@ const cssClass = {
   MODAL_CAPTION: "tube-status-modal__caption",
   MODAL_ICON: "tube-status-modal__icon",
   OVERLAY_DIM: "dim",
+  MODAL_SUB: "tube-status-modal-sub",
+  MODAL_SUB_TITLE: "tube-status-modal-sub__title",
+  MODAL_SUB_SELECT: "tube-status-modal-sub__select",
+  MODAL_SUB_BTN: "tube-status-modal-sub__btn",
+  MODAL_SUB_BTN_TIMES: "tube-status-modal-sub__btn-times",
+  MODAL_SUB_BTN_DAYS: "tube-status-modal-sub__btn-days",
 };
 
 /**
@@ -20,6 +38,7 @@ const cssClass = {
  */
 const cssSelector = {
   OVERLAY: ".overlay",
+  WEEK_ELEMENT: "tube-status-week",
 };
 
 /**
@@ -30,7 +49,11 @@ export default class Modal extends HTMLElement {
   constructor() {
     super();
 
+    /** @private {HTMLElement} */
     this.overlay_;
+
+    /** @private {string} */
+    this.line_;   
   }
 
   /** Called every time element is inserted to DOM. */
@@ -41,7 +64,69 @@ export default class Modal extends HTMLElement {
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
     document.addEventListener(
-      customEvents.SUBSCRIBE, this.handleSubscriptionRequest_.bind(this));
+      customEvents.SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
+    document.addEventListener(
+      customEvents.DAYS, this.storeSubscriptionData_.bind(this));
+  }
+
+/**
+   * Stores subscription data returned from week and days
+   * custom elements.
+   * @param {CustomEvent} e
+   * @private
+   */
+  storeSubscriptionData_(e) {
+
+  }
+
+/**
+   * Renders markup allowing users to specify
+   * subscription timeframes.
+   * @param {CustomEvent} e
+   * @private
+   */
+  renderSubscriptionOptions_(e) {
+    const subWrapper = document.createElement("div");
+    const subTitle = document.createElement("div");
+    const selectWrapper = document.createElement("div");
+    const selectDaysBtn = document.createElement("button");
+    const selectTimesBtn = document.createElement("button");
+    const subscribeBtn = document.createElement("button");
+
+    this.line_ = e.detail.line;
+
+    // show modal
+    this.overlay_.classList.add(cssClass.OVERLAY_DIM);
+    this.classList.add(cssClass.MODAL_ACTIVE);
+
+    this.appendChild(this.createModalIcon_());
+
+    subWrapper.classList.add(cssClass.MODAL_SUB);
+
+    subTitle.textContent = MODAL_SUB_TITLE_TEXT;
+    subTitle.classList.add(cssClass.MODAL_SUB_TITLE);
+
+    selectWrapper.classList.add(cssClass.MODAL_SUB_SELECT);
+
+    selectDaysBtn.textContent = MODAL_DAYS_BTN_TEXT;
+    selectTimesBtn.textContent = MODAL_TIMES_BTN_TEXT;
+    subscribeBtn.textContent = MODAL_SUB_BTN_TEXT;
+
+    selectDaysBtn.classList.add(cssClass.MODAL_SUB_BTN_DAYS);
+    selectTimesBtn.classList.add(cssClass.MODAL_SUB_BTN_TIMES);
+    subscribeBtn.classList.add(cssClass.MODAL_SUB_BTN);
+
+    subscribeBtn.addEventListener("click",
+      this.handleSubscriptionRequest_.bind(this));
+
+    selectWrapper.appendChild(selectDaysBtn);
+    selectWrapper.appendChild(selectTimesBtn);
+
+    // append markup content to modal
+    [subTitle, selectWrapper, subscribeBtn]
+      .forEach((el) => subWrapper.appendChild(el));
+
+    this.appendChild(subWrapper);
   }
 
 /**
@@ -52,17 +137,11 @@ export default class Modal extends HTMLElement {
    */
   async handleSubscriptionRequest_(e) {
     const {userProfile, pushSubscription, lineSubscriptions} = getStore();
-    const {line} = e.detail;
-
-    // remove content, then show modal
-    this.removeContent_();
-    this.overlay_.classList.add(cssClass.OVERLAY_DIM);
-    this.classList.add(cssClass.MODAL_ACTIVE);
 
     if (userProfile.signedIn && pushSubscription) {
       // push new line subscription to stored array if subscribing,
       // otherwise remove unsubscribed line
-      const result = await apiSubscribe(pushSubscription, line);
+      const result = await apiSubscribe(pushSubscription, this.line_);
 
       result.lines ?
         lineSubscriptions.push(result.lines) :
@@ -91,7 +170,7 @@ export default class Modal extends HTMLElement {
       context.classList.add(cssClass.MODAL_CAPTION);
       !duplicateReason ? context.textContent += ` ${reason}` : null;
 
-      this.render_(context);
+      this.renderDelayContext_(context);
     });
   }
 
@@ -102,6 +181,9 @@ export default class Modal extends HTMLElement {
    */
   toggleModal_(e) {
     const {line} = e.detail;
+
+    // remove old markup before toggling visibility
+    this.removeContent_();
 
     if (line) {
       this.overlay_.classList.add(cssClass.OVERLAY_DIM);
@@ -114,24 +196,34 @@ export default class Modal extends HTMLElement {
   }
 
   /**
-   * Renders inner modal content depending on use case.
-   * @param {Element} context
+   * Creates modal icon.
    * @private
+   * @return {Element}
    */
-  render_(context) {
-    const captionEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
+  createModalIcon_() {
     const modalIcon = document.createElement("div");
 
     modalIcon.classList.add(cssClass.MODAL_ICON);
     modalIcon.addEventListener("click", this.toggleModal_.bind(this));
 
+    return modalIcon;
+  }
+
+  /**
+   * Renders delay context markup specifc to line clicked.
+   * @param {Element} context
+   * @private
+   */
+  renderDelayContext_(context) {
+    const captionEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
+
     if (captionEl) {
       // remove existing markup before appending new context
       this.removeContent_();
-      this.appendChild(modalIcon);
+      this.appendChild(this.createModalIcon_());
       this.appendChild(context);
     } else {
-      this.appendChild(modalIcon);
+      this.appendChild(this.createModalIcon_());
       this.appendChild(context);
     }
   }
@@ -141,12 +233,10 @@ export default class Modal extends HTMLElement {
    * @private
    */
   removeContent_() {
-    const contextEl = this.querySelector(`.${cssClass.MODAL_CAPTION}`);
-    const modalIconEl = this.querySelector(`.${cssClass.MODAL_ICON}`);
-    const parent = this;
-    const children = [contextEl, modalIconEl]
+    const children = Array.from(this.childNodes)
+      .filter((node) => node.nodeName !== cssSelector.WEEK_ELEMENT)
 
-    children.forEach((el) => parent.removeChild(el));
+    children.forEach((el) => this.removeChild(el));
   }
 
   /**

@@ -18,6 +18,7 @@ export const actions = {
 export const customEvents = {
   LINE_CLICK: "line-click",
   SUBSCRIBE: "subscribe",
+  DAYS: "days-selected",
 };
 
 /**
