@@ -132,6 +132,9 @@ export default class TubeLine extends HTMLElement {
     case delayTypes.MINOR_DELAYS:
       this.setAttribute("score", "2");
       break;
+    case delayTypes.SPECIAL_SERVICE:
+      this.setAttribute("score", "2");
+      break;
     case delayTypes.GOOD_SERVICE:
       this.setAttribute("score", "1");
       break;
