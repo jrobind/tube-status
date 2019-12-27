@@ -67,6 +67,29 @@ export default class Modal extends HTMLElement {
       customEvents.SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
     document.addEventListener(
       customEvents.DAYS, this.storeSubscriptionData_.bind(this));
+    document.addEventListener(
+      customEvents.TIME, this.storeSubscriptionData_.bind(this));
+  }
+
+  /**
+   * Emits a custom event to be consumed by
+   * week and day custom elements.
+   * @param {Event} e
+   * @private
+   */
+  emit_(e) {
+    const target = /** @type {HTMLElement} */ (e.target);
+    const detail = {detail: {line: this.line_}};
+    let customDispatchEvent;
+    
+    if (target.classList.contains(cssClass.MODAL_SUB_BTN_DAYS)) {
+      customDispatchEvent = customEvents.SHOW_WEEK;
+    } else {
+      customDispatchEvent = customEvents.SHOW_TIME;
+    }
+    
+    document.dispatchEvent(
+      new CustomEvent(customDispatchEvent, detail));
   }
 
   /**
@@ -116,7 +139,16 @@ export default class Modal extends HTMLElement {
     selectTimesBtn.classList.add(cssClass.MODAL_SUB_BTN_TIMES);
     subscribeBtn.classList.add(cssClass.MODAL_SUB_BTN);
 
-    subscribeBtn.addEventListener("click",
+    selectDaysBtn.addEventListener(
+      "click",
+      this.emit_.bind(this));
+
+    subscribeBtn.addEventListener(
+      "click",
+      this.emit_.bind(this));
+    
+    subscribeBtn.addEventListener(
+      "click",
       this.handleSubscriptionRequest_.bind(this));
 
     selectWrapper.appendChild(selectDaysBtn);
