@@ -7,8 +7,9 @@ const {subscribeToStore, getStore} = store;
  * @enum {string}
  */
 const cssClass = {
+  WEEK_ACTIVE: "tube-status-week--active",
   DAY: "tube-status-week-day",
-  DAY_SELECT: "tube-status-week-day__select"
+  DAY_SELECT: "tube-status-week-day__select",
 };
 
 /**
@@ -43,23 +44,33 @@ export default class Week extends HTMLElement {
   }
 
   /**
+   * Toggle active class state for the custom element.
+   * @private
+   */
+  handleActiveState_() {
+    this.classList.add(cssClass.WEEK_ACTIVE);
+  }
+
+  /**
    * Renders markup enabling selection of week
    * days for line subscription.
    * @private
    */
   render_() {
+    this.handleActiveState_();
+
     const table = document.createElement("table");
     const tablehead = document.createElement("thead");
     const tableBody = document.createElement("tbody");
     const tableRow = document.createElement("tr");
     const dayKey = {
-      0: "Monday",
-      1: "Tuesday",
-      2: "Wednesday",
-      3: "Thursday",
-      4: "Friday",
-      5: "Saturday",
-      6: "Sunday"
+      0: "Mo",
+      1: "Tu",
+      2: "We",
+      3: "Th",
+      4: "Fr",
+      5: "Sa",
+      6: "Su"
     };
     const days = Array.from(Array(7).keys()).map((n) => {
       const day = document.createElement("th");
