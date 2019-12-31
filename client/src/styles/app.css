@@ -372,7 +372,7 @@ footer {
 }
 
 /* week styles */
-.tube-status-week .tube-status-week-day {
+.tube-status-week-day {
   font-weight: 300;
 }
 
@@ -381,13 +381,17 @@ footer {
   width: 100%;
 }
 
-.tube-status-week .tube-status-week-day__select {
+.tube-status-week-day__select {
   background-color: var(--week-day-color);
 }
 
 .tube-status-week-day__select:hover {
   background-color: var(--week-day-hover-color);
   cursor: pointer;
+}
+
+.tube-status-week-day__select--active {
+  background-color: var(--week-day-hover-color);
 }
 
 .tube-status-week--active {

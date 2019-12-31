@@ -10,6 +10,7 @@ const cssClass = {
   WEEK_ACTIVE: "tube-status-week--active",
   DAY: "tube-status-week-day",
   DAY_SELECT: "tube-status-week-day__select",
+  DAY_SELECT_ACTIVE: "tube-status-week-day__select--active",
 };
 
 /**
@@ -86,6 +87,7 @@ export default class Week extends HTMLElement {
 
       td.classList.add(cssClass.DAY_SELECT);
       td.setAttribute("day", day.innerText);
+      td.addEventListener("click", this.handleDayClick_.bind(this));
 
       tablehead.appendChild(day);
       tableRow.appendChild(td);
@@ -98,11 +100,44 @@ export default class Week extends HTMLElement {
   }
 
   /**
+   * Persist week day(s) selected.
+   * @param {Event} e
+   * @private
+   */
+  handleDayClick_(e) {
+    const target = /** @type {HTMLElement} */ (e.target);
+    const day = target.getAttribute("day");
+
+    if (target.classList.contains(cssClass.DAY_SELECT_ACTIVE)) {
+      target.classList.remove(cssClass.DAY_SELECT_ACTIVE);
+      // remove day
+      this.days_ = this.days_.filter((currentDay) => {
+        return day !== currentDay;
+      });
+    } else {
+      target.classList.add(cssClass.DAY_SELECT_ACTIVE);
+      // add day
+      if (Array.isArray(this.days_)) {
+        // do not add duplicate days
+        !this.days_.includes(day) ?
+          this.days_ = [...this.days_, day] :
+          null;
+      } else {
+        this.days_ = [day];
+      }
+    }
+
+    console.log(this.days_);
+  }
+
+
+  /**
    * Called each time custom element is disconnected from the DOM.
    * @private
    */
   disconnectedCallback() {
     document.removeEventListener(
       customEvents.SHOW_WEEK, this.render_);
+    // TODO: remove remaining td element listeners
   }
 }
