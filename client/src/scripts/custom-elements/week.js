@@ -71,14 +71,14 @@ export default class Week extends HTMLElement {
       3: "Th",
       4: "Fr",
       5: "Sa",
-      6: "Su"
+      6: "Su",
     };
     const days = Array.from(Array(7).keys()).map((n) => {
       const day = document.createElement("th");
 
       day.classList.add(cssClass.DAY);
       day.innerText = dayKey[n];
-      
+
       return day;
     });
 
@@ -92,7 +92,7 @@ export default class Week extends HTMLElement {
       tablehead.appendChild(day);
       tableRow.appendChild(td);
     });
-  
+
     table.appendChild(tablehead);
     tableBody.appendChild(tableRow);
     table.appendChild(tableBody);

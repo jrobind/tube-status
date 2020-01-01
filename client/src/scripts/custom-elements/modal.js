@@ -81,13 +81,13 @@ export default class Modal extends HTMLElement {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
     let customDispatchEvent;
-    
+
     if (target.classList.contains(cssClass.MODAL_SUB_BTN_DAYS)) {
       customDispatchEvent = customEvents.SHOW_WEEK;
     } else {
       customDispatchEvent = customEvents.SHOW_TIME;
     }
-    
+
     document.dispatchEvent(
       new CustomEvent(customDispatchEvent, detail));
   }
@@ -146,7 +146,7 @@ export default class Modal extends HTMLElement {
     subscribeBtn.addEventListener(
       "click",
       this.emit_.bind(this));
-    
+
     subscribeBtn.addEventListener(
       "click",
       this.handleSubscriptionRequest_.bind(this));
