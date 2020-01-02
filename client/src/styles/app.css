@@ -372,12 +372,16 @@ footer {
 }
 
 /* week styles */
+.tube-status-week {
+  min-height: 110px;
+}
+
 .tube-status-week-day {
   font-weight: 300;
 }
 
 .tube-status-week table {
-  height: 100%;
+  min-height: 65px;
   width: 100%;
 }
 
@@ -386,7 +390,6 @@ footer {
 }
 
 .tube-status-week-day__select:hover {
-  background-color: var(--week-day-hover-color);
   cursor: pointer;
 }
 
@@ -395,13 +398,20 @@ footer {
 }
 
 .tube-status-week--active {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   position: absolute;
   z-index: 100;
-  height: 33%;
   width: 100%;
   background: var(--default-white-background);
-  bottom: 0;
   border-radius: 10px;
+  box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
+  bottom: -115px;
+}
+
+.tube-status-week__btn {
+  align-self: center;
 }
 
 /* animation */
