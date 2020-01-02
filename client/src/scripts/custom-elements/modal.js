@@ -99,7 +99,7 @@ export default class Modal extends HTMLElement {
    * @private
    */
   storeSubscriptionData_(e) {
-
+    console.log('reaching store subscription data in modal', e.detail)
   }
 
   /**
@@ -264,9 +264,11 @@ export default class Modal extends HTMLElement {
    * Removes existing markup from Modal.
    * @private
    */
-  removeContent_() {
+  removeContent_() { 
     const children = Array.from(this.childNodes)
-      .filter((node) => node.nodeName !== cssSelector.WEEK_ELEMENT);
+      .filter((node) => {
+        return node.nodeName.toLowerCase() !== cssSelector.WEEK_ELEMENT
+      });
 
     children.forEach((el) => this.removeChild(el));
   }

@@ -2,6 +2,9 @@ import {store} from "../utils/client-store.js";
 import {actions, delayTypes, customEvents} from "../constants.js";
 const {subscribeToStore, getStore} = store;
 
+/** @const {string} */
+const SUBMIT_BTN_TEXT = "Submit days";
+
 /**
  * CSS classes.
  * @enum {string}
@@ -11,6 +14,7 @@ const cssClass = {
   DAY: "tube-status-week-day",
   DAY_SELECT: "tube-status-week-day__select",
   DAY_SELECT_ACTIVE: "tube-status-week-day__select--active",
+  SUBMIT_BTN: "tube-status-week__btn",
 };
 
 /**
@@ -20,6 +24,9 @@ export default class Week extends HTMLElement {
   /** Create tube line custom element. */
   constructor() {
     super();
+
+    /** @private {string} */
+    this.line_;
 
     /** @private {array} */
     this.days_;
@@ -33,33 +40,56 @@ export default class Week extends HTMLElement {
 
   /**
    * Dispatches custom event to app modal containing week days
-   * required for line subscriptions.
+   * selected for line subscriptions.
    * @param {Event} e
    * @private
    */
-  handleClick_(e) {
-    const detail = {detail: {line: this.days_}};
+  handleSubmitDays_(e) {
+    const detail = {detail: {days: this.days_, line: this.line_}};
 
     document.dispatchEvent(
       new CustomEvent(customEvents.DAYS, detail));
+
+    // remove markup and reset stored days
+    this.toggleActiveState_();
+    this.days_ = [];
   }
 
   /**
    * Toggle active class state for the custom element.
    * @private
    */
-  handleActiveState_() {
-    this.classList.add(cssClass.WEEK_ACTIVE);
+  toggleActiveState_() {
+    if (this.classList.contains(cssClass.WEEK_ACTIVE)) {
+      this.classList.remove(cssClass.WEEK_ACTIVE);
+      // remove markup
+      this.removeContent_();
+    } else {
+      this.classList.add(cssClass.WEEK_ACTIVE);
+    }
+  }
+
+  /**
+   * Removes existing markup from Week.
+   * @private
+   */
+  removeContent_() {
+    const children = Array.from(this.childNodes);
+
+    children.forEach((el) => this.removeChild(el));
   }
 
   /**
    * Renders markup enabling selection of week
    * days for line subscription.
+   * @param {CustomEvent} e
    * @private
    */
-  render_() {
-    this.handleActiveState_();
+  render_(e) {
+    this.line_ = e.detail.line;
+    this.toggleActiveState_();
 
+    const submitBtn = document.createElement("button");
     const table = document.createElement("table");
     const tablehead = document.createElement("thead");
     const tableBody = document.createElement("tbody");
@@ -93,10 +123,16 @@ export default class Week extends HTMLElement {
       tableRow.appendChild(td);
     });
 
+    submitBtn.classList.add(cssClass.SUBMIT_BTN);
+    submitBtn.innerText = SUBMIT_BTN_TEXT;
+    submitBtn.addEventListener("click", this.handleSubmitDays_.bind(this));
+
     table.appendChild(tablehead);
     tableBody.appendChild(tableRow);
     table.appendChild(tableBody);
     this.appendChild(table);
+    this.appendChild(submitBtn);
+    
   }
 
   /**
