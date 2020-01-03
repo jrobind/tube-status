@@ -18,10 +18,10 @@ export const actions = {
  */
 export const customEvents = {
   LINE_CLICK: "line-click",
+  MODAL_CLOSE: "modal-close",
   SHOW_SUBSCRIBE: "show-subscribe",
   SHOW_WEEK: "show-week",
   SHOW_TIME: "show-time",
-  DAYS: "days-selected",
   TIME: "time-selected",
 };
 
