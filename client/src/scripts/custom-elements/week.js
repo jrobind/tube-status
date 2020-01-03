@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
-import {actions, delayTypes, customEvents} from "../constants.js";
-const {subscribeToStore, getStore} = store;
+import {actions, customEvents} from "../constants.js";
+const {updateStore, getStore} = store;
 
 /** @const {string} */
 const SUBMIT_BTN_TEXT = "Submit days";
@@ -29,13 +29,15 @@ export default class Week extends HTMLElement {
     this.line_;
 
     /** @private {array} */
-    this.days_;
+    this.days_ = [];
   }
 
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
     document.addEventListener(
       customEvents.SHOW_WEEK, this.render_.bind(this));
+    document.addEventListener(
+      customEvents.MODAL_CLOSE, this.toggleActiveState_.bind(this));
   }
 
   /**
@@ -45,14 +47,12 @@ export default class Week extends HTMLElement {
    * @private
    */
   handleSubmitDays_(e) {
-    const detail = {detail: {days: this.days_, line: this.line_}};
-
-    document.dispatchEvent(
-      new CustomEvent(customEvents.DAYS, detail));
-
-    // remove markup and reset stored days
     this.toggleActiveState_();
-    this.days_ = [];
+
+    updateStore({
+      action: actions.SELECTED_DAYS,
+      data: {days: this.days_, time: null},
+    });
   }
 
   /**
@@ -86,9 +86,15 @@ export default class Week extends HTMLElement {
    * @private
    */
   render_(e) {
-    this.line_ = e.detail.line;
-    this.toggleActiveState_();
+    // if markup already exists then remove it and return
+    if (this.querySelector(`.${cssClass.SUBMIT_BTN}`)) {
+      this.removeContent_();
+      this.toggleActiveState_();
+      this.days_ = [];
+      return;
+    }
 
+    const {subscriptionData} = getStore();
     const submitBtn = document.createElement("button");
     const table = document.createElement("table");
     const tablehead = document.createElement("thead");
@@ -112,6 +118,9 @@ export default class Week extends HTMLElement {
       return day;
     });
 
+    this.line_ = e.detail.line;
+    this.toggleActiveState_();
+
     days.forEach((day) => {
       const td = document.createElement("td");
 
@@ -132,7 +141,21 @@ export default class Week extends HTMLElement {
     table.appendChild(tableBody);
     this.appendChild(table);
     this.appendChild(submitBtn);
-    
+
+    // if selections have already been made then we should pre-select
+    // the correct days
+    if (subscriptionData.days) {
+      const days = Array.from(
+        this.querySelectorAll(`.${cssClass.DAY_SELECT}`));
+      // set our local days selected reference equal to that within
+      // the client store
+      this.days_ = subscriptionData.days;
+      days.forEach(day => {
+        if (this.days_.includes(day.getAttribute("day"))) {
+          day.classList.add(cssClass.DAY_SELECT_ACTIVE);
+        }
+      });
+    }
   }
 
   /**
@@ -143,24 +166,23 @@ export default class Week extends HTMLElement {
   handleDayClick_(e) {
     const target = /** @type {HTMLElement} */ (e.target);
     const day = target.getAttribute("day");
+    const isActive = target.classList.contains(
+      cssClass.DAY_SELECT_ACTIVE);
 
-    if (target.classList.contains(cssClass.DAY_SELECT_ACTIVE)) {
+    if (isActive) {
       target.classList.remove(cssClass.DAY_SELECT_ACTIVE);
+
       // remove day
       this.days_ = this.days_.filter((currentDay) => {
         return day !== currentDay;
       });
     } else {
       target.classList.add(cssClass.DAY_SELECT_ACTIVE);
-      // add day
-      if (Array.isArray(this.days_)) {
-        // do not add duplicate days
-        !this.days_.includes(day) ?
-          this.days_ = [...this.days_, day] :
-          null;
-      } else {
-        this.days_ = [day];
-      }
+
+      // do not add duplicate days
+      this.days_ = !this.days_.includes(day) ?
+      [...this.days_, day] :
+      [day]
     }
 
     console.log(this.days_);

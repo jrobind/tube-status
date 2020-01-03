@@ -1,7 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
-const {getStore, updateStore} = store;
+const {getStore, updateStore, subscribeToStore} = store;
 
 /** @const {string} */
 const MODAL_SUB_TITLE_TEXT = "Specify your subscription times:";
@@ -14,6 +14,9 @@ const MODAL_TIMES_BTN_TEXT = "Select times";
 
 /** @const {string} */
 const MODAL_SUB_BTN_TEXT = "Subscribe";
+
+/** @const {string} */
+const BTN_SELECTED_TEXT = "Selected";
 
 /**
  * CSS classes.
@@ -30,6 +33,7 @@ const cssClass = {
   MODAL_SUB_BTN: "tube-status-modal-sub__btn",
   MODAL_SUB_BTN_TIMES: "tube-status-modal-sub__btn-times",
   MODAL_SUB_BTN_DAYS: "tube-status-modal-sub__btn-days",
+  BTN_SELECTED: "tube-status-btn--selected",
 };
 
 /**
@@ -59,16 +63,24 @@ export default class Modal extends HTMLElement {
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
     this.overlay_ = document.querySelector(cssSelector.OVERLAY);
+    const subscribers = [
+      {
+        callback: this.updateSelectDaysBtn_.bind(this),
+        action: actions.SELECTED_DAYS,
+      },
+      {
+        callback: this.handleSubscriptionRequest_.bind(this),
+        action: actions.SELECTED_DAYS,
+      }
+    ];
+
+    subscribeToStore(subscribers);
 
     // setup listeners
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
     document.addEventListener(
       customEvents.SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
-    document.addEventListener(
-      customEvents.DAYS, this.storeSubscriptionData_.bind(this));
-    document.addEventListener(
-      customEvents.TIME, this.storeSubscriptionData_.bind(this));
   }
 
   /**
@@ -93,13 +105,19 @@ export default class Modal extends HTMLElement {
   }
 
   /**
-   * Stores subscription data returned from week and days
-   * custom elements.
-   * @param {CustomEvent} e
+   * Updates the 'select days' button state once subscription
+   * data has been receieved.
    * @private
    */
-  storeSubscriptionData_(e) {
-    console.log('reaching store subscription data in modal', e.detail)
+  updateSelectDaysBtn_() {
+    const {subscriptionData} = getStore();
+
+    if (!subscriptionData.days) return;
+
+    const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_DAYS}`);
+    
+    btn.textContent = BTN_SELECTED_TEXT;
+    btn.classList.add(cssClass.BTN_SELECTED);
   }
 
   /**
@@ -168,22 +186,29 @@ export default class Modal extends HTMLElement {
    * @private
    */
   async handleSubscriptionRequest_(e) {
-    const {userProfile, pushSubscription, lineSubscriptions} = getStore();
+    const {
+      userProfile,
+      pushSubscription,
+      lineSubscriptions,
+      subscriptionData,
+    } = getStore();
 
-    if (userProfile.signedIn && pushSubscription) {
-      // push new line subscription to stored array if subscribing,
-      // otherwise remove unsubscribed line
-      const result = await apiSubscribe(pushSubscription, this.line_);
+    console.log('reaching subscription data', subscriptionData);
 
-      result.lines ?
-        lineSubscriptions.push(result.lines) :
-        this.handleError_(result);
+    // if (userProfile.signedIn && pushSubscription) {
+    //   // push new line subscription to stored array if subscribing,
+    //   // otherwise remove unsubscribed line
+    //   const result = await apiSubscribe(pushSubscription, this.line_);
 
-      updateStore({
-        action: actions.LINE_SUBSCRIPTION,
-        data: {lineSubscriptions},
-      });
-    }
+    //   result.lines ?
+    //     lineSubscriptions.push(result.lines) :
+    //     this.handleError_(result);
+
+    //   updateStore({
+    //     action: actions.LINE_SUBSCRIPTION,
+    //     data: {lineSubscriptions},
+    //   });
+    // }
   }
 
   /**
@@ -213,6 +238,9 @@ export default class Modal extends HTMLElement {
    */
   toggleModal_(e) {
     const {line} = e.detail;
+
+    document.dispatchEvent(
+      new CustomEvent(customEvents.MODAL_CLOSE));
 
     // remove old markup before toggling visibility
     this.removeContent_();
@@ -271,6 +299,11 @@ export default class Modal extends HTMLElement {
       });
 
     children.forEach((el) => this.removeChild(el));
+
+    updateStore({
+      action: actions.SELECTED_DAYS,
+      data: {days: null, time: null},
+    });
   }
 
   /**
