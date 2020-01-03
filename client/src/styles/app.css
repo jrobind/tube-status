@@ -15,10 +15,11 @@
   --tfl-rail-color: #0019a8;
   --dlr-color: #00afad;
   --tram-color: #6c0;
-  --default-white-background: #fff;
+  --default-white: #fff;
   --disruption-background-color: #fbf7e7;
   --week-day-color: #d4ebf2;
   --week-day-hover-color: #bed3d9;
+  --btn-selected-color: #add9e6;
 }
 
 html, 
@@ -31,6 +32,12 @@ body {
 body {
   background-color: var(--body-background-color);
   font-family: Courier, monospace;
+}
+
+/* global styles */
+.tube-status-btn--selected {
+  background-color: var(--btn-selected-color);
+  color: var(--default-white);
 }
 
 /* overlay */
@@ -51,7 +58,7 @@ body {
 
 /* header styles */
 .tube-status-header {
-  background-color: var(--default-white-background);
+  background-color: var(--default-white);
   display: block;
   min-height: 100px;
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
@@ -90,7 +97,7 @@ body {
   margin: 10px 14px;
   font-size: 18px;
   display: flex;
-  background-color: var(--default-white-background);
+  background-color: var(--default-white);
   border-radius: 10px;
   box-shadow: 0 0 36px rgba(0, 0, 0, 0.1);
 }
@@ -317,7 +324,7 @@ footer {
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
-  background-color: var(--default-white-background);
+  background-color: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
   z-index: 2;
@@ -404,7 +411,7 @@ footer {
   position: absolute;
   z-index: 100;
   width: 100%;
-  background: var(--default-white-background);
+  background: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
   bottom: -115px;
