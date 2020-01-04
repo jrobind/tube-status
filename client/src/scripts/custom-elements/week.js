@@ -30,52 +30,83 @@ export default class Week extends HTMLElement {
 
     /** @private {array} */
     this.days_ = [];
+
+    /** @private {boolean} */
+    this.markupExists_ = false;
   }
 
   /** Called every time element is inserted to DOM. */
   connectedCallback() {
     document.addEventListener(
-      customEvents.SHOW_WEEK, this.render_.bind(this));
+      customEvents.SHOW_WEEK, this.initHandler_.bind(this));
     document.addEventListener(
-      customEvents.MODAL_CLOSE, this.toggleActiveState_.bind(this));
+      customEvents.MODAL_CLOSE, this.reset_.bind(this));
+  }
+
+  /**
+   * Selects pre-selected days if selections have already been made.
+   * @private
+   */
+  handlePreselect_() {
+    const {subscriptionData} = getStore();
+    const days = Array.from(
+      this.querySelectorAll(`.${cssClass.DAY_SELECT}`));
+
+    // set our local days selected reference equal to that within
+    // the client store
+    this.days_ = subscriptionData.days;
+    days.forEach(day => {
+      if (this.days_.includes(day.getAttribute("day"))) {
+        day.classList.add(cssClass.DAY_SELECT_ACTIVE);
+      }
+    });
+  }
+
+  /**
+   * Manages the correct logic pathway based on certain variable states.
+   * @param {CustomEvent} e
+   * @private
+   */
+  initHandler_(e) {
+    const {subscriptionData} = getStore();
+
+    if (this.markupExists_) {
+      this.reset_();
+    } else {
+      this.render_(e);
+
+      // if days are already selected then select them
+      if (subscriptionData.days) this.handlePreselect_();
+    }
   }
 
   /**
    * Dispatches custom event to app modal containing week days
    * selected for line subscriptions.
-   * @param {Event} e
    * @private
    */
-  handleSubmitDays_(e) {
-    this.toggleActiveState_();
-
+  handleSubmitDays_() {
     updateStore({
       action: actions.SELECTED_DAYS,
       data: {days: this.days_, time: null},
     });
-  }
 
-  /**
-   * Toggle active class state for the custom element.
-   * @private
-   */
-  toggleActiveState_() {
-    if (this.classList.contains(cssClass.WEEK_ACTIVE)) {
-      this.classList.remove(cssClass.WEEK_ACTIVE);
-      // remove markup
-      this.removeContent_();
-    } else {
-      this.classList.add(cssClass.WEEK_ACTIVE);
-    }
+    this.reset_();
   }
 
   /**
    * Removes existing markup from Week.
    * @private
    */
-  removeContent_() {
+  reset_() {
     const children = Array.from(this.childNodes);
 
+    // resets
+    this.classList.remove(cssClass.WEEK_ACTIVE);
+    this.days_ = [];
+    this.markupExists_ = false;
+
+    // remove markup
     children.forEach((el) => this.removeChild(el));
   }
 
@@ -86,15 +117,6 @@ export default class Week extends HTMLElement {
    * @private
    */
   render_(e) {
-    // if markup already exists then remove it and return
-    if (this.querySelector(`.${cssClass.SUBMIT_BTN}`)) {
-      this.removeContent_();
-      this.toggleActiveState_();
-      this.days_ = [];
-      return;
-    }
-
-    const {subscriptionData} = getStore();
     const submitBtn = document.createElement("button");
     const table = document.createElement("table");
     const tablehead = document.createElement("thead");
@@ -119,7 +141,8 @@ export default class Week extends HTMLElement {
     });
 
     this.line_ = e.detail.line;
-    this.toggleActiveState_();
+    // show element
+    this.classList.add(cssClass.WEEK_ACTIVE);
 
     days.forEach((day) => {
       const td = document.createElement("td");
@@ -141,21 +164,7 @@ export default class Week extends HTMLElement {
     table.appendChild(tableBody);
     this.appendChild(table);
     this.appendChild(submitBtn);
-
-    // if selections have already been made then we should pre-select
-    // the correct days
-    if (subscriptionData.days) {
-      const days = Array.from(
-        this.querySelectorAll(`.${cssClass.DAY_SELECT}`));
-      // set our local days selected reference equal to that within
-      // the client store
-      this.days_ = subscriptionData.days;
-      days.forEach(day => {
-        if (this.days_.includes(day.getAttribute("day"))) {
-          day.classList.add(cssClass.DAY_SELECT_ACTIVE);
-        }
-      });
-    }
+    this.markupExists_ = true;
   }
 
   /**
