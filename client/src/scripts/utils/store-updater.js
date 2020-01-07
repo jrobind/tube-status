@@ -35,7 +35,7 @@ export const storeUpdater = (store, {action, data}) => {
 
     return store;
   case "SELECTED-DAYS":
-    store = {...store, subscriptionData:{...data}};
+    store = {...store, subscriptionData: {...data}};
 
     return store;
   }
