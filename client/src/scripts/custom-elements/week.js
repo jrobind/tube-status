@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
+import {createEl} from "../utils/helpers.js";
 const {updateStore, getStore} = store;
 
 /** @const {string} */
@@ -35,7 +36,9 @@ export default class Week extends HTMLElement {
     this.markupExists_ = false;
   }
 
-  /** Called every time element is inserted to DOM. */
+  /**
+   * Called every time element is inserted to DOM.
+   */
   connectedCallback() {
     document.addEventListener(
       customEvents.SHOW_WEEK, this.initHandler_.bind(this));
@@ -55,7 +58,7 @@ export default class Week extends HTMLElement {
     // set our local days selected reference equal to that within
     // the client store
     this.days_ = subscriptionData.days;
-    days.forEach(day => {
+    days.forEach((day) => {
       if (this.days_.includes(day.getAttribute("day"))) {
         day.classList.add(cssClass.DAY_SELECT_ACTIVE);
       }
@@ -117,7 +120,12 @@ export default class Week extends HTMLElement {
    * @private
    */
   render_(e) {
-    const submitBtn = document.createElement("button");
+    const submitBtn = createEl({
+      elType: "button",
+      attributes: {classname: cssClass.SUBMIT_BTN},
+      event: {eventType: "click", func: this.handleSubmitDays_, context: this},
+      copy: SUBMIT_BTN_TEXT,
+    });
     const table = document.createElement("table");
     const tablehead = document.createElement("thead");
     const tableBody = document.createElement("tbody");
@@ -155,10 +163,6 @@ export default class Week extends HTMLElement {
       tableRow.appendChild(td);
     });
 
-    submitBtn.classList.add(cssClass.SUBMIT_BTN);
-    submitBtn.innerText = SUBMIT_BTN_TEXT;
-    submitBtn.addEventListener("click", this.handleSubmitDays_.bind(this));
-
     table.appendChild(tablehead);
     tableBody.appendChild(tableRow);
     table.appendChild(tableBody);
@@ -190,8 +194,8 @@ export default class Week extends HTMLElement {
 
       // do not add duplicate days
       this.days_ = !this.days_.includes(day) ?
-      [...this.days_, day] :
-      [day]
+        [...this.days_, day] :
+        [day];
     }
 
     console.log(this.days_);
