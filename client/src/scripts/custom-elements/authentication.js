@@ -36,7 +36,9 @@ export default class Authentication extends HTMLElement {
     this.token_ = localStorage.getItem("JWT");
   }
 
-  /** Called every time element is inserted to DOM. */
+  /**
+   * Called every time element is inserted to DOM.
+   */
   connectedCallback() {
     subscribeToStore({
       callback: this.attemptTextUpdate_.bind(this),

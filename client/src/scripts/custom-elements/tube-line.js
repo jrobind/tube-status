@@ -38,7 +38,9 @@ export default class TubeLine extends HTMLElement {
     this.reasonTitleEl_;
   }
 
-  /** Called every time element is inserted to DOM. */
+  /**
+   * Called every time element is inserted to DOM.
+   */
   connectedCallback() {
     subscribeToStore({
       callback: this.updateDOM_.bind(this),

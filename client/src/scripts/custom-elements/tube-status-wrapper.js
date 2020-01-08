@@ -17,7 +17,9 @@ export default class TubeStatusWrapper extends HTMLElement {
     this.token_ = localStorage.getItem("JWT");
   }
 
-  /** Called every time element is inserted to DOM. */
+  /**
+   * Called every time element is inserted to DOM.
+   */
   async connectedCallback() {
     await this.getAllLineData_();
     await this.getLineSubscriptions_();

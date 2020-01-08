@@ -37,7 +37,9 @@ export default class Loading extends HTMLElement {
     this.line_ = this.parentElement.parentElement.getAttribute("line");
   }
 
-  /** Called every time element is inserted to DOM. */
+  /**
+   * Called every time element is inserted to DOM.
+   */
   connectedCallback() {
     const isApp = this.hasAttribute("app");
     const action = isApp ? actions.LOADING_APP : actions.LOADING;

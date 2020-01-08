@@ -60,7 +60,9 @@ export default class Modal extends HTMLElement {
     this.line_;
   }
 
-  /** Called every time element is inserted to DOM. */
+  /** 
+   * Called every time element is inserted to DOM. 
+   */
   connectedCallback() {
     this.overlay_ = document.querySelector(cssSelector.OVERLAY);
     const subscribers = [

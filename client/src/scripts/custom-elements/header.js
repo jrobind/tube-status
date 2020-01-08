@@ -29,7 +29,9 @@ export default class Header extends HTMLElement {
     this.authenticationEl_;
   }
 
-  /** Called every time element is inserted to DOM. */
+  /**
+   * Called every time element is inserted to DOM.
+   */
   connectedCallback() {
     subscribeToStore({
       callback: this.updateAvatar_.bind(this),
