@@ -123,29 +123,20 @@ export default class Week extends HTMLElement {
     const submitBtn = createEl({
       elType: "button",
       attributes: {classname: cssClass.SUBMIT_BTN},
-      event: {eventType: "click", func: this.handleSubmitDays_, context: this},
+      event: {eventType: "click", func: this.handleSubmitDays_.bind(this)},
       copy: SUBMIT_BTN_TEXT,
     });
-    const table = document.createElement("table");
-    const tablehead = document.createElement("thead");
-    const tableBody = document.createElement("tbody");
-    const tableRow = document.createElement("tr");
-    const dayKey = {
-      0: "Mo",
-      1: "Tu",
-      2: "We",
-      3: "Th",
-      4: "Fr",
-      5: "Sa",
-      6: "Su",
-    };
+    const table = createEl("table");
+    const tablehead = createEl("thead");
+    const tableBody = createEl("tbody");
+    const tableRow = createEl("tr");
+    const dayKey = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
     const days = Array.from(Array(7).keys()).map((n) => {
-      const day = document.createElement("th");
-
-      day.classList.add(cssClass.DAY);
-      day.innerText = dayKey[n];
-
-      return day;
+      return createEl({
+        elType: "th",
+        attributes: {classname: cssClass.DAY},
+        copy: dayKey[n],
+      });
     });
 
     this.line_ = e.detail.line;
@@ -153,7 +144,14 @@ export default class Week extends HTMLElement {
     this.classList.add(cssClass.WEEK_ACTIVE);
 
     days.forEach((day) => {
-      const td = document.createElement("td");
+      const td = createEl({
+        elType: "td",
+        attributes: {
+          classname: cssClass.DAY_SELECT,
+          data: {name: "day", value: day.innerText},
+        },
+        event: {eventType: "click", func: this.handleDayClick_.bind(this)},
+      });
 
       td.classList.add(cssClass.DAY_SELECT);
       td.setAttribute("day", day.innerText);
