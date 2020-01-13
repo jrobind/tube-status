@@ -1,26 +1,29 @@
 /**
  * A DOM element creator utility which creates elements,
  * and sets specified attributes and event listeners.
- * @param {object} options
+ * @param {string} elType
+ * @param {object=} options
  * @return {Element} el
  */
-export const createEl = (options) => {
+export const create = (elType, options = {}) => {
+  const el = document.createElement(elType);
   const {
-    elType,
     event = {},
     copy,
-    attributes = {},
+    id,
+    data = {},
+    classname,
   } = options;
-  const {classname, id, data = {}} = attributes;
   const {name, value} = data;
-  const {eventType, func, context = window} = event;
-  let el;
+  const {type, fn} = event;
 
-  el = document.createElement(elType);
+  if (!options) return el;
+
+  // set options
   classname && el.classList.add(classname);
   id && el.setAttribute("id", id);
   data && el.setAttribute(name, value);
-  event && el.addEventListener(eventType, func.bind(context));
+  event && el.addEventListener(type, fn);
   if (copy) el.innerText = copy;
 
   return el;
