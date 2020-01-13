@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {createEl} from "../utils/helpers.js";
+import {create} from "../utils/helpers.js";
 const {updateStore, getStore} = store;
 
 /** @const {string} */
@@ -120,23 +120,18 @@ export default class Week extends HTMLElement {
    * @private
    */
   render_(e) {
-    const submitBtn = createEl({
-      elType: "button",
-      attributes: {classname: cssClass.SUBMIT_BTN},
-      event: {eventType: "click", func: this.handleSubmitDays_.bind(this)},
+    const submitBtn = create("button", {
+      classname: cssClass.SUBMIT_BTN,
+      event: {type: "click", fn: this.handleSubmitDays_.bind(this)},
       copy: SUBMIT_BTN_TEXT,
     });
-    const table = createEl("table");
-    const tablehead = createEl("thead");
-    const tableBody = createEl("tbody");
-    const tableRow = createEl("tr");
+    const table = create("table");
+    const tablehead = create("thead");
+    const tableBody = create("tbody");
+    const tableRow = create("tr");
     const dayKey = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
     const days = Array.from(Array(7).keys()).map((n) => {
-      return createEl({
-        elType: "th",
-        attributes: {classname: cssClass.DAY},
-        copy: dayKey[n],
-      });
+      return create("th", {classname: cssClass.DAY, copy: dayKey[n]});
     });
 
     this.line_ = e.detail.line;
@@ -144,18 +139,11 @@ export default class Week extends HTMLElement {
     this.classList.add(cssClass.WEEK_ACTIVE);
 
     days.forEach((day) => {
-      const td = createEl({
-        elType: "td",
-        attributes: {
-          classname: cssClass.DAY_SELECT,
-          data: {name: "day", value: day.innerText},
-        },
-        event: {eventType: "click", func: this.handleDayClick_.bind(this)},
+      const td = create("td", {
+        classname: cssClass.DAY_SELECT,
+        data: {name: "day", value: day.innerText},
+        event: {type: "click", fn: this.handleDayClick_.bind(this)},
       });
-
-      td.classList.add(cssClass.DAY_SELECT);
-      td.setAttribute("day", day.innerText);
-      td.addEventListener("click", this.handleDayClick_.bind(this));
 
       tablehead.appendChild(day);
       tableRow.appendChild(td);
