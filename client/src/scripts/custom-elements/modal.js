@@ -1,6 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
+import {create} from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
 /** @const {string} */
@@ -60,8 +61,8 @@ export default class Modal extends HTMLElement {
     this.line_;
   }
 
-  /** 
-   * Called every time element is inserted to DOM. 
+  /**
+   * Called every time element is inserted to DOM.
    */
   connectedCallback() {
     this.overlay_ = document.querySelector(cssSelector.OVERLAY);
@@ -73,7 +74,7 @@ export default class Modal extends HTMLElement {
       {
         callback: this.handleSubscriptionRequest_.bind(this),
         action: actions.SELECTED_DAYS,
-      }
+      },
     ];
 
     subscribeToStore(subscribers);
@@ -117,7 +118,7 @@ export default class Modal extends HTMLElement {
     if (!subscriptionData.days) return;
 
     const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_DAYS}`);
-    
+
     btn.textContent = BTN_SELECTED_TEXT;
     btn.classList.add(cssClass.BTN_SELECTED);
   }
@@ -129,12 +130,26 @@ export default class Modal extends HTMLElement {
    * @private
    */
   renderSubscriptionOptions_(e) {
-    const subWrapper = document.createElement("div");
-    const subTitle = document.createElement("div");
-    const selectWrapper = document.createElement("div");
-    const selectDaysBtn = document.createElement("button");
-    const selectTimesBtn = document.createElement("button");
-    const subscribeBtn = document.createElement("button");
+    debugger;
+    const subWrapper = create("div", {classname: cssClass.MODAL_SUB});
+    const subTitle = create("div", {
+      classname: cssClass.MODAL_SUB_TITLE,
+      copy: MODAL_SUB_TITLE_TEXT,
+    });
+    const selectWrapper = create("div", {classname: cssClass.MODAL_SUB_SELECT});
+    const selectDaysBtn = create("button", {
+      copy: MODAL_DAYS_BTN_TEXT,
+      classname: cssClass.MODAL_SUB_BTN_DAYS,
+      event: {type: "click", fn: this.emit_.bind(this)},
+    });
+    const selectTimesBtn = create("button", {
+      copy: MODAL_TIMES_BTN_TEXT,
+      classname: cssClass.MODAL_SUB_BTN_TIMES,
+    });
+    const subscribeBtn = create("button", {
+      copy: MODAL_SUB_BTN_TEXT,
+      classname: cssClass.MODAL_SUB_BTN,
+    });
 
     this.line_ = e.detail.line;
 
@@ -143,25 +158,6 @@ export default class Modal extends HTMLElement {
     this.classList.add(cssClass.MODAL_ACTIVE);
 
     this.appendChild(this.createModalIcon_());
-
-    subWrapper.classList.add(cssClass.MODAL_SUB);
-
-    subTitle.textContent = MODAL_SUB_TITLE_TEXT;
-    subTitle.classList.add(cssClass.MODAL_SUB_TITLE);
-
-    selectWrapper.classList.add(cssClass.MODAL_SUB_SELECT);
-
-    selectDaysBtn.textContent = MODAL_DAYS_BTN_TEXT;
-    selectTimesBtn.textContent = MODAL_TIMES_BTN_TEXT;
-    subscribeBtn.textContent = MODAL_SUB_BTN_TEXT;
-
-    selectDaysBtn.classList.add(cssClass.MODAL_SUB_BTN_DAYS);
-    selectTimesBtn.classList.add(cssClass.MODAL_SUB_BTN_TIMES);
-    subscribeBtn.classList.add(cssClass.MODAL_SUB_BTN);
-
-    selectDaysBtn.addEventListener(
-      "click",
-      this.emit_.bind(this));
 
     subscribeBtn.addEventListener(
       "click",
@@ -220,7 +216,7 @@ export default class Modal extends HTMLElement {
    */
   populateModal_(line) {
     const lineInfo = getStore().lineInformation[line];
-    const context = document.createElement("div");
+    const context = create("div");
 
     lineInfo.forEach((info) => {
       const {reason} = info;
@@ -263,12 +259,10 @@ export default class Modal extends HTMLElement {
    * @return {Element}
    */
   createModalIcon_() {
-    const modalIcon = document.createElement("div");
-
-    modalIcon.classList.add(cssClass.MODAL_ICON);
-    modalIcon.addEventListener("click", this.toggleModal_.bind(this));
-
-    return modalIcon;
+    return create("div", {
+      classnmae: cssClass.MODAL_ICON,
+      event: {type: "click", fn: this.toggleModal_.bind(this)},
+    });
   }
 
   /**
@@ -294,7 +288,7 @@ export default class Modal extends HTMLElement {
    * Removes existing markup from Modal.
    * @private
    */
-  removeContent_() { 
+  removeContent_() {
     const children = Array.from(this.childNodes)
       .filter((node) => {
         return node.nodeName.toLowerCase() !== cssSelector.WEEK_ELEMENT
