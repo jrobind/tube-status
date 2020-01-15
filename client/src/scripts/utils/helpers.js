@@ -22,8 +22,8 @@ export const create = (elType, options = {}) => {
   // set options
   classname && el.classList.add(classname);
   id && el.setAttribute("id", id);
-  data && el.setAttribute(name, value);
-  event && el.addEventListener(type, fn);
+  Object.keys(data).length && el.setAttribute(name, value);
+  Object.keys(event).length && el.addEventListener(type, fn);
   if (copy) el.innerText = copy;
 
   return el;
