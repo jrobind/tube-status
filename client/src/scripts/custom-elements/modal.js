@@ -260,7 +260,7 @@ export default class Modal extends HTMLElement {
    */
   createModalIcon_() {
     return create("div", {
-      classnmae: cssClass.MODAL_ICON,
+      classname: cssClass.MODAL_ICON,
       event: {type: "click", fn: this.toggleModal_.bind(this)},
     });
   }
