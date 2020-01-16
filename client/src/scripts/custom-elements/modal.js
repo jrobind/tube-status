@@ -114,13 +114,17 @@ export default class Modal extends HTMLElement {
    */
   updateSelectDaysBtn_() {
     const {subscriptionData} = getStore();
+    const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_DAYS}`);
 
     if (!subscriptionData.days) return;
 
-    const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_DAYS}`);
-
-    btn.textContent = BTN_SELECTED_TEXT;
-    btn.classList.add(cssClass.BTN_SELECTED);
+    if (!subscriptionData.days.length) {
+      btn.textContent = MODAL_DAYS_BTN_TEXT;
+      btn.classList.remove(cssClass.BTN_SELECTED);
+    } else {
+      btn.textContent = BTN_SELECTED_TEXT;
+      btn.classList.add(cssClass.BTN_SELECTED);
+    }
   }
 
   /**
