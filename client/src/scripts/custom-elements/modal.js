@@ -83,7 +83,7 @@ export default class Modal extends HTMLElement {
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
     document.addEventListener(
-      customEvents.SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
+      customEvents.SHOW_SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
   }
 
   /**
@@ -130,7 +130,6 @@ export default class Modal extends HTMLElement {
    * @private
    */
   renderSubscriptionOptions_(e) {
-    debugger;
     const subWrapper = create("div", {classname: cssClass.MODAL_SUB});
     const subTitle = create("div", {
       classname: cssClass.MODAL_SUB_TITLE,

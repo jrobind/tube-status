@@ -126,7 +126,7 @@ export default class Authentication extends HTMLElement {
     const detail = {detail: {line: this.line_}};
 
     document.dispatchEvent(
-      new CustomEvent(customEvents.SUBSCRIBE, detail));
+      new CustomEvent(customEvents.SHOW_SUBSCRIBE, detail));
   }
 
   /**
