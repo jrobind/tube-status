@@ -152,6 +152,10 @@ export default class Modal extends HTMLElement {
     const subscribeBtn = create("button", {
       copy: MODAL_SUB_BTN_TEXT,
       classname: cssClass.MODAL_SUB_BTN,
+      event: [
+        {type: "click", fn: this.emit_.bind(this)},
+        {type: "click", fn: this.handleSubscriptionRequest_.bind(this)},
+      ],
     });
 
     this.line_ = e.detail.line;
@@ -161,14 +165,6 @@ export default class Modal extends HTMLElement {
     this.classList.add(cssClass.MODAL_ACTIVE);
 
     this.appendChild(this.createModalIcon_());
-
-    subscribeBtn.addEventListener(
-      "click",
-      this.emit_.bind(this));
-
-    subscribeBtn.addEventListener(
-      "click",
-      this.handleSubscriptionRequest_.bind(this));
 
     selectWrapper.appendChild(selectDaysBtn);
     selectWrapper.appendChild(selectTimesBtn);
