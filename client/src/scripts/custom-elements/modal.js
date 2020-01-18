@@ -44,6 +44,7 @@ const cssClass = {
 const cssSelector = {
   OVERLAY: ".overlay",
   WEEK_ELEMENT: "tube-status-week",
+  TIME_ELEMENT: "tube-status-time",
 };
 
 /**
@@ -72,8 +73,8 @@ export default class Modal extends HTMLElement {
         action: actions.SELECTED_DAYS,
       },
       {
-        callback: this.handleSubscriptionRequest_.bind(this),
-        action: actions.SELECTED_DAYS,
+        callback: this.updateSelectTimesBtn_.bind(this),
+        action: actions.SELECTED_HOURS,
       },
     ];
 
@@ -128,6 +129,26 @@ export default class Modal extends HTMLElement {
   }
 
   /**
+   * Updates the 'select times' button state once subscription
+   * data has been receieved.
+   * @private
+   */
+  updateSelectTimesBtn_() {
+    const {subscriptionData} = getStore();
+    const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_TIMES}`);
+
+    if (!subscriptionData.hours) return;
+
+    if (!subscriptionData.hours.length) {
+      btn.textContent = MODAL_TIMES_BTN_TEXT;
+      btn.classList.remove(cssClass.BTN_SELECTED);
+    } else {
+      btn.textContent = BTN_SELECTED_TEXT;
+      btn.classList.add(cssClass.BTN_SELECTED);
+    }
+  }
+
+  /**
    * Renders markup allowing users to specify
    * subscription timeframes.
    * @param {CustomEvent} e
@@ -148,14 +169,12 @@ export default class Modal extends HTMLElement {
     const selectTimesBtn = create("button", {
       copy: MODAL_TIMES_BTN_TEXT,
       classname: cssClass.MODAL_SUB_BTN_TIMES,
+      event: {type: "click", fn: this.emit_.bind(this)},
     });
     const subscribeBtn = create("button", {
       copy: MODAL_SUB_BTN_TEXT,
       classname: cssClass.MODAL_SUB_BTN,
-      event: [
-        {type: "click", fn: this.emit_.bind(this)},
-        {type: "click", fn: this.handleSubscriptionRequest_.bind(this)},
-      ],
+      event: {type: "click", fn: this.handleSubscriptionRequest_.bind(this)},
     });
 
     this.line_ = e.detail.line;
@@ -187,25 +206,27 @@ export default class Modal extends HTMLElement {
       userProfile,
       pushSubscription,
       lineSubscriptions,
-      subscriptionData,
+      subscriptionData: {days, hours},
     } = getStore();
 
-    console.log('reaching subscription data', subscriptionData);
+    if (userProfile.signedIn && pushSubscription && days && hours) {
+      const window = {days, hours};
 
-    // if (userProfile.signedIn && pushSubscription) {
-    //   // push new line subscription to stored array if subscribing,
-    //   // otherwise remove unsubscribed line
-    //   const result = await apiSubscribe(pushSubscription, this.line_);
+      // push new line subscription to stored array if subscribing,
+      // otherwise remove unsubscribed line
+      const result = await apiSubscribe(pushSubscription, this.line_, window);
 
-    //   result.lines ?
-    //     lineSubscriptions.push(result.lines) :
-    //     this.handleError_(result);
+      result.lines ?
+        lineSubscriptions.push(result.lines) :
+        this.handleError_(result);
 
-    //   updateStore({
-    //     action: actions.LINE_SUBSCRIPTION,
-    //     data: {lineSubscriptions},
-    //   });
-    // }
+      updateStore({
+        action: actions.LINE_SUBSCRIPTION,
+        data: {lineSubscriptions},
+      });
+
+      this.toggleModal_();
+    }
   }
 
   /**
@@ -230,11 +251,11 @@ export default class Modal extends HTMLElement {
 
   /**
    * Shows modal with line information releavnt to clicked line.
-   * @param {CustomEvent} e
+   * @param {CustomEvent=} e
    * @private
    */
   toggleModal_(e) {
-    const {line} = e.detail;
+    const line = e ? e.detail.line : null;
 
     document.dispatchEvent(
       new CustomEvent(customEvents.MODAL_CLOSE));
@@ -290,14 +311,21 @@ export default class Modal extends HTMLElement {
   removeContent_() {
     const children = Array.from(this.childNodes)
       .filter((node) => {
-        return node.nodeName.toLowerCase() !== cssSelector.WEEK_ELEMENT
+        const name = node.nodeName.toLowerCase();
+        const exclude = [cssSelector.WEEK_ELEMENT, cssSelector.TIME_ELEMENT];
+
+        if (!exclude.includes(name)) return node;
       });
 
     children.forEach((el) => this.removeChild(el));
 
     updateStore({
       action: actions.SELECTED_DAYS,
-      data: {days: null, time: null},
+      data: {days: null},
+    });
+    updateStore({
+      action: actions.SELECTED_HOURS,
+      data: {hours: null},
     });
   }
 

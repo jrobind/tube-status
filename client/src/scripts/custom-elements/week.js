@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {create} from "../utils/helpers.js";
+import {create, returnKeys} from "../utils/helpers.js";
 const {updateStore, getStore} = store;
 
 /** @const {string} */
@@ -16,10 +16,11 @@ const cssClass = {
   DAY_SELECT: "tube-status-week-day__select",
   DAY_SELECT_ACTIVE: "tube-status-week-day__select--active",
   SUBMIT_BTN: "tube-status-week__btn",
+  MODAL_SUB_BTN_TIMES: "tube-status-modal-sub__btn-times",
 };
 
 /**
- * Tube line custom element.
+ * Week custom element.
  */
 export default class Week extends HTMLElement {
   /** Create tube line custom element. */
@@ -44,6 +45,7 @@ export default class Week extends HTMLElement {
       customEvents.SHOW_WEEK, this.initHandler_.bind(this));
     document.addEventListener(
       customEvents.MODAL_CLOSE, this.reset_.bind(this));
+    document.addEventListener("click", this.reset_.bind(this));
   }
 
   /**
@@ -89,9 +91,11 @@ export default class Week extends HTMLElement {
    * @private
    */
   handleSubmitDays_() {
+    const {subscriptionData: {hours}} = getStore();
+
     updateStore({
       action: actions.SELECTED_DAYS,
-      data: {days: this.days_, time: null},
+      data: {days: this.days_, hours},
     });
 
     this.reset_();
@@ -100,9 +104,18 @@ export default class Week extends HTMLElement {
   /**
    * Removes existing markup from Week.
    * @private
+   * @param {Event=} e
    */
-  reset_() {
+  reset_(e) {
     const children = Array.from(this.childNodes);
+
+    if (e) {
+      const target = /** @type {HTMLElement} */ (e.target);
+
+      // if user clicks to display day modal we should reset, otherwise return.
+      if (target.classList &&
+        !target.classList.contains(cssClass.MODAL_SUB_BTN_TIMES)) return;
+    }
 
     // resets
     this.classList.remove(cssClass.WEEK_ACTIVE);
@@ -129,10 +142,8 @@ export default class Week extends HTMLElement {
     const tablehead = create("thead");
     const tableBody = create("tbody");
     const tableRow = create("tr");
-    const dayKey = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-    const days = Array.from(Array(7).keys()).map((n) => {
-      return create("th", {classname: cssClass.DAY, copy: dayKey[n]});
-    });
+    const days = returnKeys("day")
+      .map((day) => create("th", {classname: cssClass.DAY, copy: day}));
 
     this.line_ = e.detail.line;
     // show element
