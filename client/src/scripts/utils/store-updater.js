@@ -38,5 +38,9 @@ export const storeUpdater = (store, {action, data}) => {
     store = {...store, subscriptionData: {...data}};
 
     return store;
+  case "SELECTED-HOURS":
+    store = {...store, subscriptionData: {...data}};
+
+    return store;
   }
 };

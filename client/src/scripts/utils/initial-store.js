@@ -16,7 +16,7 @@ export const initialStore = {
   lineSubscriptions: [],
   subscriptionData: {
     days: null,
-    times: null,
+    hours: null,
   },
   lineInformation: null,
 };
