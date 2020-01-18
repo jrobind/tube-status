@@ -20,6 +20,7 @@
   --week-day-color: #d4ebf2;
   --week-day-hover-color: #bed3d9;
   --btn-selected-color: #add9e6;
+  --tooltip-background-color: #4c4c4c;
 }
 
 html, 
@@ -378,33 +379,53 @@ footer {
   min-width: 150px;
 }
 
-/* week styles */
+/* week and time styles */
 .tube-status-week {
   min-height: 110px;
 }
 
-.tube-status-week-day {
+.tube-status-time {
+  min-height: 130px;
+}
+
+.tube-status-time__table-wrapper {
+  overflow: auto;
+  padding: 15px 0;
+  position: relative;
+}
+
+.tube-status-week-day,
+.tube-status-time-hour {
   font-weight: 300;
 }
 
-.tube-status-week table {
+.tube-status-week table,
+.tube-status-time table {
   min-height: 65px;
   width: 100%;
 }
-
-.tube-status-week-day__select {
+  
+.tube-status-week-day__select,
+.tube-status-time-hour__select {
   background-color: var(--week-day-color);
 }
 
-.tube-status-week-day__select:hover {
+.tube-status-time-hour__select {
+  min-width: 39px;
+}
+
+.tube-status-week-day__select:hover,
+.tube-status-time-hour__select:hover {
   cursor: pointer;
 }
 
-.tube-status-week-day__select--active {
+.tube-status-week-day__select--active,
+.tube-status-time-hour__select--active {
   background-color: var(--week-day-hover-color);
 }
 
-.tube-status-week--active {
+.tube-status-week--active,
+.tube-status-time--active {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -414,12 +435,36 @@ footer {
   background: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
-  bottom: -115px;
+  min-height: 130px;
+  bottom: -135px;
 }
 
-.tube-status-week__btn {
+.tube-status-week__btn,
+.tube-status-time__btn {
   align-self: center;
 }
+
+.tube-status-time__btn {
+  margin-bottom: 5px;
+}
+
+/* tooltip styles */
+.tube-status-tooltip {
+  position: absolute;
+  padding: 8px;
+  max-width: 160px;
+  background-color: var(--tooltip-background-color);
+  color: var(--default-white);
+  border-radius: 10px;
+  box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
+  bottom: -45px;
+  left: -60px;
+}
+
+.tube-status-tooltip__message {
+  font-size: 12px;
+}
+
 
 /* animation */
 @keyframes spin {
