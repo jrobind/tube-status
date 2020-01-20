@@ -14,7 +14,7 @@ router.get("/subscribe",
     // find current user line subscriptions and send to client
     db.UserModel.findOne({googleId}, (err, resp) => {
       if (resp) {
-        res.json({lines: resp.lines});
+        res.json({subscriptions: resp.subscriptions});
       } else {
         console.log("not finding user");
       }
@@ -29,18 +29,22 @@ router.post(
   middleware.jwtVerify,
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
-    const lines = req.body.line || [];
-    const pushSubscription = req.body.pushSubscription;
-    // save new line subscription and push subscription object to user
+    const {pushSubscription, window: {days, hours}} = req.body;
+    const line = req.body.line || [];
+    const params = {
+      $push: {"subscriptions": {"days": days, "hours": hours, "line": line}},
+      $set: {"pushSubscription": pushSubscription},
+    };
+
+    // save new line subscription data and push
+    // subscription object to user model
     db.UserModel.findOneAndUpdate(
-      {googleId},
-      {$push: {lines}, $set: {pushSubscription}},
-      (err, success) => {
+      {googleId}, params, (err, success) => {
         if (err) {
           console.log("Failed to update");
         } else {
-          console.log("Successfully updated", success);
-          res.json({lines});
+          console.log("Successfully updated!!!", success);
+          res.json({line});
         }
       },
     );
@@ -55,17 +59,18 @@ router.delete(
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
     const line = req.body.line;
+    const params = {
+      $set: {"subscriptions": [], "pushSubscription": pushSubscription},
+    };
 
-    db.UserModel.findOneAndUpdate({googleId}, {$pullAll: {lines: [line]}},
-      (err, success) => {
-        if (err) {
-          console.log("Failed to update");
-        } else {
-          console.log("Successfully removed line", success);
-          res.json({lines: line});
-        }
-      },
-    );
+    db.UserModel.findOneAndUpdate({googleId}, params, (err, success) => {
+      if (err) {
+        console.log("Failed to remove subscription data");
+      } else {
+        console.log("Successfully removed line", success);
+        res.json({lines: line});
+      }
+    });
   },
 );
 
