@@ -6,7 +6,11 @@ const UserSchema = new mongoose.Schema({
   name: String,
   email: String,
   avatar: String,
-  lines: [String],
+  subscriptions: [{
+    line: String,
+    days: [String],
+    hours: [Number],
+  }],
   pushSubscription: Object,
   signedIn: Boolean,
 });
