@@ -44,7 +44,7 @@ router.post(
           console.log("Failed to update");
         } else {
           console.log("Successfully updated!!!", success);
-          res.json({line});
+          res.json({subscription: success});
         }
       },
     );
@@ -60,7 +60,9 @@ router.delete(
     const googleId = res.locals.decoded._json.sub;
     const line = req.body.line;
     const params = {
-      $set: {"subscriptions": [], "pushSubscription": pushSubscription},
+      // need to find the line object
+      $pull: {"subscriptions": {"lines": line}},
+      $set: {"pushSubscription": {}},
     };
 
     db.UserModel.findOneAndUpdate({googleId}, params, (err, success) => {
