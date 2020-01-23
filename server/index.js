@@ -11,6 +11,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const CronJob = require("cron").CronJob;
 const db = require("./models");
 const buildLine = require("./utlis/build-line");
+const {matchesDay, matchesTime} = require("./utlis/date-checker");
 const middleware = require("./middleware");
 require("dotenv").config({path: "../.env"});
 
@@ -78,16 +79,16 @@ app.get(
     };
     // check if user exists. If not, then add to db.
     await db.UserModel.findOne({googleId}, (err, resp) => {
-      let lines;
+      let subscriptions;
       if (!resp) {
         const newUser = new db.UserModel(profileData);
         newUser.save()
           .then((newUser) => {
             console.log("User added to db", newUser);
-            lines = newUser.lines;
+            subscriptions = newUser.subscriptions;
+            console.log(subscriptions, "hello")
           });
       } else {
-        lines = resp.lines;
         // set signed in status
         db.UserModel.updateOne(
           {googleId},
@@ -97,9 +98,9 @@ app.get(
           },
         );
       }
-      // add user line data to req.user,
+      // add user subscription data to req.user,
       // so we can sign token and send back to client
-      req.user.lines = lines;
+      req.user.subscriptions = subscriptions;
     });
 
     const htmlWithEmbeddedJWT = `
@@ -162,18 +163,24 @@ const job = new CronJob("0 */1 * * * *", async () => {
           {"lines": {$in: line.id}, "signedIn": {$in: true}},
           (err, resp) => {
             if (resp.length) {
-              const {pushSubscription} = resp[0];
-              const payload = JSON.stringify({
-                line: line.id,
-                // if delays, send the reason.
-                // Otherwise, send default description
-                status: reason ? reason : statusSeverityDescription,
-              });
-              // send push notification
-              webpush
-                .sendNotification(pushSubscription, payload)
-                .then((res) => console.log(res))
-                .catch((err) => console.error(err));
+              const {days, hours} = resp["subscriptionData"];
+
+              // check subscription window before sending notification
+              if (matchesDay(days) && matchesTime(hours)) {
+                const {pushSubscription} = resp[0];
+                const payload = JSON.stringify({
+                  line: line.id,
+                  // if delays, send the reason.
+                  // Otherwise, send default description
+                  status: reason ? reason : statusSeverityDescription,
+                });
+
+                // send push notification
+                webpush
+                  .sendNotification(pushSubscription, payload)
+                  .then((res) => console.log(res))
+                  .catch((err) => console.error(err));
+              }
             }
           },
         );
@@ -184,7 +191,6 @@ const job = new CronJob("0 */1 * * * *", async () => {
   buildLine();
 });
 
-// start cron job
 job.start();
 
 app.get("/", (req, res) => {
