@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {create, returnKeys} from "../utils/helpers.js";
+import {create, returnKeys, findLineSubscription} from "../utils/helpers.js";
 import Tooltip from "./tooltip.js";
 const {updateStore, getStore} = store;
 
@@ -68,14 +68,13 @@ export default class Time extends HTMLElement {
    * @private
    */
   handlePreselect_() {
-    const {subscriptionData} = getStore();
-    const hours = Array.from(
+    const currentHours = Array.from(
       this.querySelectorAll(`.${cssClass.HOUR_SELECT}`));
 
     // set our locally stored hours reference equal to that within
     // the client store
-    this.hours_ = subscriptionData.hours;
-    hours.forEach((hr) => {
+    this.hours_ = findLineSubscription(this.line_);
+    currentHours.forEach((hr) => {
       if (this.hours_.includes(+hr.getAttribute("hour"))) {
         hr.classList.add(cssClass.HOUR_SELECT_ACTIVE);
       }
@@ -88,15 +87,13 @@ export default class Time extends HTMLElement {
    * @private
    */
   initHandler_(e) {
-    const {subscriptionData} = getStore();
-
     if (this.markupExists_) {
       this.reset_();
     } else {
       this.render_(e);
 
       // if hours are already selected then select them
-      if (subscriptionData.hours) this.handlePreselect_();
+      if (findLineSubscription(this.line_)) this.handlePreselect_();
     }
   }
 
@@ -106,7 +103,7 @@ export default class Time extends HTMLElement {
    * @private
    */
   handleSubmitHours_() {
-    const {subscriptionData: {days}} = getStore();
+    const {days} = findLineSubscription(this.line_);
     const tooltipExists = this.querySelector(cssSelector.TOOLTIP_MESSAGE);
 
     if (this.hours_.length === 1) {
