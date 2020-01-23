@@ -1,9 +1,11 @@
+const {getStore} = store;
+
 /**
  * A DOM element creator utility which creates elements,
  * and sets specified attributes and event listeners.
  * @param {string} elType
  * @param {object=} options
- * @return {Element} el
+ * @return {Element}
  */
 export const create = (elType, options = {}) => {
   const el = document.createElement(elType);
@@ -36,6 +38,11 @@ export const create = (elType, options = {}) => {
   return el;
 };
 
+/**
+ * Returns an array of keys representing table header values.
+ * @param {string} type
+ * @return {Array<string>}
+ */
 export const returnKeys = (type) => {
   const dayKey = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const hourKey = [
@@ -61,4 +68,17 @@ export const returnKeys = (type) => {
   ];
 
   return type === "day" ? dayKey : hourKey;
+};
+
+/**
+ * Attempts to find and return a line subscription data object
+ * from the client store.
+ * @param {string} line
+ * @return {object}
+ */
+export const findLineSubscription = (line) => {
+  const {lineSubscriptions} = getStore();
+  const subData = lineSubscriptions.filter((sub) => sub.line === line);
+
+  return subData.length ? subData[0] : null;
 };
