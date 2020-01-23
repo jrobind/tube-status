@@ -13,10 +13,10 @@ export const initialStore = {
     line: null,
   },
   pushSubscription: null,
-  lineSubscriptions: [],
-  subscriptionData: {
+  lineSubscriptions: [{
+    line: null,
     days: null,
     hours: null,
-  },
+  }],
   lineInformation: null,
 };
