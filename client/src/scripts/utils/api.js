@@ -22,12 +22,13 @@ export const apiLogout = async () => {
  * @async
  * @param {object} pushSubscription
  * @param {string} line
+ * @param {object} window
  * @return {Promise}
  */
-export const apiSubscribe = async (pushSubscription, line) => {
+export const apiSubscribe = async (pushSubscription, line, window) => {
   const options = {
     method: "POST",
-    body: JSON.stringify({pushSubscription, line}),
+    body: JSON.stringify({pushSubscription, line, window}),
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
