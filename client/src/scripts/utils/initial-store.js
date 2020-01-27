@@ -17,10 +17,6 @@ export const initialStore = {
     days: null,
     hours: null,
   },
-  lineSubscriptions: [{
-    line: null,
-    days: null,
-    hours: null,
-  }],
+  lineSubscriptions: [],
   lineInformation: null,
 };
