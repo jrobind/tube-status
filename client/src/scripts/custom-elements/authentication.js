@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiLogout, apiUnsubscribe} from "../utils/api.js";
+import {findLineSubscription} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
@@ -70,7 +71,7 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   attemptTextUpdate_() {
-    const {userProfile: {signedIn}, lineSubscriptions} = getStore();
+    const {userProfile: {signedIn}} = getStore();
 
     if (!signedIn || this.authPath_ === "logout") return;
 
@@ -78,7 +79,7 @@ export default class Authentication extends HTMLElement {
       this.setAttribute("auth-path", "logout");
     } else {
       // check if line subscription exists for current line
-      if (lineSubscriptions.includes(this.line_)) {
+      if (Object.keys(findLineSubscription(this.line_)).length) {
         this.setAttribute("auth-path", "unsubscribe");
       } else {
         this.setAttribute("auth-path", "subscribe");
@@ -180,8 +181,9 @@ export default class Authentication extends HTMLElement {
 
     const result = await apiUnsubscribe(this.line_);
 
-    result.lines ?
-      lineSubscriptions.splice(lineSubscriptions.indexOf(result.lines), 1) :
+    result.subscriptions ?
+      lineSubscriptions.splice(
+        lineSubscriptions.indexOf(result.subscriptions), 1) :
       this.handleError_(result);
 
     // set a minimum loading wheel time
