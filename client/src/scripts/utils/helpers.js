@@ -81,5 +81,5 @@ export const findLineSubscription = (line) => {
   const {lineSubscriptions} = getStore();
   const subData = lineSubscriptions.filter((sub) => sub.line === line);
 
-  return subData.length ? subData[0] : null;
+  return subData.length ? subData[0] : {};
 };
