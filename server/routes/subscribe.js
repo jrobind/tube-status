@@ -39,7 +39,7 @@ router.post(
     // save new line subscription data and push
     // subscription object to user model
     db.UserModel.findOneAndUpdate(
-      {googleId}, params, (err, success) => {
+      {googleId}, params, {new: true}, (err, success) => {
         if (err) {
           console.log("Failed to update");
         } else {
