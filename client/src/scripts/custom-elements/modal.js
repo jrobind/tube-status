@@ -114,12 +114,12 @@ export default class Modal extends HTMLElement {
    * @private
    */
   updateSelectDaysBtn_() {
-    const {subscriptionData} = getStore();
+    const {selectedSubscriptionWindow: {days}} = getStore();
     const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_DAYS}`);
 
-    if (!subscriptionData.days) return;
+    if (!days) return;
 
-    if (!subscriptionData.days.length) {
+    if (!days.length) {
       btn.textContent = MODAL_DAYS_BTN_TEXT;
       btn.classList.remove(cssClass.BTN_SELECTED);
     } else {
@@ -134,12 +134,12 @@ export default class Modal extends HTMLElement {
    * @private
    */
   updateSelectTimesBtn_() {
-    const {subscriptionData} = getStore();
+    const {selectedSubscriptionWindow: {hours}} = getStore();
     const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_TIMES}`);
 
-    if (!subscriptionData.hours) return;
+    if (!hours) return;
 
-    if (!subscriptionData.hours.length) {
+    if (!hours.length) {
       btn.textContent = MODAL_TIMES_BTN_TEXT;
       btn.classList.remove(cssClass.BTN_SELECTED);
     } else {
@@ -198,32 +198,40 @@ export default class Modal extends HTMLElement {
   /**
    * Handles line subscription request.
    * @async
-   * @param {CustomEvent} e
+   * @param {Event} e
    * @private
    */
   async handleSubscriptionRequest_(e) {
     const {
       userProfile,
       pushSubscription,
-      lineSubscriptions,
-      subscriptionData: {days, hours},
+      selectedSubscriptionWindow,
     } = getStore();
 
-    if (userProfile.signedIn && pushSubscription && days && hours) {
-      const window = {days, hours};
+    if (userProfile.signedIn && pushSubscription) {
+      const result = await apiSubscribe(
+        pushSubscription, this.line_, selectedSubscriptionWindow);
+      const {subscriptions} = result.subscription;
 
-      // push new line subscription to stored array if subscribing,
-      // otherwise remove unsubscribed line
-      const result = await apiSubscribe(pushSubscription, this.line_, window);
+      if (subscriptions.length) {
+        const subsWithIdRemoved = subscriptions.map((sub) => {
+          delete sub._id;
+          return sub;
+        });
 
-      result.lines ?
-        lineSubscriptions.push(result.lines) :
+        updateStore({
+          action: actions.LINE_SUBSCRIPTION,
+          data: {lineSubscriptions: subsWithIdRemoved},
+        });
+        // reset current selected subscription window now we have
+        // successfully subscribed
+        updateStore({
+          action: actions.RESET_SELECTED,
+          data: {days: null, hours: null},
+        });
+      } else {
         this.handleError_(result);
-
-      updateStore({
-        action: actions.LINE_SUBSCRIPTION,
-        data: {lineSubscriptions},
-      });
+      }
 
       this.toggleModal_();
     }
@@ -232,13 +240,12 @@ export default class Modal extends HTMLElement {
   /**
    * Gets the relevant line information from client store.
    * @private
-   * @param {string} line
+   * @param {array} line
    */
   populateModal_(line) {
-    const lineInfo = getStore().lineInformation[line];
     const context = create("div");
 
-    lineInfo.forEach((info) => {
+    line.forEach((info) => {
       const {reason} = info;
       const duplicateReason = context.textContent.trimLeft() === reason;
 
@@ -250,15 +257,13 @@ export default class Modal extends HTMLElement {
   }
 
   /**
-   * Shows modal with line information releavnt to clicked line.
+   * Shows modal with line information relevant to clicked line.
    * @param {CustomEvent=} e
    * @private
    */
   toggleModal_(e) {
+    const {lineInformation} = getStore();
     const line = e ? e.detail.line : null;
-
-    document.dispatchEvent(
-      new CustomEvent(customEvents.MODAL_CLOSE));
 
     // remove old markup before toggling visibility
     this.removeContent_();
@@ -266,10 +271,13 @@ export default class Modal extends HTMLElement {
     if (line) {
       this.overlay_.classList.add(cssClass.OVERLAY_DIM);
       this.classList.add(cssClass.MODAL_ACTIVE);
-      this.populateModal_(line);
+      this.populateModal_(lineInformation[line]);
     } else {
       this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
       this.classList.remove(cssClass.MODAL_ACTIVE);
+
+      document.dispatchEvent(
+        new CustomEvent(customEvents.MODAL_CLOSE));
     }
   }
 
@@ -320,12 +328,8 @@ export default class Modal extends HTMLElement {
     children.forEach((el) => this.removeChild(el));
 
     updateStore({
-      action: actions.SELECTED_DAYS,
-      data: {days: null},
-    });
-    updateStore({
-      action: actions.SELECTED_HOURS,
-      data: {hours: null},
+      action: actions.RESET_SELECTED,
+      data: {days: null, hours: null},
     });
   }
 
@@ -344,8 +348,8 @@ export default class Modal extends HTMLElement {
    */
   disconnectedCallback() {
     document.removeEventListener(
-      actions.LINE_CLICK, this.toggleModal_);
+      customEvents.LINE_CLICK, this.toggleModal_);
     document.removeEventListener(
-      actions.SUBSCRIBE, this.handleSubscriptionRequest_);
+      "click", this.handleSubscriptionRequest_);
   }
 }

@@ -1,7 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {create, returnKeys, findLineSubscription} from "../utils/helpers.js";
-const {updateStore} = store;
+import {create, returnKeys} from "../utils/helpers.js";
+const {updateStore, getStore} = store;
 
 /** @const {string} */
 const SUBMIT_BTN_TEXT = "Submit days";
@@ -53,12 +53,14 @@ export default class Week extends HTMLElement {
    * @private
    */
   handlePreselect_() {
+    const {selectedSubscriptionWindow: {days}} = getStore();
     const currentDays = Array.from(
       this.querySelectorAll(`.${cssClass.DAY_SELECT}`));
 
     // set our local days selected reference equal to that within
     // the client store
-    this.days_ = findLineSubscription(this.line_);
+    this.days_ = days;
+
     currentDays.forEach((day) => {
       if (this.days_.includes(day.getAttribute("day"))) {
         day.classList.add(cssClass.DAY_SELECT_ACTIVE);
@@ -72,13 +74,18 @@ export default class Week extends HTMLElement {
    * @private
    */
   initHandler_(e) {
+    // TODO: update logic to handle previously submitted subscriptions
+    // eslint-disable-next-line max-len
+    // const lineSubsExist = Object.keys(findLineSubscription(this.line_)).length;
+    const {selectedSubscriptionWindow: {days}} = getStore();
+
     if (this.markupExists_) {
       this.reset_();
     } else {
       this.render_(e);
 
       // if days are already selected then select them
-      if (findLineSubscription(this.line_)) this.handlePreselect_();
+      if (days) this.handlePreselect_();
     }
   }
 
@@ -88,7 +95,7 @@ export default class Week extends HTMLElement {
    * @private
    */
   handleSubmitDays_() {
-    const {hours} = findLineSubscription(this.line_);
+    const {selectedSubscriptionWindow: {hours}} = getStore();
 
     updateStore({
       action: actions.SELECTED_DAYS,

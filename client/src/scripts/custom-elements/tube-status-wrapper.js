@@ -43,10 +43,10 @@ export default class TubeStatusWrapper extends HTMLElement {
     if (signedIn) {
       const result = await apiGetLineSubscriptions();
 
-      if (result.lines) {
+      if (result.subscriptions) {
         updateStore({
           action: actions.LINE_SUBSCRIPTION,
-          data: {lineSubscriptions: result.lines},
+          data: {lineSubscriptions: result.subscriptions},
         });
       } else {
         this.handleError_(result);

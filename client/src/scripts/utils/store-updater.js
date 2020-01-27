@@ -31,15 +31,25 @@ export const storeUpdater = (store, {action, data}) => {
 
     return store;
   case "LINE-SUBSCRIPTION":
-    store = {...store, ...data};
+    store = {
+      ...store,
+      lineSubscriptions: [
+        ...store.lineSubscriptions,
+        ...data.lineSubscriptions,
+      ],
+    };
 
     return store;
   case "SELECTED-DAYS":
-    store = {...store, subscriptionData: {...data}};
+    store = {...store, selectedSubscriptionWindow: {...data}};
 
     return store;
   case "SELECTED-HOURS":
-    store = {...store, subscriptionData: {...data}};
+    store = {...store, selectedSubscriptionWindow: {...data}};
+
+    return store;
+  case "RESET-SELECTED":
+    store = {...store, selectedSubscriptionWindow: {...data}};
 
     return store;
   }

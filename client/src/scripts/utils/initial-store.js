@@ -13,6 +13,10 @@ export const initialStore = {
     line: null,
   },
   pushSubscription: null,
+  selectedSubscriptionWindow: {
+    days: null,
+    hours: null,
+  },
   lineSubscriptions: [{
     line: null,
     days: null,

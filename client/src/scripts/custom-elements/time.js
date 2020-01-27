@@ -9,7 +9,7 @@ const SUBMIT_BTN_TEXT = "Submit time range";
 
 /** @const {string} */
 const TOOLTIP_MESSAGE =
-  "Please select a range of a least one hour,i.e. 09:00 – 10:00.";
+  "Please select a range of a least one hour i.e. 09:00 – 10:00.";
 
 /**
  * CSS classes.
@@ -68,12 +68,14 @@ export default class Time extends HTMLElement {
    * @private
    */
   handlePreselect_() {
+    const {selectedSubscriptionWindow: {hours}} = getStore();
     const currentHours = Array.from(
       this.querySelectorAll(`.${cssClass.HOUR_SELECT}`));
 
     // set our locally stored hours reference equal to that within
     // the client store
-    this.hours_ = findLineSubscription(this.line_);
+    this.hours_ = hours;
+
     currentHours.forEach((hr) => {
       if (this.hours_.includes(+hr.getAttribute("hour"))) {
         hr.classList.add(cssClass.HOUR_SELECT_ACTIVE);
@@ -87,13 +89,18 @@ export default class Time extends HTMLElement {
    * @private
    */
   initHandler_(e) {
+    // TODO: update logic to handle previously submitted subscriptions
+    // eslint-disable-next-line max-len
+    // const lineSubsExist = Object.keys(findLineSubscription(this.line_)).length;
+    const {selectedSubscriptionWindow: {hours}} = getStore();
+
     if (this.markupExists_) {
       this.reset_();
     } else {
       this.render_(e);
 
       // if hours are already selected then select them
-      if (findLineSubscription(this.line_)) this.handlePreselect_();
+      if (hours) this.handlePreselect_();
     }
   }
 
@@ -103,7 +110,7 @@ export default class Time extends HTMLElement {
    * @private
    */
   handleSubmitHours_() {
-    const {days} = findLineSubscription(this.line_);
+    const {selectedSubscriptionWindow: {days}} = getStore();
     const tooltipExists = this.querySelector(cssSelector.TOOLTIP_MESSAGE);
 
     if (this.hours_.length === 1) {
@@ -238,8 +245,7 @@ export default class Time extends HTMLElement {
    * @private
    */
   createRange_(hour) {
-    const current = [...this.hours_, hour]
-      .sort((a, b) => a - b);
+    const current = [...this.hours_, hour].sort((a, b) => a - b);
     const range = [current[0]];
     const difference = (current[current.length - 1] - current[0]) - 1;
 
