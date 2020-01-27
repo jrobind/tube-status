@@ -39,12 +39,12 @@ router.post(
     // save new line subscription data and push
     // subscription object to user model
     db.UserModel.findOneAndUpdate(
-      {googleId}, params, {new: true}, (err, success) => {
+      {googleId}, params, {new: true}, (err, resp) => {
         if (err) {
           console.log("Failed to update");
         } else {
-          console.log("Successfully updated!!!", success);
-          res.json({subscription: success});
+          console.log("Successfully updated!!!", resp);
+          res.json({subscription: resp.subscriptions});
         }
       },
     );
@@ -65,11 +65,11 @@ router.delete(
       $set: {"pushSubscription": {}},
     };
 
-    db.UserModel.findOneAndUpdate({googleId}, params, (err, success) => {
+    db.UserModel.findOneAndUpdate({googleId}, params, (err, resp) => {
       if (err) {
         console.log("Failed to remove subscription data");
       } else {
-        console.log("Successfully removed line", success);
+        console.log("Successfully removed line", resp);
         res.json({lines: line});
       }
     });
