@@ -1,7 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
-import {create} from "../utils/helpers.js";
+import {create, removeSubscriptionId} from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
 /** @const {string} */
@@ -211,17 +211,12 @@ export default class Modal extends HTMLElement {
     if (userProfile.signedIn && pushSubscription) {
       const result = await apiSubscribe(
         pushSubscription, this.line_, selectedSubscriptionWindow);
-      const {subscriptions} = result.subscription;
+      const {subscription} = result;
 
-      if (subscriptions.length) {
-        const subsWithIdRemoved = subscriptions.map((sub) => {
-          delete sub._id;
-          return sub;
-        });
-
+      if (subscription.length) {
         updateStore({
           action: actions.LINE_SUBSCRIPTION,
-          data: {lineSubscriptions: subsWithIdRemoved},
+          data: {lineSubscriptions: removeSubscriptionId(subscription)},
         });
         // reset current selected subscription window now we have
         // successfully subscribed

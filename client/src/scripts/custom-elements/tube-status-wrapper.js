@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
+import {removeSubscriptionId} from "../utils/helpers.js";
 import {actions} from "../constants.js";
 const {updateStore, getStore} = store;
 
@@ -46,7 +47,7 @@ export default class TubeStatusWrapper extends HTMLElement {
       if (result.subscriptions) {
         updateStore({
           action: actions.LINE_SUBSCRIPTION,
-          data: {lineSubscriptions: result.subscriptions},
+          data: {lineSubscriptions: removeSubscriptionId(result.subscriptions)},
         });
       } else {
         this.handleError_(result);

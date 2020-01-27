@@ -83,3 +83,15 @@ export const findLineSubscription = (line) => {
 
   return subData.length ? subData[0] : {};
 };
+
+/**
+ * Removes "_id" property from line subscription objects
+ * @param {array} subs
+ * @return {array}
+ */
+export const removeSubscriptionId = (subs) => {
+  return subs.map((sub) => {
+    delete sub._id;
+    return sub;
+  });
+};
