@@ -221,6 +221,7 @@ body {
 .tube-line-info__reason-title,
 .tube-line-info__reason-context {
   margin: 0 0 0 10px;
+  max-width: 82%;
 }
 
 .tube-line-sub__status {
