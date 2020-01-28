@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiLogout, apiUnsubscribe} from "../utils/api.js";
-import {findLineSubscription} from "../utils/helpers.js";
+import {findLineSubscription, removeSubscriptionId} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
@@ -180,19 +180,20 @@ export default class Authentication extends HTMLElement {
     });
 
     const result = await apiUnsubscribe(this.line_);
+    const {subscription} = result;
 
-    result.subscriptions ?
-      lineSubscriptions.splice(
-        lineSubscriptions.indexOf(result.subscriptions), 1) :
+    if (subscription) {
+      // set a minimum loading wheel time
+      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
+
+      updateStore({
+        action: actions.LINE_SUBSCRIPTION,
+        data: {lineSubscriptions: removeSubscriptionId(subscription)},
+      });
+    } else {
       this.handleError_(result);
+    }
 
-    // set a minimum loading wheel time
-    await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
-
-    updateStore({
-      action: actions.LINE_SUBSCRIPTION,
-      data: {lineSubscriptions},
-    });
     updateStore({
       action: actions.LOADING,
       data: {loadingState: {state: false, line: this.line_}},
