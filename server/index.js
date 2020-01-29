@@ -86,7 +86,6 @@ app.get(
           .then((newUser) => {
             console.log("User added to db", newUser);
             subscriptions = newUser.subscriptions;
-            console.log(subscriptions, "hello")
           });
       } else {
         // set signed in status
@@ -98,7 +97,7 @@ app.get(
           },
         );
       }
-      // add user subscription data to req.user,
+      // add user line subscription data to req.user,
       // so we can sign token and send back to client
       req.user.subscriptions = subscriptions;
     });
@@ -158,32 +157,33 @@ const job = new CronJob("0 */1 * * * *", async () => {
       }
 
       if (diffExists) {
-        // query users and send notification
-        db.UserModel.find(
-          {"lines": {$in: line.id}, "signedIn": {$in: true}},
-          (err, resp) => {
-            if (resp.length) {
-              const {days, hours} = resp["subscriptionData"];
+        const params = {
+          "subscriptions": {"line": line},
+          "signedIn": {$in: true},
+        };
 
-              // check subscription window before sending notification
-              if (matchesDay(days) && matchesTime(hours)) {
-                const {pushSubscription} = resp[0];
-                const payload = JSON.stringify({
-                  line: line.id,
-                  // if delays, send the reason.
-                  // Otherwise, send default description
-                  status: reason ? reason : statusSeverityDescription,
-                });
+        db.UserModel.find(params, (err, resp) => {
+          if (resp.length) {
+            const {days, hours} = resp[0].subscriptions.filter((sub) =>{
+              return sub.line === line.id;
+            });
 
-                // send push notification
-                webpush
-                  .sendNotification(pushSubscription, payload)
-                  .then((res) => console.log(res))
-                  .catch((err) => console.error(err));
-              }
+            // check subscription window before sending notification
+            if (matchesDay(days) && matchesTime(hours)) {
+              const {pushSubscription} = resp[0];
+              const payload = JSON.stringify({
+                line: line.id,
+                status: reason ? reason : statusSeverityDescription,
+              });
+
+              // send push notification
+              webpush
+                .sendNotification(pushSubscription, payload)
+                .then((res) => console.log(res))
+                .catch((err) => console.error(err));
             }
-          },
-        );
+          }
+        });
       }
     });
   });
