@@ -315,7 +315,7 @@ footer {
 
 /* modal styles */
 .tube-status-modal {
-  display: none;  
+  display: none;
 }
 
 .tube-status-modal--active {
@@ -330,6 +330,8 @@ footer {
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
   z-index: 2;
+  max-height: 85%;
+  overflow-y: scroll;
 }
 
 .tube-status-modal__caption {
