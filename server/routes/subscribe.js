@@ -60,19 +60,22 @@ router.delete(
     const googleId = res.locals.decoded._json.sub;
     const line = req.body.line;
     const params = {
-      // need to find the line object
-      $pull: {"subscriptions": {"lines": line}},
+      $pull: {"subscriptions": {"line": line}},
       $set: {"pushSubscription": {}},
     };
 
-    db.UserModel.findOneAndUpdate({googleId}, params, (err, resp) => {
-      if (err) {
-        console.log("Failed to remove subscription data");
-      } else {
-        console.log("Successfully removed line", resp);
-        res.json({lines: line});
-      }
-    });
+    db.UserModel.findOneAndUpdate(
+      {googleId},
+      params,
+      {new: true},
+      (err, resp) => {
+        if (err) {
+          console.log("Failed to remove subscription data");
+        } else {
+          console.log("Successfully removed line", resp);
+          res.json({subscription: resp.subscriptions});
+        }
+      });
   },
 );
 
