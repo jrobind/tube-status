@@ -26,6 +26,7 @@ const BTN_SELECTED_TEXT = "Selected";
 const cssClass = {
   MODAL_ACTIVE: "tube-status-modal--active",
   MODAL_CAPTION: "tube-status-modal__caption",
+  MODAL_REASON: "tube-status-modal__reason",
   MODAL_ICON: "tube-status-modal__icon",
   OVERLAY_DIM: "dim",
   MODAL_SUB: "tube-status-modal-sub",
@@ -218,6 +219,7 @@ export default class Modal extends HTMLElement {
           action: actions.LINE_SUBSCRIPTION,
           data: {lineSubscriptions: removeSubscriptionId(subscription)},
         });
+
         // reset current selected subscription window now we have
         // successfully subscribed
         updateStore({
@@ -238,14 +240,17 @@ export default class Modal extends HTMLElement {
    * @param {array} line
    */
   populateModal_(line) {
-    const context = create("div");
+    const context = create("div", {classname: cssClass.MODAL_CAPTION});
 
     line.forEach((info) => {
       const {reason} = info;
       const duplicateReason = context.textContent.trimLeft() === reason;
+      const reasonEl = create("div", {classname: cssClass.MODAL_REASON});
 
-      context.classList.add(cssClass.MODAL_CAPTION);
-      !duplicateReason ? context.textContent += ` ${reason}` : null;
+      if (!duplicateReason) {
+        reasonEl.textContent += ` ${reason}`;
+        context.appendChild(reasonEl);
+      }
 
       this.renderDelayContext_(context);
     });
