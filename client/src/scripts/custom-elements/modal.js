@@ -1,7 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
-import {create, removeSubscriptionId} from "../utils/helpers.js";
+import {create, removeSubscriptionId, removeDuplicate} from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
 /** @const {string} */
@@ -271,7 +271,7 @@ export default class Modal extends HTMLElement {
     if (line) {
       this.overlay_.classList.add(cssClass.OVERLAY_DIM);
       this.classList.add(cssClass.MODAL_ACTIVE);
-      this.populateModal_(lineInformation[line]);
+      this.populateModal_(removeDuplicate(lineInformation[line]));
     } else {
       this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
       this.classList.remove(cssClass.MODAL_ACTIVE);

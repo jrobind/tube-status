@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, delayTypes, customEvents} from "../constants.js";
+import {removeDuplicate} from "../utils/helpers.js";
 const {subscribeToStore, getStore} = store;
 
 /** @const {string} */
@@ -75,27 +76,12 @@ export default class TubeLine extends HTMLElement {
   }
 
   /**
-   * Checks for and removes duplicate disruption reasons.
-   * @param {array} lines
-   * @return {array}
-   * @private
-   */
-  removeDuplicate(lines) {
-    return lines.reduce((unique, line) => {
-      if (!unique.some((obj) => obj.reason === line.reason)) {
-        unique.push(line);
-      }
-      return unique;
-    }, []);
-  }
-
-  /**
    * Updates DOM with every new line status.
    * @private
    */
   updateDOM_() {
     const {lineInformation} = getStore();
-    const lineInfo = this.removeDuplicate(lineInformation[this.line_]);
+    const lineInfo = removeDuplicate(lineInformation[this.line_]);
 
     lineInfo.forEach((info, i)=> {
       const {status, reason} = info;
