@@ -1,7 +1,11 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
 import {customEvents, actions} from "../constants.js";
-import {create, removeSubscriptionId, removeDuplicate} from "../utils/helpers.js";
+import {
+  create,
+  removeSubscriptionId,
+  removeDuplicate,
+} from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
 /** @const {string} */
@@ -25,6 +29,7 @@ const BTN_SELECTED_TEXT = "Selected";
  */
 const cssClass = {
   MODAL_ACTIVE: "tube-status-modal--active",
+  MODAL_SUBSCRIBE: "tube-status-modal--subscribe",
   MODAL_CAPTION: "tube-status-modal__caption",
   MODAL_REASON: "tube-status-modal__reason",
   MODAL_ICON: "tube-status-modal__icon",
@@ -183,6 +188,7 @@ export default class Modal extends HTMLElement {
     // show modal
     this.overlay_.classList.add(cssClass.OVERLAY_DIM);
     this.classList.add(cssClass.MODAL_ACTIVE);
+    this.classList.add(cssClass.MODAL_SUBSCRIBE);
 
     this.appendChild(this.createModalIcon_());
 
@@ -216,7 +222,7 @@ export default class Modal extends HTMLElement {
 
       if (subscription.length) {
         updateStore({
-          action: actions.LINE_SUBSCRIPTION,
+          action: actions.LINE_SUBSCRIBE,
           data: {lineSubscriptions: removeSubscriptionId(subscription)},
         });
 
@@ -275,6 +281,7 @@ export default class Modal extends HTMLElement {
     } else {
       this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
       this.classList.remove(cssClass.MODAL_ACTIVE);
+      this.classList.remove(cssClass.MODAL_SUBSCRIBE);
 
       document.dispatchEvent(
         new CustomEvent(customEvents.MODAL_CLOSE));

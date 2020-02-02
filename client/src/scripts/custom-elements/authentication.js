@@ -41,10 +41,16 @@ export default class Authentication extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    subscribeToStore({
-      callback: this.attemptTextUpdate_.bind(this),
-      action: actions.LINE_SUBSCRIPTION,
-    });
+    subscribeToStore([
+      {
+        callback: this.attemptTextUpdate_.bind(this),
+        action: actions.LINE_SUBSCRIBE,
+      },
+      {
+        callback: this.attemptTextUpdate_.bind(this),
+        action: actions.LINE_UNSUBSCRIBE,
+      },
+    ]);
     this.addEventListener("click", this.handleAuth_.bind(this));
     this.handleJWT_();
     this.render_();
@@ -171,8 +177,6 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleUnSubscribeRequest_() {
-    const {lineSubscriptions} = getStore();
-
     // activate loading state
     updateStore({
       action: actions.LOADING,
@@ -187,7 +191,7 @@ export default class Authentication extends HTMLElement {
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
 
       updateStore({
-        action: actions.LINE_SUBSCRIPTION,
+        action: actions.LINE_UNSUBSCRIBE,
         data: {lineSubscriptions: removeSubscriptionId(subscription)},
       });
     } else {

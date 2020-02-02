@@ -30,21 +30,21 @@ export const storeUpdater = (store, {action, data}) => {
     store = {...store, ...data};
 
     return store;
-  case "LINE-SUBSCRIPTION":
-    if (data.lineSubscriptions.length) {
-      store = {
-        ...store,
-        lineSubscriptions: [
-          ...store.lineSubscriptions,
-          ...data.lineSubscriptions,
-        ],
-      };
-    } else {
-      store = {
-        ...store,
-        lineSubscriptions: [...data.lineSubscriptions],
-      };
-    }
+  case "LINE-SUBSCRIBE":
+    store = {
+      ...store,
+      lineSubscriptions: [
+        ...store.lineSubscriptions,
+        ...data.lineSubscriptions,
+      ],
+    };
+
+    return store;
+  case "LINE-UNSUBSCRIBE":
+    store = {
+      ...store,
+      lineSubscriptions: [...data.lineSubscriptions],
+    };
 
     return store;
   case "SELECTED-DAYS":
