@@ -158,7 +158,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
 
       if (diffExists) {
         const params = {
-          "subscriptions": {"line": line},
+          "subscriptions.line": {$in: line.id},
           "signedIn": {$in: true},
         };
 
@@ -166,11 +166,12 @@ const job = new CronJob("0 */1 * * * *", async () => {
           if (resp.length) {
             const {days, hours} = resp[0].subscriptions.filter((sub) =>{
               return sub.line === line.id;
-            });
+            })[0];
 
             // check subscription window before sending notification
             if (matchesDay(days) && matchesTime(hours)) {
               const {pushSubscription} = resp[0];
+              console.log(pushSubscription, 'hello sir', resp)
               const payload = JSON.stringify({
                 line: line.id,
                 status: reason ? reason : statusSeverityDescription,
