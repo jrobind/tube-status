@@ -46,7 +46,7 @@ export default class TubeStatusWrapper extends HTMLElement {
 
       if (result.subscriptions) {
         updateStore({
-          action: actions.LINE_SUBSCRIPTION,
+          action: actions.LINE_SUBSCRIBE,
           data: {lineSubscriptions: removeSubscriptionId(result.subscriptions)},
         });
       } else {
