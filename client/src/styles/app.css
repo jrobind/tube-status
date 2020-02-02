@@ -92,6 +92,11 @@ body {
   margin: 0 25px;
 }
 
+/* authentication styles */
+.tube-status-authentication:hover {
+  cursor: pointer;
+}
+
 /* tube-line styles */
 .tube-line {
   height: 82px;

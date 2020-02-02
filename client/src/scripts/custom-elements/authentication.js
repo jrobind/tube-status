@@ -4,6 +4,14 @@ import {findLineSubscription, removeSubscriptionId} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
+/**
+ * CSS classes.
+ * @enum {string}
+ */
+const cssClass = {
+  AUTHENTICATION: "tube-status-authentication",
+};
+
 /** @const {number} */
 const LOADING_DELAY = 500;
 /** @const {string} */
@@ -51,6 +59,7 @@ export default class Authentication extends HTMLElement {
         action: actions.LINE_UNSUBSCRIBE,
       },
     ]);
+    this.classList.add(cssClass.AUTHENTICATION);
     this.addEventListener("click", this.handleAuth_.bind(this));
     this.handleJWT_();
     this.render_();
