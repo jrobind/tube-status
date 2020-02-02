@@ -330,6 +330,9 @@ footer {
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
   z-index: 2;
+}
+
+.tube-status-modal--active:not(.tube-status-modal--subscribe) {
   max-height: 85%;
   overflow-y: scroll;
 }
@@ -382,7 +385,7 @@ footer {
   min-width: 150px;
 }
 
-.tube-status-modal__caption div:not(:last-child) {
+.tube-status-modal__caption div:not(:last-of-type) {
   margin-bottom: 12px;
 }
 
