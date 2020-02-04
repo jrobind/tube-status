@@ -89,9 +89,6 @@ export default class Time extends HTMLElement {
    * @private
    */
   initHandler_(e) {
-    // TODO: update logic to handle previously submitted subscriptions
-    // eslint-disable-next-line max-len
-    // const lineSubsExist = Object.keys(findLineSubscription(this.line_)).length;
     const {selectedSubscriptionWindow: {hours}} = getStore();
 
     if (this.markupExists_) {
