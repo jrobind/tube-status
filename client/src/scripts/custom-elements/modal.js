@@ -8,6 +8,9 @@ import {
 } from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
+/** @const {number} */
+const LOADING_DELAY = 500;
+
 /** @const {string} */
 const MODAL_SUB_TITLE_TEXT = "Specify your subscription times:";
 
@@ -221,6 +224,21 @@ export default class Modal extends HTMLElement {
       const {subscription} = result;
 
       if (subscription.length) {
+        this.toggleModal_();
+
+        updateStore({
+          action: actions.LOADING,
+          data: {loadingState: {state: true, line: this.line_}},
+        });
+
+        // set a minimum loading wheel time
+        await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
+
+        updateStore({
+          action: actions.LOADING,
+          data: {loadingState: {state: false, line: this.line_}},
+        });
+
         updateStore({
           action: actions.LINE_SUBSCRIBE,
           data: {lineSubscriptions: removeSubscriptionId(subscription)},
@@ -235,8 +253,6 @@ export default class Modal extends HTMLElement {
       } else {
         this.handleError_(result);
       }
-
-      this.toggleModal_();
     }
   }
 

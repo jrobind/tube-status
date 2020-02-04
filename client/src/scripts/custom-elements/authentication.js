@@ -14,8 +14,10 @@ const cssClass = {
 
 /** @const {number} */
 const LOADING_DELAY = 500;
+
 /** @const {string} */
 const SIGN_IN_TEXT = "sign-in to subscribe";
+
 /** @const {string} */
 const LOGIN_TEXT = "Log in with Google";
 
