@@ -276,14 +276,15 @@ footer {
 }
 
 /* loading wheel styles */
-.tube-line-sub .tube-status-loading--active-line + tube-status-authentication,
+.tube-status-loading.tube-status-loading--active-line + .tube-status-authentication,
 .tube-status-loading,
 .tube-status-modal,
 .app-wrapper.app-wrapper--hidden {
   display: none;
 }
 
-.tube-line-sub .tube-status-loading + tube-status-authentication,
+
+.tube-status-loading + .tube-status-authentication,
 .tube-status-loading--active,
 .tube-status-loading--active-line,
 .app-wrapper {
@@ -313,9 +314,7 @@ footer {
 }
 
 .tube-status-loading--active-line {
-  position: absolute;
-  top: 0;
-  left: 300px;
+  margin-left: 77px;
 }
 
 /* modal styles */
