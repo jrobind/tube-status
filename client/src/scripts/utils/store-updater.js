@@ -22,7 +22,11 @@ export const storeUpdater = (store, {action, data}) => {
     store = {...store, ...data};
 
     return store;
-  case "LOADING":
+  case "LOADING-LINE":
+    store = {...store, ...data};
+
+    return store;
+  case "LOADING-HEADER":
     store = {...store, ...data};
 
     return store;

@@ -42,11 +42,22 @@ export default class Loading extends HTMLElement {
    */
   connectedCallback() {
     const isApp = this.hasAttribute("app");
-    const action = isApp ? actions.LOADING_APP : actions.LOADING;
-    const callback = isApp ?
-      this.handleLoadingApp_.bind(this) :
-      this.handleLoading_.bind(this);
+    const isHeader = this.hasAttribute("header");
+    let action;
+    let callback;
+
     this.appWrapper_ = document.querySelector(cssSelector.APP_WRAPPER);
+
+    if (isApp) {
+      action = actions.LOADING_APP;
+      callback = this.handleLoadingApp_.bind(this);
+    } else if (isHeader) {
+      action = actions.LOADING_HEADER;
+      callback = this.handleLoadingHeader_.bind(this);
+    } else {
+      action = actions.LOADING_LINE;
+      callback = this.handleLoadingLine_.bind(this);
+    }
 
     subscribeToStore({callback, action});
   }
@@ -71,22 +82,27 @@ export default class Loading extends HTMLElement {
    * Handles loading line logic.
    * @private
    */
-  handleLoading_() {
+  handleLoadingLine_() {
     const {loadingState: {state, line}} = getStore();
-    const isHeaderLoading = this.classList.contains(cssClass.LOADING_HEADER);
     const classList = this.classList;
 
-    // proceed if this loading element matches the line
     if (this.line_ !== line) return;
 
-    if (state) {
-      isHeaderLoading ?
-        classList.add(cssClass.LOADING_HEADER_ACTIVE) :
-        classList.add(cssClass.LOADING_LINE_ACTIVE);
-    } else {
-      isHeaderLoading ?
-        classList.remove(cssClass.LOADING_HEADER_ACTIVE) :
-        classList.remove(cssClass.LOADING_LINE_ACTIVE);
-    }
+    state ?
+      classList.add(cssClass.LOADING_LINE_ACTIVE) :
+      classList.remove(cssClass.LOADING_LINE_ACTIVE);
+  }
+
+  /**
+   * Handles loading header logic.
+   * @private
+   */
+  handleLoadingHeader_() {
+    const {loadingState: {state}} = getStore();
+    const classList = this.classList;
+
+    state ?
+      classList.add(cssClass.LOADING_LINE_ACTIVE) :
+      classList.remove(cssClass.LOADING_LINE_ACTIVE);
   }
 }

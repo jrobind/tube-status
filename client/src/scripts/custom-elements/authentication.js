@@ -15,6 +15,9 @@ const cssClass = {
 /** @const {number} */
 const LOADING_DELAY = 500;
 
+/** @const {number} */
+const LOADING_DELAY_LOGOUT = 300;
+
 /** @const {string} */
 const SIGN_IN_TEXT = "sign-in to subscribe";
 
@@ -154,13 +157,15 @@ export default class Authentication extends HTMLElement {
    */
   async handleLogout_() {
     updateStore({
-      action: actions.LOADING,
+      action: actions.LOADING_HEADER,
       data: {loadingState: {state: true, line: null}},
     });
 
     const result = await apiLogout();
 
     if (result === 200) {
+      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY_LOGOUT));
+
       localStorage.removeItem("JWT");
       updateStore({
         action: actions.AUTHENTICATION,
@@ -172,7 +177,7 @@ export default class Authentication extends HTMLElement {
       this.render_();
 
       updateStore({
-        action: actions.LOADING,
+        action: actions.LOADING_HEADER,
         data: {loadingState: {state: false, line: null}},
       });
       // reload page to reset line subscription states
@@ -190,7 +195,7 @@ export default class Authentication extends HTMLElement {
   async handleUnSubscribeRequest_() {
     // activate loading state
     updateStore({
-      action: actions.LOADING,
+      action: actions.LOADING_LINE,
       data: {loadingState: {state: true, line: this.line_}},
     });
 
@@ -198,7 +203,6 @@ export default class Authentication extends HTMLElement {
     const {subscription} = result;
 
     if (subscription) {
-      // set a minimum loading wheel time
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
 
       updateStore({
@@ -210,7 +214,7 @@ export default class Authentication extends HTMLElement {
     }
 
     updateStore({
-      action: actions.LOADING,
+      action: actions.LOADING_LINE,
       data: {loadingState: {state: false, line: this.line_}},
     });
   }

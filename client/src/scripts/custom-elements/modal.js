@@ -227,7 +227,7 @@ export default class Modal extends HTMLElement {
         this.toggleModal_();
 
         updateStore({
-          action: actions.LOADING,
+          action: actions.LOADING_LINE,
           data: {loadingState: {state: true, line: this.line_}},
         });
 
@@ -235,7 +235,7 @@ export default class Modal extends HTMLElement {
         await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
 
         updateStore({
-          action: actions.LOADING,
+          action: actions.LOADING_LINE,
           data: {loadingState: {state: false, line: this.line_}},
         });
 
