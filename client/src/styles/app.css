@@ -277,6 +277,7 @@ footer {
 
 /* loading wheel styles */
 .tube-status-loading.tube-status-loading--active-line + .tube-status-authentication,
+.tube-status-loading.tube-status-loading--active-header + .tube-status-authentication,
 .tube-status-loading,
 .tube-status-modal,
 .app-wrapper.app-wrapper--hidden {
@@ -287,6 +288,7 @@ footer {
 .tube-status-loading + .tube-status-authentication,
 .tube-status-loading--active,
 .tube-status-loading--active-line,
+.tube-status-loading--active-header,
 .app-wrapper {
   display: block;
 }
