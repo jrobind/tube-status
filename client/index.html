@@ -27,11 +27,18 @@
       </tube-status-modal>
       <!-- header -->
       <tube-status-header class="tube-status-header">
-        <h1 class="tube-status-header__heading">TUBE STATUS</h1>
-        <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
-        <tube-status-authentication class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
-        <div class="tube-status-header__avatar">
-          <img class="tube-status-header__avatar-image"> 
+        <div class="tube-status-header__heading">
+          <h1 class="tube-status-header__heading-title">TUBE STATUS</h1>
+        </div>
+        <div class="tube-status-header__profile">
+          <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
+          <tube-status-authentication class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
+          <div class="tube-status-header__subscription">
+            <img src="images/subscriptions.svg" class="tube-status-header__subscription-image"> 
+          </div>
+          <div class="tube-status-header__avatar">
+            <img class="tube-status-header__avatar-image"> 
+          </div>
         </div>
       </tube-status-header>
       <!-- tube wrapper -->

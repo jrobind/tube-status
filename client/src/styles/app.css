@@ -60,7 +60,7 @@ body {
 /* header styles */
 .tube-status-header {
   background-color: var(--default-white);
-  display: block;
+  display: flex;
   min-height: 100px;
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   margin-bottom: 45px;
@@ -74,15 +74,28 @@ body {
   position: relative;
 }
 
-.tube-status-header__avatar {
-  position: absolute;
-  top: 15px;
-  right: 15px;
+.tube-status-header__heading {
+  flex: 75%;
+}
+
+.tube-status-header__subscription-image {
+  width: 45px;
+}
+
+.tube-status-header__profile,
+.tube-status-header__heading {
+  display: flex;
+  align-items: center;
+}
+
+.tube-status-header__profile .tube-status-header__authentication,
+.tube-status-header__profile .tube-status-header__subscription {
+  margin-right: 28px;
 }
 
 .tube-status-header__avatar-image {
-  width: 75px;
-  border-radius: 80px;
+  width: 80px;
+  border-radius: 85px;
 }
 
 /* tube-status-wrapper styles */
