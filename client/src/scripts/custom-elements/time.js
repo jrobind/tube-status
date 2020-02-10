@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {create, returnKeys, findLineSubscription} from "../utils/helpers.js";
+import {create, returnKeys} from "../utils/helpers.js";
 import Tooltip from "./tooltip.js";
 const {updateStore, getStore} = store;
 
