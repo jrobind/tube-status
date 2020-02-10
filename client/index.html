@@ -34,7 +34,9 @@
           <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
           <tube-status-authentication class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='login'></tube-status-authentication>
           <div class="tube-status-header__subscription">
-            <img src="images/subscriptions.svg" class="tube-status-header__subscription-image"> 
+            <tube-status-subscriptions class="tube-status-subscriptions">
+              <img src="images/subscriptions.svg" class="tube-status-header__subscription-image"> 
+            </tube-status-subscriptions>
           </div>
           <div class="tube-status-header__avatar">
             <img class="tube-status-header__avatar-image"> 
