@@ -60,8 +60,8 @@ export default class Subscriptions extends HTMLElement {
         classname: cssClass.SUBSCRIPTION_LINE_NAME,
         copy: sub.line,
       });
-      const lineColor = create(
-        "span", {classname: cssClass.SUBSCRIPTION_LINE_COLOR});
+      const lineColor = create("span", {
+        classname: `${cssClass.SUBSCRIPTION_LINE_COLOR}-${sub.line}`});
 
       subLine.appendChild(lineName);
       subLine.appendChild(lineColor);
