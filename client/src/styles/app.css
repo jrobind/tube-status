@@ -97,6 +97,22 @@ body {
   margin-right: 28px;
 }
 
+.tube-status-subscriptions__line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px;
+}
+
+.tube-status-subscriptions__line-name + span {
+  height: 8px;
+  width: 40px;
+}
+
+.tube-status-subscriptions__line-name {
+  margin-right: 10px;
+}
+
 .tube-status-header__avatar-image {
   width: 80px;
   border-radius: 85px;
@@ -133,59 +149,73 @@ body {
   box-shadow: 0 0 36px rgba(0, 0, 0, 0.1);
 }
 
-.tube-line[line='london-overground'] .tube-line-sub__status {
+.tube-line[line='london-overground'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-london-overground {
   background-color: var(--london-overground-color);
 }
 
-.tube-line[line='dlr'] .tube-line-sub__status {
+.tube-line[line='dlr'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-dlr {
   background-color: var(--dlr-color);
 }
 
-.tube-line[line='tfl-rail'] .tube-line-sub__status {
+.tube-line[line='tfl-rail'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-tfl-rail {
   background-color: var(--tfl-rail-color);
 }
 
-.tube-line[line='waterloo-city'] .tube-line-sub__status {
+.tube-line[line='waterloo-city'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-waterloo-city {
   background-color: var(--waterloo-city-color);
 }
 
-.tube-line[line='victoria'] .tube-line-sub__status {
+.tube-line[line='victoria'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-victoria {
   background-color: var(--victoria-color);
 }
 
-.tube-line[line='piccadilly'] .tube-line-sub__status {
+.tube-line[line='piccadilly'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-piccadilly {
   background-color: var(--piccadilly-color);
 }
 
-.tube-line[line='northern'] .tube-line-sub__status {
+.tube-line[line='northern'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-northern {
   background-color: var(--northern-color);
 }
 
-.tube-line[line='metropolitan'] .tube-line-sub__status {
+.tube-line[line='metropolitan'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-metropolitan {
   background-color: var(--metropolitan-color);
 }
 
-.tube-line[line='jubilee'] .tube-line-sub__status {
+.tube-line[line='jubilee'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-jubilee {
   background-color: var(--jubilee-color);
 }
 
-.tube-line[line='hammersmith-city'] .tube-line-sub__status {
+.tube-line[line='hammersmith-city'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-hammersmith-city {
   background-color: var(--hammersmith-city-color);
 }
 
-.tube-line[line='district'] .tube-line-sub__status {
+.tube-line[line='district'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-district {
   background-color: var(--district-color);
 }
 
-.tube-line[line='circle'] .tube-line-sub__status {
+.tube-line[line='circle'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-circle {
   background-color: var(--circle-color);
 }
 
-.tube-line[line='central'] .tube-line-sub__status {
+.tube-line[line='central'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-central {
   background-color: var(--central-color);
 }
 
-.tube-line[line='bakerloo'] .tube-line-sub__status {
+.tube-line[line='bakerloo'] .tube-line-sub__status,
+.tube-status-subscriptions__line-color-bakerloo {
   background-color: var(--bakerloo-color);
 }
 
@@ -505,7 +535,6 @@ footer {
 .tube-status-tooltip__message {
   font-size: 12px;
 }
-
 
 /* animation */
 @keyframes spin {
