@@ -21,6 +21,7 @@
   --week-day-hover-color: #bed3d9;
   --btn-selected-color: #add9e6;
   --tooltip-background-color: #4c4c4c;
+  --dividing-line-color: rgba(0,0,0,0.1);
 }
 
 html, 
@@ -78,12 +79,9 @@ body {
   flex: 75%;
 }
 
-.tube-status-header__subscription-image {
-  width: 45px;
-}
-
-.tube-status-header__subscription-image:hover {
-  cursor: pointer;
+.tube-status-header__avatar-image {
+  width: 80px;
+  border-radius: 85px;
 }
 
 .tube-status-header__profile,
@@ -97,11 +95,26 @@ body {
   margin-right: 28px;
 }
 
+/* header subscriptions styles */
+.tube-status-subscriptions__heading {
+  font-size: 18px;
+  border-bottom: 1px solid var(--dividing-line-color);
+  padding-bottom: 17px;
+}
+
 .tube-status-subscriptions__line {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 3px;
+}
+
+.tube-status-header__subscription-image {
+  width: 45px;
+}
+
+.tube-status-header__subscription-image:hover {
+  cursor: pointer;
 }
 
 .tube-status-subscriptions__line-name + span {
@@ -111,11 +124,6 @@ body {
 
 .tube-status-subscriptions__line-name {
   margin-right: 10px;
-}
-
-.tube-status-header__avatar-image {
-  width: 80px;
-  border-radius: 85px;
 }
 
 .tube-status-subscriptions__dropdown {

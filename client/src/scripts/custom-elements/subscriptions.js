@@ -3,12 +3,16 @@ import {actions} from "../constants.js";
 import {create} from "../utils/helpers.js";
 const {getStore} = store;
 
+/** @const {string} */
+const SUBSCRIPTIONS_HEADING = "Current subscriptions";
+
 /**
  * CSS classes.
  * @enum {string}
  */
 const cssClass = {
   SUBSCRIPTIONS: "tube-status-subscriptions__dropdown",
+  SUBSCRIPTIONS_HEADING: "tube-status-subscriptions__heading",
   SUBSCRIPTION_LINE: "tube-status-subscriptions__line",
   SUBSCRIPTION_LINE_NAME: "tube-status-subscriptions__line-name",
   SUBSCRIPTION_LINE_COLOR: "tube-status-subscriptions__line-color",
@@ -53,6 +57,12 @@ export default class Subscriptions extends HTMLElement {
   render_() {
     const {lineSubscriptions} = getStore();
     const subWrapper = create("div", {classname: cssClass.SUBSCRIPTIONS});
+    const title = create("h2", {
+      classname: cssClass.SUBSCRIPTIONS_HEADING,
+      copy: SUBSCRIPTIONS_HEADING,
+    });
+
+    subWrapper.appendChild(title);
 
     lineSubscriptions.forEach((sub) => {
       const subLine = create("div", {classname: cssClass.SUBSCRIPTION_LINE});
