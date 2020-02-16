@@ -129,10 +129,22 @@ body {
 .tube-status-subscriptions__dropdown {
   position: absolute;
   background-color: var(--default-white);
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   padding: 10px;
   right: 50px;
   top: 130px;
 }
+
+.tube-status-subscriptions__dropdown:before {
+  content: "";
+  height: 7px;
+  width: 100%;
+  position: absolute;
+  top: -7px;
+  background: inherit;
+  right: 0;
+}
+
 
 /* tube-status-wrapper styles */
 .tube-status-wrapper {
