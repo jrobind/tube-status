@@ -100,6 +100,7 @@ body {
   font-size: 18px;
   border-bottom: 1px solid var(--dividing-line-color);
   padding-bottom: 17px;
+  margin-top: 5px;
 }
 
 .tube-status-subscriptions__line {
@@ -133,6 +134,7 @@ body {
   padding: 10px;
   right: 50px;
   top: 130px;
+  animation: slide-down 0.25s ease;
 }
 
 .tube-status-subscriptions__dropdown:before {
@@ -556,8 +558,19 @@ footer {
   font-size: 12px;
 }
 
-/* animation */
+/* animations */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes slide-down {
+  0% {
+      opacity: 0;
+      transform: translateY(-25px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
