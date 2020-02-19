@@ -4,7 +4,10 @@ import {create} from "../utils/helpers.js";
 const {getStore} = store;
 
 /** @const {string} */
-const SUBSCRIPTIONS_HEADING = "Current subscriptions";
+const SUBSCRIPTIONS_COPY = "Current subscriptions";
+
+/** @const {string} */
+const NO_SUBSCRIPTIONS_COPY = "No subscriptions";
 
 /**
  * CSS classes.
@@ -55,11 +58,16 @@ export default class Subscriptions extends HTMLElement {
    * @private
    */
   render_() {
+    this.removeContent_();
+
     const {lineSubscriptions} = getStore();
+    const titleCopy = lineSubscriptions.length ?
+      SUBSCRIPTIONS_COPY :
+      NO_SUBSCRIPTIONS_COPY;
     const subWrapper = create("div", {classname: cssClass.SUBSCRIPTIONS});
     const title = create("h2", {
       classname: cssClass.SUBSCRIPTIONS_HEADING,
-      copy: SUBSCRIPTIONS_HEADING,
+      copy: titleCopy,
     });
 
     subWrapper.appendChild(title);
