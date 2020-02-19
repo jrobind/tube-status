@@ -53,7 +53,7 @@ export default class Subscriptions extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    this.addEventListener("click", this.toggleSubscriptions_.bind(this));
+    document.addEventListener("click", this.toggleSubscriptions_.bind(this));
     this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
   }
 
@@ -82,15 +82,25 @@ export default class Subscriptions extends HTMLElement {
 
   /**
    * Toggles the display of the line subscrptions dropdown.
+   * @param {Event} e
    * @private
    */
-  toggleSubscriptions_() {
-    this.updateIcon_();
+  toggleSubscriptions_(e) {
+    const target = /** @type {HTMLElement} */ (e.target);
+    const clickOutOfBounds = target.parentNode !== this;
 
-    if (this.dropdownExists_()) {
-      this.removeContent_();
+    if (clickOutOfBounds) {
+      if (this.dropdownExists_()) {
+        this.updateIcon_();
+        this.removeContent_();
+      }
     } else {
-      this.render_();
+      this.updateIcon_();
+      if (this.dropdownExists_()) {
+        this.removeContent_();
+      } else {
+        this.render_();
+      }
     }
   }
 
