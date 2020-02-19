@@ -1,5 +1,4 @@
 import {store} from "../utils/client-store.js";
-import {actions} from "../constants.js";
 import {create} from "../utils/helpers.js";
 const {getStore} = store;
 
@@ -8,6 +7,12 @@ const SUBSCRIPTIONS_COPY = "Current subscriptions";
 
 /** @const {string} */
 const NO_SUBSCRIPTIONS_COPY = "No subscriptions";
+
+/** @const {string} */
+const SUBSCRIPTION_IMG_PATH = "/images/subscriptions.svg";
+
+/** @const {string} */
+const SUBSCRIPTION_FILLED_IMG_PATH = "/images/subscriptions-filled.svg";
 
 /**
  * CSS classes.
@@ -22,12 +27,26 @@ const cssClass = {
 };
 
 /**
+ * CSS class selectors.
+ * @enum {string}
+ */
+const cssSelector = {
+  SUBSCRIPTION_IMG: ".tube-status-header__subscription-image",
+};
+
+/**
  * Subscriptions custom element.
  */
 export default class Subscriptions extends HTMLElement {
   /** Create subscriptions custom element. */
   constructor() {
     super();
+
+    /**
+     * @private
+     * @type {HTMLImageElement}
+     */
+    this.subIconEl_;
   }
 
   /**
@@ -35,6 +54,30 @@ export default class Subscriptions extends HTMLElement {
    */
   connectedCallback() {
     this.addEventListener("click", this.toggleSubscriptions_.bind(this));
+    this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
+  }
+
+  /**
+   * Returns a boolean indicating the existance of the dropdown element.
+   * @return {boolean}
+   * @private
+   */
+  dropdownExists_() {
+    return Array.from(this.children).some((child) => {
+      return child.classList.contains(cssClass.SUBSCRIPTIONS);
+    });
+  }
+
+  /**
+   * Updates subscription icon src attribute.
+   * @private
+   */
+  updateIcon_() {
+    if (this.dropdownExists_()) {
+      this.subIconEl_.src = SUBSCRIPTION_IMG_PATH;
+    } else {
+      this.subIconEl_.src = SUBSCRIPTION_FILLED_IMG_PATH;
+    }
   }
 
   /**
@@ -42,11 +85,9 @@ export default class Subscriptions extends HTMLElement {
    * @private
    */
   toggleSubscriptions_() {
-    const dropdownExists = Array.from(this.children).some((child) => {
-      return child.classList.contains(cssClass.SUBSCRIPTIONS);
-    });
+    this.updateIcon_();
 
-    if (dropdownExists) {
+    if (this.dropdownExists_()) {
       this.removeContent_();
     } else {
       this.render_();
@@ -98,5 +139,13 @@ export default class Subscriptions extends HTMLElement {
 
     children.forEach(
       (child) => child.nodeName !== "IMG" && this.removeChild(child));
+  }
+
+  /**
+   * Called each time custom element is disconnected from the DOM.
+   * @private
+   */
+  disconnectedCallback() {
+    this.removeEventListener("click", this.toggleSubscriptions_);
   }
 }
