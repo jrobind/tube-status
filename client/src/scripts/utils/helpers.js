@@ -47,6 +47,7 @@ export const create = (elType, options = {}) => {
 export const returnKeys = (type) => {
   const dayKey = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const hourKey = [
+    "5",
     "6",
     "7",
     "8",
@@ -95,7 +96,6 @@ export const removeSubscriptionId = (subs) => {
     return sub;
   });
 };
-
 
 /**
  * Checks for and removes duplicate disruption reasons and status'.
