@@ -37,10 +37,7 @@ export const storeUpdater = (store, {action, data}) => {
   case "LINE-SUBSCRIBE":
     store = {
       ...store,
-      lineSubscriptions: [
-        ...store.lineSubscriptions,
-        ...data.lineSubscriptions,
-      ],
+      lineSubscriptions: [...data.lineSubscriptions],
     };
 
     return store;
