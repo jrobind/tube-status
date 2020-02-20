@@ -554,8 +554,6 @@ footer {
   color: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
-  bottom: -45px;
-  left: -60px;
 }
 
 .tube-status-tooltip__message {

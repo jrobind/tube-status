@@ -16,12 +16,16 @@ export default class Tooltip extends HTMLElement {
   /**
    * Create loading custom element.
    * @param {string} message
+   * @param {object} styles
    */
-  constructor(message) {
+  constructor(message, styles) {
     super();
 
     /** @private {string} */
     this.message_ = message;
+
+    /** @private {object} */
+    this.styles_ = styles;
   }
 
   /**
@@ -40,6 +44,12 @@ export default class Tooltip extends HTMLElement {
       classname: cssClass.TOOLTIP_MESSAGE,
       copy: this.message_,
     });
+
+    for (const key in this.styles_) {
+      if (this.styles_.hasOwnProperty(key)) {
+        this.style[key] = this.styles_[key];
+      }
+    }
 
     this.appendChild(messageEl);
   }

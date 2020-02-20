@@ -109,13 +109,15 @@ export default class Time extends HTMLElement {
   handleSubmitHours_() {
     const {selectedSubscriptionWindow: {days}} = getStore();
     const tooltipExists = this.querySelector(cssSelector.TOOLTIP_MESSAGE);
+    const styles = {bottom: "-45px", left: "-60px"};
 
     if (this.hours_.length === 1) {
       if (tooltipExists) return;
 
       // render and and insert tooltip
       this.querySelector(`.${cssClass.SUBMIT_BTN}`)
-        .insertAdjacentElement("afterend", new Tooltip(TOOLTIP_MESSAGE));
+        .insertAdjacentElement(
+          "afterend", new Tooltip(TOOLTIP_MESSAGE, styles));
 
       return;
     }
