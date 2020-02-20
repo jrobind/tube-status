@@ -318,6 +318,10 @@ body {
   border-top-left-radius: 10px;
 }
 
+.tube-line-sub__subscription-image {
+  width: 32px;
+}
+
 .tube-line tube-status-authentication {
   margin-left: 50px;
 }
