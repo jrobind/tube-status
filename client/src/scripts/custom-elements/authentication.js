@@ -2,6 +2,7 @@ import {store} from "../utils/client-store.js";
 import {apiLogout, apiUnsubscribe} from "../utils/api.js";
 import {findLineSubscription, removeSubscriptionId} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
+import Tooltip from "./tooltip.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
 /**
@@ -10,6 +11,16 @@ const {updateStore, subscribeToStore, getStore} = store;
  */
 const cssClass = {
   AUTHENTICATION: "tube-status-authentication",
+  HEADER_AUTHENTICATION: "tube-status-header__authentication",
+};
+
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
+const cssSelector = {
+  AUTHENTICATION_SUBSCRIBE_ICON: ".tube-line-sub__subscription-image",
+  TOOLTIP: ".tube-status-tooltip",
 };
 
 /** @const {number} */
@@ -19,10 +30,18 @@ const LOADING_DELAY = 500;
 const LOADING_DELAY_LOGOUT = 300;
 
 /** @const {string} */
-const SIGN_IN_TEXT = "sign-in to subscribe";
+const UNSUBSCRIBE_IMG_PATH = "/images/unsubscribe.svg";
 
 /** @const {string} */
-const LOGIN_TEXT = "Log in with Google";
+const SUBSCRIBE_IMG_PATH = "/images/subscribe.svg";
+
+/** @const {string} */
+const TOOLTIP_MESSAGE_SUBSCRIBE =
+  "Subscribe to line for push notification status updates";
+
+/** @const {string} */
+const TOOLTIP_MESSAGE_UNSUBSCRIBE =
+  "Unsubscribe from line push notification status updates";
 
 /**
  * Authentication custom element.
@@ -39,11 +58,6 @@ export default class Authentication extends HTMLElement {
     this.authPath_ = this.getAttribute("auth-path");
 
     /** @private {string} */
-    this.authenticationText_ = this.authPath_ === "subscribe" ?
-      SIGN_IN_TEXT :
-      LOGIN_TEXT;
-
-    /** @private {string} */
     this.line_ = this.parentElement.parentElement.getAttribute("line");
 
     /** @private {string} */
@@ -56,18 +70,43 @@ export default class Authentication extends HTMLElement {
   connectedCallback() {
     subscribeToStore([
       {
-        callback: this.attemptTextUpdate_.bind(this),
+        callback: this.attemptAttrUpdate_.bind(this),
         action: actions.LINE_SUBSCRIBE,
       },
       {
-        callback: this.attemptTextUpdate_.bind(this),
+        callback: this.attemptAttrUpdate_.bind(this),
         action: actions.LINE_UNSUBSCRIBE,
       },
     ]);
     this.classList.add(cssClass.AUTHENTICATION);
     this.addEventListener("click", this.handleAuth_.bind(this));
+    this.addEventListener("mouseover", this.toggleTooltip_.bind(this));
+    this.addEventListener("mouseout", this.toggleTooltip_.bind(this));
     this.handleJWT_();
     this.render_();
+  }
+
+  /**
+   * Verify existence of JWT and parse if present.
+   * @param {Event} e
+   * @private
+   */
+  toggleTooltip_(e) {
+    const styles = {top: "11px", left: "400px"};
+
+    if (e.type === "mouseout") {
+      const tooltipEl = document.querySelector(cssSelector.TOOLTIP);
+
+      tooltipEl.parentNode.removeChild(tooltipEl);
+      return;
+    }
+
+    const tooltipEl = this.authPath_ === "subscribe" ?
+      new Tooltip(TOOLTIP_MESSAGE_SUBSCRIBE, styles) :
+      new Tooltip(TOOLTIP_MESSAGE_UNSUBSCRIBE, styles);
+
+    // render and and insert tooltip
+    this.insertAdjacentElement("afterend", tooltipEl);
   }
 
   /**
@@ -87,16 +126,16 @@ export default class Authentication extends HTMLElement {
   }
 
   /**
-   * Attempts attribute & authentication text updates after authentication
+   * Attempts authentication path attribute updates after authentication
    * @private
    */
-  attemptTextUpdate_() {
+  attemptAttrUpdate_() {
     const {userProfile: {signedIn}} = getStore();
 
-    if (!signedIn || this.authPath_ === "logout") return;
+    if (!signedIn || this.authPath_ === "Sign out") return;
 
-    if (this.authPath_ === "login") {
-      this.setAttribute("auth-path", "logout");
+    if (this.authPath_ === "Sign in") {
+      this.setAttribute("auth-path", "Sign out");
     } else {
       // check if line subscription exists for current line
       if (Object.keys(findLineSubscription(this.line_)).length) {
@@ -107,8 +146,6 @@ export default class Authentication extends HTMLElement {
     }
 
     this.authPath_ = this.getAttribute("auth-path");
-    this.authenticationText_ = this.authPath_;
-
     this.render_();
   }
 
@@ -120,10 +157,10 @@ export default class Authentication extends HTMLElement {
     const {userProfile} = getStore();
 
     switch (this.authPath_) {
-    case "login":
+    case "Sign in":
       window.location.href = this.dest_;
       break;
-    case "logout":
+    case "Sign out":
       this.handleLogout_();
       break;
     case "subscribe":
@@ -172,8 +209,7 @@ export default class Authentication extends HTMLElement {
         data: {signedIn: false, avatar: null, id: null},
       });
       // set authentication text back to login
-      this.authenticationText_ = LOGIN_TEXT;
-      this.authPath_ = "login";
+      this.authPath_ = "Sign in";
       this.render_();
 
       updateStore({
@@ -220,11 +256,20 @@ export default class Authentication extends HTMLElement {
   }
 
   /**
-   * Renders link authentication text.
+   * Renders authentication text and updates subscription icon src.
    * @private
    */
   render_() {
-    this.innerHTML = this.authenticationText_;
+    if (this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
+      this.innerHTML = this.authPath_;
+    } else {
+      const subIconEl = /** @type {HTMLImageElement} */ (this.querySelector(
+        cssSelector.AUTHENTICATION_SUBSCRIBE_ICON));
+
+      this.authPath_ === "unsubscribe" ?
+        subIconEl.src = UNSUBSCRIBE_IMG_PATH :
+        subIconEl.src = SUBSCRIBE_IMG_PATH;
+    }
   }
 
   /**
