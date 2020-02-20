@@ -65,7 +65,7 @@ export default class TubeLine extends HTMLElement {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
     const isActive = this.classList.contains(cssClass.ACTIVE);
-    const isAuthEl = target.nodeName === AUTH_ELEMENT_NAME;
+    const isAuthEl = target.parentNode.nodeName === AUTH_ELEMENT_NAME;
 
     // return if the line is not active or the element clicked
     // is an authentication custom element
