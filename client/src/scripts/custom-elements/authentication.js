@@ -80,8 +80,12 @@ export default class Authentication extends HTMLElement {
     ]);
     this.classList.add(cssClass.AUTHENTICATION);
     this.addEventListener("click", this.handleAuth_.bind(this));
-    this.addEventListener("mouseover", this.toggleTooltip_.bind(this));
-    this.addEventListener("mouseout", this.toggleTooltip_.bind(this));
+
+    if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
+      this.addEventListener("mouseover", this.toggleTooltip_.bind(this));
+      this.addEventListener("mouseout", this.toggleTooltip_.bind(this));
+    }
+
     this.handleJWT_();
     this.render_();
   }
