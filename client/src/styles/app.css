@@ -151,6 +151,24 @@ body {
   right: 0;
 }
 
+/* filter styles */
+.tube-status-filter {
+  display: flex;
+  margin: 0 0 8px 40px;
+  align-items: center;
+}
+
+.tube-status-filter__description {
+  margin-right: 12px;
+}
+
+.tube-status-filter__image {
+  width: 45px;
+}
+
+.tube-status-filter__image:hover {
+  cursor: pointer;
+}
 
 /* tube-status-wrapper styles */
 .tube-status-wrapper {
