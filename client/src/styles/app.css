@@ -554,6 +554,7 @@ footer {
   color: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
+  animation: fade-in 0.4s ease;
 }
 
 .tube-status-tooltip__message {
@@ -564,6 +565,11 @@ footer {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 @keyframes slide-down {
