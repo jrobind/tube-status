@@ -89,7 +89,6 @@ export default class Modal extends HTMLElement {
 
     subscribeToStore(subscribers);
 
-    // setup listeners
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
     document.addEventListener(
