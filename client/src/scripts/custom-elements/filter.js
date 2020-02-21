@@ -26,13 +26,19 @@ export default class Filter extends HTMLElement {
 
     /** @private {boolean} */
     this.filter_ = false;
+
+    /**
+     * @type {HTMLImageElement}
+     * @private
+     */
+    this.filterImgEl_ = this.querySelector(cssSelector.FILTER_IMAGE);
   }
 
   /**
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    this.addEventListener("click", () => {
+    this.filterImgEl_.addEventListener("click", () => {
       this.emit_();
       this.toggleIcon_();
     });
@@ -56,10 +62,7 @@ export default class Filter extends HTMLElement {
    * @private
    */
   toggleIcon_() {
-    const filterImgEl = /** @type {HTMLImageElement} */ (
-      this.querySelector(cssSelector.FILTER_IMAGE));
-
-    filterImgEl.src = (this.filter_) ?
+    this.filterImgEl_.src = (this.filter_) ?
       FILTER_ON_IMG_PATH :
       FILTER_OFF_IMG_PATH;
   }
