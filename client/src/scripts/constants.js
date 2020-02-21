@@ -27,6 +27,7 @@ export const customEvents = {
   SHOW_WEEK: "show-week",
   SHOW_TIME: "show-time",
   TIME: "time-selected",
+  FILTER_SUBSCRIPTIONS: "filter-subscriptions",
 };
 
 /**

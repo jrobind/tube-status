@@ -1,8 +1,16 @@
 import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
 import {removeSubscriptionId} from "../utils/helpers.js";
-import {actions} from "../constants.js";
+import {actions, customEvents} from "../constants.js";
 const {updateStore, getStore} = store;
+
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
+const cssSelector = {
+  TUBE_LINE: ".tube-line",
+};
 
 /** @type {number} */
 const FETCH_INTERVAL = 60000;
@@ -29,6 +37,9 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: false, line: null}},
     });
     console.log(getStore());
+
+    document.addEventListener(
+      customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
     // get data every 60 seconds
     // this.fetchInterval_();
   }
@@ -120,6 +131,30 @@ export default class TubeStatusWrapper extends HTMLElement {
         data: {loadingState: {state: false, line: null}},
       });
     }, FETCH_INTERVAL);
+  }
+
+  /**
+   * Filters the view, depending on the toggle state.
+   * @param {CustomEvent} e
+   * @private
+   */
+  filterView_(e) {
+    const {filter} = e.detail;
+    const {lineSubscriptions} = getStore();
+    const subscriptions = lineSubscriptions.map((sub) => sub.line);
+    const tubeLineEls = this.querySelectorAll(cssSelector.TUBE_LINE);
+
+    if (filter) {
+      tubeLineEls.forEach((line) => {
+        if (!subscriptions.includes(line.getAttribute("line"))) {
+          line.setAttribute("hidden", "");
+        }
+      });
+    } else {
+      tubeLineEls.forEach((line) => {
+        if (line.hasAttribute("hidden")) line.removeAttribute("hidden");
+      });
+    }
   }
 
   /**

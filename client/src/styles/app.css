@@ -42,6 +42,10 @@ body {
   color: var(--default-white);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 /* overlay */
 .overlay.dim {
   position: fixed;

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="Description" content="Tube status is a PWA built using the custom elements api that provides London live tube status updates">
+    <meta name="Description" content="Tube status is a PWA built using the custom elements api that provides London tube status updates">
     <meta name="viewport" content="width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ffffff" />
@@ -43,6 +43,11 @@
           </div>
         </div>
       </tube-status-header>
+      <!-- filter component -->
+      <tube-status-filter class="tube-status-filter">
+        <span class="tube-status-filter__description">Toggle subscriptions</span>
+        <img src="images/toggle-off.svg" class="tube-status-filter__image">
+      </tube-status-filter>
       <!-- tube wrapper -->
       <tube-status-wrapper class="tube-status-wrapper">
         <tube-line class="tube-line" line='bakerloo'>
