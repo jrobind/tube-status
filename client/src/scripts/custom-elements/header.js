@@ -51,10 +51,8 @@ export default class Header extends HTMLElement {
   updateAvatar_() {
     const {userProfile: {signedIn, avatar}} = getStore();
 
-    if (signedIn) {
-      this.avatarEl_.src = avatar;
-    } else {
-      this.avatarEl_.src = AVATAR_IMG_PATH;
-    }
+    this.avatarEl_.src = (signedIn) ?
+      avatar :
+      AVATAR_IMG_PATH;
   }
 }

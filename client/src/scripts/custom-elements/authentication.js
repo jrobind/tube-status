@@ -270,9 +270,9 @@ export default class Authentication extends HTMLElement {
       const subIconEl = /** @type {HTMLImageElement} */ (this.querySelector(
         cssSelector.AUTHENTICATION_SUBSCRIBE_ICON));
 
-      this.authPath_ === "unsubscribe" ?
-        subIconEl.src = UNSUBSCRIBE_IMG_PATH :
-        subIconEl.src = SUBSCRIBE_IMG_PATH;
+      subIconEl.src = (this.authPath_ === "unsubscribe") ?
+        UNSUBSCRIBE_IMG_PATH :
+        SUBSCRIBE_IMG_PATH;
     }
   }
 
