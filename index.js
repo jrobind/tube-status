@@ -13,7 +13,7 @@ const db = require("./models");
 const buildLine = require("./utlis/build-line");
 const {matchesDay, matchesTime} = require("./utlis/date-checker");
 const middleware = require("./middleware");
-require("dotenv").config({path: "../.env"});
+require("dotenv").config({path: "./env"});
 
 // require routes
 const subscribe = require("./routes/subscribe");
@@ -22,7 +22,14 @@ const logout = require("./routes/logout");
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "../client")));
+// const options = {
+//   setHeaders(res, path, stat) {
+//     res.set("Service-Worker-Allowed", "/");
+//   },
+// };
+
+app.use(express.static(path.join(__dirname, "/client")));
+// app.use(express.static(path.join(__dirname, "/")));
 app.use(bodyParser.json());
 db.mongoSetup();
 app.use(passport.initialize());
@@ -171,7 +178,6 @@ const job = new CronJob("0 */1 * * * *", async () => {
             // check subscription window before sending notification
             if (matchesDay(days) && matchesTime(hours)) {
               const {pushSubscription} = resp[0];
-              console.log(pushSubscription, 'hello sir', resp)
               const payload = JSON.stringify({
                 line: line.id,
                 status: reason ? reason : statusSeverityDescription,
@@ -195,7 +201,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
 job.start();
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./client/index.html"));
+  res.sendFile(path.join(__dirname, "./index.html"));
 });
 
 app.listen(4000, () => console.log("Server started on port 4000"));

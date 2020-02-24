@@ -1,4 +1,4 @@
-import {store} from "../utils/client-store.js";
+import {store} from "./client-store.js";
 const {getStore} = store;
 
 /**

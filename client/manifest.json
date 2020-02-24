@@ -18,7 +18,7 @@
         "sizes": "512x512",
         "type": "image/png"
     }],
-    "start_url": "./index.html",
+    "start_url": "http://localhost:4000/",
     "display": "standalone",
     "background_color": "#0b1b84",
     "theme_color": "#ffffff"

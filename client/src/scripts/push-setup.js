@@ -1,4 +1,4 @@
-import {store} from "./src/scripts/utils/client-store.js";
+import {store} from "./utils/client-store.js";
 const {updateStore} = store;
 
 /** @const {string} */ // eslint-disable-next-line
@@ -16,7 +16,7 @@ if ("serviceWorker" in navigator) {
 async function pushSubscriptionSetup() {
   // register service worker
   const register = await /** @type {Promise} */ (
-    navigator.serviceWorker.register("./sw.js"))
+    navigator.serviceWorker.register("/sw.js"))
     .catch(handleError);
   // register for push once registration is active
   if (register.active) {

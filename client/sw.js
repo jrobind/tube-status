@@ -1,14 +1,14 @@
 const VERSION = "v1-tube-status";
 const CONTENT_TO_CACHE = [
-  "./index.html",
-  "./offline.html",
-  "./src/styles/app.css",
-  "./src/scripts/index.js",
-  "./push-setup.js",
-  "./images/train-large.png",
-  "./images/train-medium.png",
-  "./images/train-small.png",
-  "./images/train-splash-screen.png",
+  "/index.html",
+  "/offline.html",
+  "/src/styles/app.css",
+  "/src/scripts/index.js",
+  "/src/scripts/push-setup.js",
+  "/images/train-large.png",
+  "/images/train-medium.png",
+  "/images/train-small.png",
+  "/images/train-splash-screen.png",
 ];
 
 /**
@@ -29,6 +29,7 @@ self.addEventListener("push", (e) => {
  * Handles service worker install event.
  */
 self.addEventListener("install", (e) => {
+  console.log('from install sw')
   e.waitUntil(async function() {
     const cacheOpen = await caches.open(VERSION);
     return await cacheOpen.addAll(CONTENT_TO_CACHE);
@@ -39,6 +40,7 @@ self.addEventListener("install", (e) => {
  * Handles service worker activation event.
  */
 self.addEventListener("activate", (e) => {
+  console.log('from activate sw')
   e.waitUntil(async function() {
     const keys = await caches.keys();
     // clear out old cache resources
@@ -53,6 +55,7 @@ self.addEventListener("activate", (e) => {
  * Intercept request, and serve cached content if we have it.
  */
 self.addEventListener("fetch", (e) => {
+  console.log('from fetch sw')
   e.respondWith(async function() {
     const cachedResponse = await caches.match(e.request);
 
