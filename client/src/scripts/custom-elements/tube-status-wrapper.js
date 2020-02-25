@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
-import {removeSubscriptionId} from "../utils/helpers.js";
+import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 const {updateStore, getStore} = store;
 
@@ -10,10 +10,22 @@ const {updateStore, getStore} = store;
  */
 const cssSelector = {
   TUBE_LINE: ".tube-line",
+  MESSAGE_WRAPPER: ".tube-status-wrapper__message",
+};
+
+/**
+ * CSS classes.
+ * @enum {string}
+ */
+const cssClass = {
+  MESSAGE_WRAPPER: "tube-status-wrapper__message",
 };
 
 /** @type {number} */
 const FETCH_INTERVAL = 60000;
+
+/** @type {string} */
+const MESSAGE_TEXT = "There are currently no subscriptions.";
 
 /**
  * Tube status wrapper custom element.
@@ -143,6 +155,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     const {lineSubscriptions} = getStore();
     const subscriptions = lineSubscriptions.map((sub) => sub.line);
     const tubeLineEls = this.querySelectorAll(cssSelector.TUBE_LINE);
+    const messageEl = this.querySelector(cssSelector.MESSAGE_WRAPPER);
 
     if (filter) {
       tubeLineEls.forEach((line) => {
@@ -150,11 +163,29 @@ export default class TubeStatusWrapper extends HTMLElement {
           line.setAttribute("hidden", "");
         }
       });
+
+      if (!subscriptions.length) this.renderMessage_();
     } else {
       tubeLineEls.forEach((line) => {
         if (line.hasAttribute("hidden")) line.removeAttribute("hidden");
       });
+
+      // remove message (if it exists)
+      if (messageEl) this.removeChild(messageEl);
     }
+  }
+
+  /**
+   * Renders a message element informing the user there are no subscriptions.
+   * @private
+   */
+  renderMessage_() {
+    const messsageEl = create("div", {
+      classname: cssClass.MESSAGE_WRAPPER,
+      copy: MESSAGE_TEXT,
+    });
+
+    this.appendChild(messsageEl);
   }
 
   /**
