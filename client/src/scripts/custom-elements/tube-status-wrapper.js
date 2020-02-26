@@ -25,7 +25,7 @@ const cssClass = {
 const FETCH_INTERVAL = 60000;
 
 /** @type {string} */
-const MESSAGE_TEXT = "There are currently no subscriptions.";
+const MESSAGE_TEXT = "There are currently no subscriptions";
 
 /**
  * Tube status wrapper custom element.
@@ -48,6 +48,8 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
+
+    document.dispatchEvent(new CustomEvent(customEvents.READY));
     console.log(getStore());
 
     document.addEventListener(
