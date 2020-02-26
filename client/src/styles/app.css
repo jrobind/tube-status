@@ -153,9 +153,13 @@ body {
 
 /* filter styles */
 .tube-status-filter {
-  display: flex;
+  display: none;
   margin: 0 0 8px 40px;
   align-items: center;
+}
+
+.tube-status-filter--active {
+  display: flex;
 }
 
 .tube-status-filter__description {

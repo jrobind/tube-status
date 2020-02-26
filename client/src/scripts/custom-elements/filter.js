@@ -1,4 +1,7 @@
+import {store} from "../utils/client-store.js";
 import {customEvents} from "../constants.js";
+import {actions} from "../constants.js";
+const {subscribeToStore, getStore} = store;
 
 /**
  * CSS class selectors.
@@ -6,6 +9,14 @@ import {customEvents} from "../constants.js";
  */
 const cssSelector = {
   FILTER_IMAGE: ".tube-status-filter__image",
+};
+
+/**
+ * CSS classes.
+ * @enum {string}
+ */
+const cssClass = {
+  FILTER_ACTIVE: "tube-status-filter--active",
 };
 
 /** @const {string} */
@@ -38,10 +49,29 @@ export default class Filter extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    subscribeToStore({
+      callback: this.toggleDisplay_.bind(this),
+      action: actions.AUTHENTICATION,
+    });
+
     this.filterImgEl_.addEventListener("click", () => {
       this.emit_();
       this.toggleIcon_();
     });
+    document.addEventListener(
+      customEvents.READY, this.toggleDisplay_.bind(this));
+  }
+
+  /**
+   * Toggles the visibility of the filter component
+   * @private
+   */
+  toggleDisplay_() {
+    const {userProfile: {signedIn}} = getStore();
+
+    signedIn ?
+      this.classList.add(cssClass.FILTER_ACTIVE) :
+      this.classList.remove(cssClass.FILTER_ACTIVE);
   }
 
   /**
