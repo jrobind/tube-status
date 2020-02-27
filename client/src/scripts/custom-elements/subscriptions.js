@@ -1,6 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {create} from "../utils/helpers.js";
-const {getStore} = store;
+import {actions} from "../constants.js";
+const {getStore, subscribeToStore} = store;
 
 /** @const {string} */
 const SUBSCRIPTIONS_COPY = "Current subscriptions";
@@ -24,6 +25,8 @@ const cssClass = {
   SUBSCRIPTION_LINE: "tube-status-subscriptions__line",
   SUBSCRIPTION_LINE_NAME: "tube-status-subscriptions__line-name",
   SUBSCRIPTION_LINE_COLOR: "tube-status-subscriptions__line-color",
+  SUBSCRIPTIONS_NOTIFICATION: "tube-status-subscriptions__notifcation",
+  SUBCRIPTION_IMAGE: "tube-status-header__subscription-image",
 };
 
 /**
@@ -53,6 +56,16 @@ export default class Subscriptions extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    subscribeToStore([
+      {
+        callback: this.renderNotificationIcon_.bind(this),
+        action: actions.LINE_SUBSCRIBE,
+      },
+      {
+        callback: this.renderNotificationIcon_.bind(this),
+        action: actions.LINE_UNSUBSCRIBE,
+      },
+    ]);
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
     this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
   }
@@ -66,6 +79,27 @@ export default class Subscriptions extends HTMLElement {
     return Array.from(this.children).some((child) => {
       return child.classList.contains(cssClass.SUBSCRIPTIONS);
     });
+  }
+
+  /**
+   * Renders a notification icon displaying the number of line subscriptions.
+   * @private
+   */
+  renderNotificationIcon_() {
+    const {lineSubscriptions} = getStore();
+    const exisitingNotificationEl = /** @type {HTMLElement} */ (
+      this.querySelector(`.${cssClass.SUBSCRIPTIONS_NOTIFICATION}`));
+
+    if (!lineSubscriptions.length) return;
+
+    if (exisitingNotificationEl) this.removeChild(exisitingNotificationEl);
+
+    const notificationEl = create("div", {
+      classname: cssClass.SUBSCRIPTIONS_NOTIFICATION,
+      copy: lineSubscriptions.length,
+    });
+
+    this.appendChild(notificationEl);
   }
 
   /**
@@ -99,7 +133,7 @@ export default class Subscriptions extends HTMLElement {
       if (this.dropdownExists_()) {
         this.removeContent_();
       } else {
-        this.render_();
+        this.renderSubscriptionList_();
       }
     }
   }
@@ -108,7 +142,7 @@ export default class Subscriptions extends HTMLElement {
    * Renders markup showing list of currently subscribed lines.
    * @private
    */
-  render_() {
+  renderSubscriptionList_() {
     this.removeContent_();
 
     const {lineSubscriptions} = getStore();
@@ -145,10 +179,15 @@ export default class Subscriptions extends HTMLElement {
    * @private
    */
   removeContent_() {
-    const children = Array.from(this.childNodes);
+    const filteredChildren = Array.from(this.children).filter((child) => {
+      const isImg = child.classList.contains(cssClass.SUBCRIPTION_IMAGE);
+      const isNotification = child.classList.contains(
+        cssClass.SUBSCRIPTIONS_NOTIFICATION);
 
-    children.forEach(
-      (child) => child.nodeName !== "IMG" && this.removeChild(child));
+      if (!isImg && !isNotification) return child;
+    });
+
+    filteredChildren.forEach((child) => this.removeChild(child));
   }
 
   /**
