@@ -23,6 +23,7 @@
   --tooltip-background-color: #4c4c4c;
   --dividing-line-color: rgba(0,0,0,0.1);
   --notification-red: #c00;
+  --toggle-green: #22dd22;
 }
 
 html, 
@@ -43,6 +44,7 @@ body {
   color: var(--default-white);
 }
 
+.tube-status-hide,
 [hidden] {
   display: none !important;
 }
@@ -187,11 +189,17 @@ body {
   margin-right: 12px;
 }
 
-.tube-status-filter__image {
-  width: 45px;
+.tube-status__filter-toggle--on {
+  color: var(--toggle-green);
 }
 
-.tube-status-filter__image:hover {
+.tube-status__filter-toggle--on,
+.tube-status__filter-toggle--off {
+  font-size: 45px;
+}
+
+.tube-status__filter-toggle--on:hover,
+.tube-status__filter-toggle--off:hover {
   cursor: pointer;
 }
 

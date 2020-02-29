@@ -8,7 +8,7 @@ const {subscribeToStore, getStore} = store;
  * @enum {string}
  */
 const cssSelector = {
-  FILTER_IMAGE: ".tube-status-filter__image",
+  TOGGLE: ".tube-status__filter-toggle",
 };
 
 /**
@@ -17,13 +17,10 @@ const cssSelector = {
  */
 const cssClass = {
   FILTER_ACTIVE: "tube-status-filter--active",
+  TOGGLE_ON: "tube-status__filter-toggle--on",
+  TOGGLE_OFF: "tube-status__filter-toggle--off",
+  HIDE: "tube-status-hide",
 };
-
-/** @const {string} */
-const FILTER_ON_IMG_PATH = "/images/toggle-on.svg";
-
-/** @const {string} */
-const FILTER_OFF_IMG_PATH = "/images/toggle-off.svg";
 
 /**
  * Filter custom element.
@@ -39,10 +36,10 @@ export default class Filter extends HTMLElement {
     this.filter_ = false;
 
     /**
-     * @type {HTMLImageElement}
+     * @type {NodeList}
      * @private
      */
-    this.filterImgEl_ = this.querySelector(cssSelector.FILTER_IMAGE);
+    this.toggleIconEls_ = this.querySelectorAll(cssSelector.TOGGLE);
   }
 
   /**
@@ -54,9 +51,11 @@ export default class Filter extends HTMLElement {
       action: actions.AUTHENTICATION,
     });
 
-    this.filterImgEl_.addEventListener("click", () => {
-      this.emit_();
-      this.toggleIcon_();
+    this.toggleIconEls_.forEach((el) => {
+      el.addEventListener("click", () => {
+        this.emit_();
+        this.toggleIcon_();
+      });
     });
     document.addEventListener(
       customEvents.READY, this.toggleDisplay_.bind(this));
@@ -92,8 +91,12 @@ export default class Filter extends HTMLElement {
    * @private
    */
   toggleIcon_() {
-    this.filterImgEl_.src = (this.filter_) ?
-      FILTER_ON_IMG_PATH :
-      FILTER_OFF_IMG_PATH;
+    this.toggleIconEls_.forEach((el) => {
+      if (el.classList.contains(cssClass.HIDE)) {
+        el.classList.remove(cssClass.HIDE);
+      } else {
+        el.classList.add(cssClass.HIDE);
+      }
+    });
   }
 }
