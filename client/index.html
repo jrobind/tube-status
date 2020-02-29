@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#ffffff">
     <meta name="apple-mobile-web-app-title" content="Tube status PWA">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="apple-touch-icon" href="./images/train-small.png">
     <title>Tube status</title>
     <link rel="stylesheet" href="/src/styles/app.css">
@@ -45,8 +46,9 @@
       </tube-status-header>
       <!-- filter component -->
       <tube-status-filter class="tube-status-filter">
-        <span class="tube-status-filter__description">Toggle subscriptions</span>
-        <img src="./images/toggle-off.svg" class="tube-status-filter__image">
+        <span class="tube-status-filter__description">Show my subscriptions</span>
+        <i class="material-icons tube-status__filter-toggle tube-status__filter-toggle--off">toggle_off</i>
+        <i class="material-icons tube-status__filter-toggle tube-status-hide tube-status__filter-toggle--on">toggle_on</i>
       </tube-status-filter>
       <!-- tube wrapper -->
       <tube-status-wrapper class="tube-status-wrapper">
