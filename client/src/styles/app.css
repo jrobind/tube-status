@@ -23,7 +23,7 @@
   --tooltip-background-color: #4c4c4c;
   --dividing-line-color: rgba(0,0,0,0.1);
   --notification-red: #c00;
-  --toggle-green: #22dd22;
+  --toggle-green: #25d366;
 }
 
 html, 
@@ -191,6 +191,10 @@ body {
 
 .tube-status__filter-toggle--on {
   color: var(--toggle-green);
+}
+
+.tube-status__filter-toggle--off {
+  opacity: 0.4;
 }
 
 .tube-status__filter-toggle--on,
