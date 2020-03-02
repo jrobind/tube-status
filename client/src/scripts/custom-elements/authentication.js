@@ -21,6 +21,7 @@ const cssClass = {
 const cssSelector = {
   AUTHENTICATION_SUBSCRIBE_ICON: ".tube-line-sub__subscription-image",
   TOOLTIP: ".tube-status-tooltip",
+  TOGGLE_ON: ".tube-status__filter-toggle--on",
 };
 
 /** @const {number} */
@@ -62,6 +63,9 @@ export default class Authentication extends HTMLElement {
 
     /** @private {string} */
     this.token_ = localStorage.getItem("JWT");
+
+    /** @private {HTMLElement} */
+    this.toggleOnEl_;
   }
 
   /**
@@ -79,6 +83,7 @@ export default class Authentication extends HTMLElement {
       },
     ]);
     this.classList.add(cssClass.AUTHENTICATION);
+    this.toggleOnEl_ = document.querySelector(cssSelector.TOGGLE_ON);
     this.addEventListener("click", this.handleAuth_.bind(this));
 
     if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
@@ -233,7 +238,8 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleUnSubscribeRequest_() {
-    // activate loading state
+    const detail = {detail: {filter: true}};
+
     updateStore({
       action: actions.LOADING_LINE,
       data: {loadingState: {state: true, line: this.line_}},
@@ -257,6 +263,10 @@ export default class Authentication extends HTMLElement {
       action: actions.LOADING_LINE,
       data: {loadingState: {state: false, line: this.line_}},
     });
+
+    // if we are within a filtered view, we should update the filter again
+    document.dispatchEvent(
+      new CustomEvent(customEvents.FILTER_SUBSCRIPTIONS, detail));
   }
 
   /**
