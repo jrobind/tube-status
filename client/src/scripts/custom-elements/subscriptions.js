@@ -67,6 +67,9 @@ export default class Subscriptions extends HTMLElement {
       },
     ]);
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
+    document.addEventListener("keypress", (e) => {
+      e.which === 13 && this.toggleSubscriptions_(e);
+    });
     this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
   }
 
@@ -121,9 +124,11 @@ export default class Subscriptions extends HTMLElement {
    */
   toggleSubscriptions_(e) {
     const target = /** @type {HTMLElement} */ (e.target);
+    const which = /** @type {number} */ (e.which);
     const clickOutOfBounds = target.parentNode !== this;
+    const enterKey = which === 13;
 
-    if (clickOutOfBounds) {
+    if (clickOutOfBounds && !enterKey) {
       if (this.dropdownExists_()) {
         this.updateIcon_();
         this.removeContent_();

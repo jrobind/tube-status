@@ -92,9 +92,13 @@ export default class TubeLine extends HTMLElement {
       this.setScoreAttribute_(status);
 
       // line should appear clickable if there are delays/disruptions
-      reason ?
-        this.classList.add(cssClass.ACTIVE) :
+      if (reason) {
+        this.classList.add(cssClass.ACTIVE);
+        this.setAttribute("tabindex", "0");
+      } else {
         this.classList.remove(cssClass.ACTIVE);
+        this.removeAttribute("tabindex");
+      }
 
       // if there are multiple disruptions, we don't want to reset
       // the reason text content
