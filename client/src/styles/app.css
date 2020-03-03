@@ -177,7 +177,7 @@ body {
 /* filter styles */
 .tube-status-filter {
   display: none;
-  margin: 0 0 8px 40px;
+  margin: 0 0 8px 10px;
   align-items: center;
 }
 
@@ -211,7 +211,8 @@ body {
 .tube-status-wrapper {
   display: flex;
   flex-direction: column;
-  margin: 0 25px;
+  margin: 0 auto;
+  max-width: 1280px;
 }
 
 .tube-status-wrapper__message {
@@ -341,15 +342,29 @@ body {
   transform: translateY(-4px);
 }
 
-.tube-line--active .tube-line-info::after {
+.tube-line-info::after {
   content: "";
-  background-image: url("/images/info.svg");
-  position: absolute;
+  background-image: url("/images/check-circle.svg");
   height: 40px;
   width: 40px;
   background-repeat: no-repeat;
-  right: 15px;
+  margin-left: 25px;
   background-size: 100%;
+}
+
+.tube-line--active .tube-line-info::after {
+  content: "";
+  background-image: url("/images/info.svg");
+  height: 40px;
+  width: 40px;
+  background-repeat: no-repeat;
+  margin-left: 25px;
+  background-size: 100%;
+}
+
+.tube-line-info {
+  justify-content: flex-end;
+  margin-right: 35px;
 }
 
 .tube-line-sub,
