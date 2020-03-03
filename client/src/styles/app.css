@@ -343,7 +343,7 @@ body {
 
 .tube-line--active .tube-line-info::after {
   content: "";
-  background-image: url("/images/launch.svg");
+  background-image: url("/images/info.svg");
   position: absolute;
   height: 40px;
   width: 40px;
@@ -395,17 +395,6 @@ body {
   justify-content: center;
   align-items: center;
   text-transform: capitalize;
-}
-
-/* delays present on line */
-.tube-line--active .tube-line-info__reason-title::after {
-  content: '';
-  background-image: url("/images/error.svg");
-  position: absolute;
-  height: 30px;
-  width: 30px;
-  background-repeat: no-repeat;
-  margin-left: 5px;
 }
 
 /* footer styles */
