@@ -22,8 +22,7 @@
   --btn-selected-color: #add9e6;
   --tooltip-background-color: #4c4c4c;
   --dividing-line-color: rgba(0,0,0,0.1);
-  --notification-red: #c00;
-  --toggle-green: #25d366;
+  --app-green: #25d366;
 }
 
 html, 
@@ -164,9 +163,9 @@ body {
   top: 4px;
   right: 0;
   color: var(--default-white);
-  background-color: var(--notification-red);
-  width: 18px;
-  height: 18px;
+  background-color: var(--app-green);
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   line-height: 18px;
   font-size: 10px;
@@ -177,8 +176,9 @@ body {
 /* filter styles */
 .tube-status-filter {
   display: none;
-  margin: 0 0 8px 10px;
+  margin: 0 0 8px 15px;
   align-items: center;
+  max-width: 260px;
 }
 
 .tube-status-filter--active {
@@ -190,7 +190,7 @@ body {
 }
 
 .tube-status__filter-toggle--on {
-  color: var(--toggle-green);
+  color: var(--app-green);
 }
 
 .tube-status__filter-toggle--off {
@@ -212,7 +212,7 @@ body {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  max-width: 1280px;
+  max-width: 1250px;
 }
 
 .tube-status-wrapper__message {
@@ -622,7 +622,7 @@ footer {
   color: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
-  animation: fade-in 0.4s ease;
+  animation: fade-in 0.5s ease;
 }
 
 .tube-status-tooltip__message {
