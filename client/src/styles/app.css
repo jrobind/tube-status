@@ -48,6 +48,10 @@ body {
   display: none !important;
 }
 
+.tube-status-no-focus:focus {
+  outline: none;
+}
+
 /* overlay */
 .overlay.dim {
   position: fixed;

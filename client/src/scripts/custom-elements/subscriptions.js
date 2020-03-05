@@ -1,5 +1,5 @@
 import {store} from "../utils/client-store.js";
-import {create} from "../utils/helpers.js";
+import {create, handleTabFocus} from "../utils/helpers.js";
 import {actions} from "../constants.js";
 const {getStore, subscribeToStore} = store;
 
@@ -66,10 +66,18 @@ export default class Subscriptions extends HTMLElement {
         action: actions.LINE_UNSUBSCRIBE,
       },
     ]);
+
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
-    document.addEventListener("keypress", (e) => {
+    this.addEventListener("keypress", (e) => {
       e.which === 13 && this.toggleSubscriptions_(e);
     });
+    this.addEventListener("keydown", (e) => {
+      e.which === 9 && handleTabFocus(this);
+    });
+    this.addEventListener("keyup", (e) => {
+      e.which === 9 && handleTabFocus(this);
+    });
+
     this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
   }
 

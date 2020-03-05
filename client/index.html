@@ -33,9 +33,10 @@
         </div>
         <div class="tube-status-header__profile">
           <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
-          <tube-status-authentication tabindex="0" class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='Sign in'></tube-status-authentication>
+          <tube-status-authentication tabindex="0" class="tube-status-header__authentication tube-status-no-focus" dest='/auth/google/callback' auth-path='Sign in'>
+          </tube-status-authentication>
           <div class="tube-status-header__subscription">
-            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
+            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions tube-status-no-focus">
               <img src="./images/subscriptions.svg" class="tube-status-header__subscription-image"> 
             </tube-status-subscriptions>
           </div>

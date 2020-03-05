@@ -1,6 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {apiLogout, apiUnsubscribe} from "../utils/api.js";
 import {findLineSubscription, removeSubscriptionId} from "../utils/helpers.js";
+import {handleTabFocus} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 import Tooltip from "./tooltip.js";
 const {updateStore, subscribeToStore, getStore} = store;
@@ -82,9 +83,17 @@ export default class Authentication extends HTMLElement {
         action: actions.LINE_UNSUBSCRIBE,
       },
     ]);
+
     this.classList.add(cssClass.AUTHENTICATION);
     this.toggleOnEl_ = document.querySelector(cssSelector.TOGGLE_ON);
+
     this.addEventListener("click", this.handleAuth_.bind(this));
+    this.addEventListener("keydown", (e) => {
+      e.which === 9 && handleTabFocus(this);
+    });
+    this.addEventListener("keyup", (e) => {
+      e.which === 9 && handleTabFocus(this);
+    });
 
     if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
       this.addEventListener("mouseover", this.toggleTooltip_.bind(this));

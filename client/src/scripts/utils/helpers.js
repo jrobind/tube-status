@@ -2,6 +2,15 @@ import {store} from "./client-store.js";
 const {getStore} = store;
 
 /**
+ * CSS classes.
+ * @enum {string}
+ */
+const cssClass = {
+  NO_FOCUS: "tube-status-no-focus",
+};
+
+
+/**
  * A DOM element creator utility which creates elements,
  * and sets specified attributes and event listeners.
  * @param {string} elType
@@ -115,4 +124,15 @@ export const removeDuplicate = (lines) => {
     if (!hasDup) unique.push(line);
     return unique;
   }, []);
+};
+
+/**
+ * Removes class that prevents tab focus on given element
+ * @param {HTMLElement} el
+ */
+export const handleTabFocus = (el) => {
+  debugger;
+  el.classList.contains(cssClass.NO_FOCUS) ?
+    el.classList.remove(cssClass.NO_FOCUS) :
+    el.classList.add(cssClass.NO_FOCUS);
 };
