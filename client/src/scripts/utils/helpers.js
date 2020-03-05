@@ -131,7 +131,6 @@ export const removeDuplicate = (lines) => {
  * @param {HTMLElement} el
  */
 export const handleTabFocus = (el) => {
-  debugger;
   el.classList.contains(cssClass.NO_FOCUS) ?
     el.classList.remove(cssClass.NO_FOCUS) :
     el.classList.add(cssClass.NO_FOCUS);
