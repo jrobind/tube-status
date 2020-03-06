@@ -68,14 +68,11 @@ export default class Subscriptions extends HTMLElement {
     ]);
 
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
-    this.addEventListener("keypress", (e) => {
-      e.which === 13 && this.toggleSubscriptions_(e);
-    });
-    this.addEventListener("keydown", (e) => {
-      e.which === 9 && handleTabFocus(this);
-    });
     this.addEventListener("keyup", (e) => {
       e.which === 9 && handleTabFocus(this);
+    });
+    this.addEventListener("keypress", (e) => {
+      e.which === 13 && this.toggleSubscriptions_(e);
     });
 
     this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);

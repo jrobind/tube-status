@@ -6,7 +6,7 @@ const {getStore} = store;
  * @enum {string}
  */
 const cssClass = {
-  NO_FOCUS: "tube-status-no-focus",
+  FOCUS: "tube-status-focus",
 };
 
 
@@ -131,7 +131,8 @@ export const removeDuplicate = (lines) => {
  * @param {HTMLElement} el
  */
 export const handleTabFocus = (el) => {
-  el.classList.contains(cssClass.NO_FOCUS) ?
-    el.classList.remove(cssClass.NO_FOCUS) :
-    el.classList.add(cssClass.NO_FOCUS);
+  const els = document.querySelectorAll(`.${cssClass.FOCUS}`);
+
+  els.forEach((el) => el.classList.remove(cssClass.FOCUS));
+  el.classList.add(cssClass.FOCUS);
 };

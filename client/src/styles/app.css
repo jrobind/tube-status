@@ -48,8 +48,12 @@ body {
   display: none !important;
 }
 
-.tube-status-no-focus:focus {
+:focus {
   outline: none;
+}
+
+.tube-status-focus:focus {
+  outline: 1px auto black;
 }
 
 /* overlay */
