@@ -13,6 +13,7 @@ const {updateStore, subscribeToStore, getStore} = store;
 const cssClass = {
   AUTHENTICATION: "tube-status-authentication",
   HEADER_AUTHENTICATION: "tube-status-header__authentication",
+  HIDDEN: "tube-status-hide",
 };
 
 /**
@@ -67,12 +68,17 @@ export default class Authentication extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.toggleOnEl_;
+
+    /** @private {boolean} */
+    this.connectedCalled_ = false;
   }
 
   /**
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    if (this.connectedCalled_) return;
+
     subscribeToStore([
       {
         callback: this.attemptAttrUpdate_.bind(this),
@@ -102,6 +108,7 @@ export default class Authentication extends HTMLElement {
 
     this.handleJWT_();
     this.render_();
+    this.connectedCalled_ = true;
   }
 
   /**
@@ -249,6 +256,7 @@ export default class Authentication extends HTMLElement {
    */
   async handleUnSubscribeRequest_() {
     const detail = {detail: {filter: true}};
+    const toggleOnEl = document.querySelector(cssSelector.TOGGLE_ON);
 
     updateStore({
       action: actions.LOADING_LINE,
@@ -275,8 +283,10 @@ export default class Authentication extends HTMLElement {
     });
 
     // if we are within a filtered view, we should update the filter again
-    document.dispatchEvent(
-      new CustomEvent(customEvents.FILTER_SUBSCRIPTIONS, detail));
+    if (!toggleOnEl.classList.contains(cssClass.HIDDEN)) {
+      document.dispatchEvent(
+        new CustomEvent(customEvents.FILTER_SUBSCRIPTIONS, detail));
+    }
   }
 
   /**

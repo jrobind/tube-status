@@ -314,30 +314,6 @@ body {
   background-color: var(--bakerloo-color);
 }
 
-.tube-line[score="6"] {
-  order: 1;
-}
-
-.tube-line[score="5"] {
-  order: 2;
-}
-
-.tube-line[score="4"] {
-  order: 3;
-}
-
-.tube-line[score="3"] {
-  order: 4;
-}
-
-.tube-line[score="2"] {
-  order: 5;
-} 
-
-.tube-line[score="1"] {
-  order: 6;
-} 
-
 .tube-line--active {
   background-color: var(--disruption-background-color);
   height: auto;

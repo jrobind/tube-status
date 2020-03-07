@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {customEvents} from "../constants.js";
+import {handleTabFocus} from "../utils/helpers.js";
 import {actions} from "../constants.js";
 const {subscribeToStore, getStore} = store;
 
@@ -8,6 +9,7 @@ const {subscribeToStore, getStore} = store;
  * @enum {string}
  */
 const cssSelector = {
+  TOGGLE_ICONS: ".tube-status__filter-toggle .material-icons",
   TOGGLE: ".tube-status__filter-toggle",
 };
 
@@ -39,7 +41,13 @@ export default class Filter extends HTMLElement {
      * @type {NodeList}
      * @private
      */
-    this.toggleIconEls_ = this.querySelectorAll(cssSelector.TOGGLE);
+    this.toggleIconEls_ = this.querySelectorAll(cssSelector.TOGGLE_ICONS);
+
+    /**
+     * @type {HTMLElement}
+     * @private
+     */
+    this.filterToggle_ = this.querySelector(cssSelector.TOGGLE);
   }
 
   /**
@@ -56,6 +64,15 @@ export default class Filter extends HTMLElement {
         this.emit_();
         this.toggleIcon_();
       });
+    });
+    this.addEventListener("keyup", (e) => {
+      e.which === 9 && handleTabFocus(this.filterToggle_);
+    });
+    this.addEventListener("keypress", (e) => {
+      if (e.which === 13) {
+        this.emit_();
+        this.toggleIcon_();
+      }
     });
     document.addEventListener(
       customEvents.READY, this.toggleDisplay_.bind(this));

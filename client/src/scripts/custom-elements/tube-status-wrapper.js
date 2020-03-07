@@ -19,6 +19,7 @@ const cssSelector = {
  */
 const cssClass = {
   MESSAGE_WRAPPER: "tube-status-wrapper__message",
+  FILTER: "tube-status-filter",
 };
 
 /** @type {number} */
@@ -44,18 +45,40 @@ export default class TubeStatusWrapper extends HTMLElement {
   async connectedCallback() {
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
+    this.order_();
+
+    document.dispatchEvent(new CustomEvent(customEvents.READY));
+    console.log(getStore());
+
     updateStore({
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
 
-    document.dispatchEvent(new CustomEvent(customEvents.READY));
-    console.log(getStore());
-
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
     // get data every 60 seconds
     // this.fetchInterval_();
+  }
+
+  /**
+   * Orders tube line elements within DOM based on severity scores.
+   * @private
+   */
+  order_() {
+    const lines = Array.from(document.querySelectorAll(cssSelector.TUBE_LINE));
+    const sorted = lines.sort((a, b) => {
+      return +b.getAttribute("score") - +a.getAttribute("score");
+    });
+
+    Array.from(this.children).forEach((child) => {
+      if (!child.classList.contains(cssClass.FILTER)) {
+        this.removeChild(child);
+      }
+    });
+
+    // insert sorted lines back into DOM
+    sorted.forEach((line) => this.appendChild(line));
   }
 
   /**

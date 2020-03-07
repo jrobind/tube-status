@@ -37,12 +37,17 @@ export default class TubeLine extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.reasonTitleEl_;
+
+    /** @private {boolean} */
+    this.connectedCalled_ = false;
   }
 
   /**
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    if (this.connectedCalled_) return;
+
     subscribeToStore({
       callback: this.updateDOM_.bind(this),
       action: actions.LINES,
@@ -54,6 +59,8 @@ export default class TubeLine extends HTMLElement {
       `.${cssClass.SUB_STATUS}`);
     this.reasonTitleEl_ = this.querySelector(
       `.${cssClass.INFO_REASON_TITLE}`);
+
+    this.connectedCalled_ = true;
   }
 
   /**
@@ -94,7 +101,7 @@ export default class TubeLine extends HTMLElement {
       // line should appear clickable if there are delays/disruptions
       if (reason) {
         this.classList.add(cssClass.ACTIVE);
-        this.setAttribute("tabindex", "0");
+        this.setAttribute("tabindex", "1");
       } else {
         this.classList.remove(cssClass.ACTIVE);
         this.removeAttribute("tabindex");

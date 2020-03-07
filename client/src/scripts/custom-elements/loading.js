@@ -35,12 +35,17 @@ export default class Loading extends HTMLElement {
 
     /** @private {string} */
     this.line_ = this.parentElement.parentElement.getAttribute("line");
+
+    /** @private {boolean} */
+    this.connectedCalled_ = false;
   }
 
   /**
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    if (this.connectedCalled_) return;
+
     const isApp = this.hasAttribute("app");
     const isHeader = this.hasAttribute("header");
     let action;
@@ -60,6 +65,7 @@ export default class Loading extends HTMLElement {
     }
 
     subscribeToStore({callback, action});
+    this.connectedCalled_ = true;
   }
 
   /**
