@@ -94,6 +94,7 @@ export default class Authentication extends HTMLElement {
     this.toggleOnEl_ = document.querySelector(cssSelector.TOGGLE_ON);
 
     this.addEventListener("keyup", (e) => {
+      e.stopImmediatePropagation();
       e.which === 9 && handleTabFocus(this);
     });
     this.addEventListener("keypress", (e) => {

@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions, delayTypes, customEvents} from "../constants.js";
-import {removeDuplicate} from "../utils/helpers.js";
+import {removeDuplicate, handleTabFocus} from "../utils/helpers.js";
 const {subscribeToStore, getStore} = store;
 
 /** @const {string} */
@@ -52,7 +52,12 @@ export default class TubeLine extends HTMLElement {
       callback: this.updateDOM_.bind(this),
       action: actions.LINES,
     });
+
     this.addEventListener("click", this.handleClick_.bind(this));
+    this.addEventListener("keyup", (e) => {
+      e.which === 9 && handleTabFocus(this);
+    });
+
     this.tubeStatusWrapper_ = document.querySelector(
       `.${cssClass.STATUS_WRAPPER}`);
     this.subStatusEl_ = this.querySelector(
@@ -101,10 +106,8 @@ export default class TubeLine extends HTMLElement {
       // line should appear clickable if there are delays/disruptions
       if (reason) {
         this.classList.add(cssClass.ACTIVE);
-        this.setAttribute("tabindex", "1");
       } else {
         this.classList.remove(cssClass.ACTIVE);
-        this.removeAttribute("tabindex");
       }
 
       // if there are multiple disruptions, we don't want to reset
