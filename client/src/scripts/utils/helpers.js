@@ -9,6 +9,13 @@ const cssClass = {
   FOCUS: "tube-status-focus",
 };
 
+/**
+* CSS class selectors.
+* @enum {string}
+*/
+const cssSelector = {
+  FOCUSABLE_ELEMENTS: "button:not([disabled]), [tabindex]",
+};
 
 /**
  * A DOM element creator utility which creates elements,
@@ -135,4 +142,30 @@ export const handleTabFocus = (el) => {
 
   els.forEach((el) => el.classList.remove(cssClass.FOCUS));
   el.classList.add(cssClass.FOCUS);
+};
+
+/**
+ * Creates a focus trap within the modal component
+ * @param {HTMLElement} el
+ */
+export const createFocusTrap = (el) => {
+  const focusableEls = el.querySelectorAll(cssSelector.FOCUSABLE_ELEMENTS);
+  const firstFocusableEl = focusableEls[0];
+  const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+  el.addEventListener("keydown", function(e) {
+    if (e.which === 9) {
+      if (e.shiftKey) {
+        if (document.activeElement === firstFocusableEl) {
+          lastFocusableEl.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastFocusableEl) {
+          firstFocusableEl.focus();
+          e.preventDefault();
+        }
+      }
+    }
+  });
 };

@@ -6,6 +6,7 @@ import {
   removeSubscriptionId,
   removeDuplicate,
   handleTabFocus,
+  createFocusTrap,
 } from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
@@ -306,6 +307,7 @@ export default class Modal extends HTMLElement {
         this.overlay_.classList.add(cssClass.OVERLAY_DIM);
         this.classList.add(cssClass.MODAL_ACTIVE);
         this.populateModal_(removeDuplicate(lineInformation[line]));
+        createFocusTrap(this);
       } else {
         this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
         this.classList.remove(cssClass.MODAL_ACTIVE);
