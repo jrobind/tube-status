@@ -1,6 +1,11 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {create, returnKeys} from "../utils/helpers.js";
+import {
+  create,
+  returnKeys,
+  handleTabFocus,
+  createFocusTrap,
+} from "../utils/helpers.js";
 import Tooltip from "./tooltip.js";
 const {updateStore, getStore} = store;
 
@@ -162,10 +167,15 @@ export default class Time extends HTMLElement {
    * @private
    */
   render_(e) {
+    const submitBtnEvents = [
+      {type: "click", fn: this.handleSubmitHours_.bind(this)},
+      {type: "keyup", fn: handleTabFocus},
+    ];
     const submitBtn = create("button", {
       classname: cssClass.SUBMIT_BTN,
       copy: SUBMIT_BTN_TEXT,
-      event: {type: "click", fn: this.handleSubmitHours_.bind(this)},
+      data: {name: "tabindex", value: "0"},
+      event: submitBtnEvents,
     });
     const tableWrapper = create("div", {classname: cssClass.TABLE_WRAPPER});
     const table = create("table");
@@ -180,10 +190,19 @@ export default class Time extends HTMLElement {
     this.classList.add(cssClass.TIME_ACTIVE);
 
     hours.forEach((hr) => {
+      const attributes = [
+        {name: "hour", value: hr.innerText},
+        {name: "tabindex", value: "0"},
+      ];
+      const events = [
+        {type: "click", fn: this.handleHourClick_.bind(this)},
+        {type: "keydown", fn: this.handleHourClick_.bind(this)},
+        {type: "keyup", fn: handleTabFocus},
+      ];
       const td = create("td", {
         classname: cssClass.HOUR_SELECT,
-        data: {name: "hour", value: hr.innerText},
-        event: {type: "click", fn: this.handleHourClick_.bind(this)},
+        data: attributes,
+        event: events,
       });
 
       tablehead.appendChild(hr);
@@ -199,6 +218,11 @@ export default class Time extends HTMLElement {
     this.appendChild(submitBtn);
 
     this.markupExists_ = true;
+
+    // set focus and focus trap for modal
+    this.setAttribute("tabindex", "0");
+    this.focus();
+    createFocusTrap(this);
   }
 
   /**
@@ -207,35 +231,39 @@ export default class Time extends HTMLElement {
    * @private
    */
   handleHourClick_(e) {
-    const target = /** @type {HTMLElement} */ (e.target);
-    const hour = +target.getAttribute("hour");
-    const isActive = target.classList.contains(
-      cssClass.HOUR_SELECT_ACTIVE);
+    const {target, which, type} = e;
 
-    if (isActive) {
-      const active = this.querySelectorAll(`
-        .${cssClass.HOUR_SELECT_ACTIVE}`);
+    if (type === "click" || which === 13) {
+      const hour = +target.getAttribute("hour");
+      const isActive = target.classList.contains(
+        cssClass.HOUR_SELECT_ACTIVE);
 
-      // remove all active selections
-      active.forEach((el) => el.classList.remove(cssClass.HOUR_SELECT_ACTIVE));
-      this.hours_ = [];
-    } else {
-      target.classList.add(cssClass.HOUR_SELECT_ACTIVE);
-      // if an hour has already been selected we must create a range
-      if (!this.hours_.length) {
-        this.hours_ = [hour];
+      if (isActive) {
+        const active = this.querySelectorAll(`
+          .${cssClass.HOUR_SELECT_ACTIVE}`);
+
+        // remove all active selections
+        active.forEach((el) => el.classList.remove(
+          cssClass.HOUR_SELECT_ACTIVE));
+        this.hours_ = [];
       } else {
-        this.hours_ = this.createRange_(hour);
+        target.classList.add(cssClass.HOUR_SELECT_ACTIVE);
+        // if an hour has already been selected we must create a range
+        if (!this.hours_.length) {
+          this.hours_ = [hour];
+        } else {
+          this.hours_ = this.createRange_(hour);
 
-        // add active class to elements within selected range
-        this.hours_.forEach((hr) => {
-          this.querySelector(`[hour="${hr}"]`)
-            .classList.add(cssClass.HOUR_SELECT_ACTIVE);
-        });
+          // add active class to elements within selected range
+          this.hours_.forEach((hr) => {
+            this.querySelector(`[hour="${hr}"]`)
+              .classList.add(cssClass.HOUR_SELECT_ACTIVE);
+          });
+        }
       }
-    }
 
-    console.log(this.hours_);
+      console.log(this.hours_);
+    }
   }
 
   /**

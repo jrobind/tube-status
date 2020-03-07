@@ -105,7 +105,8 @@ export default class Modal extends HTMLElement {
    * @private
    */
   emit_(e) {
-    const target = /** @type {HTMLElement} */ (e.target);
+    const {target} = e;
+
     const detail = {detail: {line: this.line_}};
     let customDispatchEvent;
 
@@ -166,26 +167,42 @@ export default class Modal extends HTMLElement {
    * @private
    */
   renderSubscriptionOptions_(e) {
+    const timeAndDayBtnEvents = [
+      {type: "click", fn: this.emit_.bind(this)},
+      {type: "keyup", fn: handleTabFocus},
+    ];
+    const subscribeBtnEvents = [
+      {type: "click", fn: this.handleSubscriptionRequest_.bind(this)},
+      {type: "keyup", fn: handleTabFocus},
+    ];
+
     const subWrapper = create("div", {classname: cssClass.MODAL_SUB});
+    const selectWrapper = create("div", {classname: cssClass.MODAL_SUB_SELECT});
+
     const subTitle = create("div", {
       classname: cssClass.MODAL_SUB_TITLE,
       copy: MODAL_SUB_TITLE_TEXT,
     });
-    const selectWrapper = create("div", {classname: cssClass.MODAL_SUB_SELECT});
+
     const selectDaysBtn = create("button", {
       copy: MODAL_DAYS_BTN_TEXT,
       classname: cssClass.MODAL_SUB_BTN_DAYS,
-      event: {type: "click", fn: this.emit_.bind(this)},
+      event: timeAndDayBtnEvents,
+      data: {name: "tabindex", value: "0"},
     });
+
     const selectTimesBtn = create("button", {
       copy: MODAL_TIMES_BTN_TEXT,
       classname: cssClass.MODAL_SUB_BTN_TIMES,
-      event: {type: "click", fn: this.emit_.bind(this)},
+      event: timeAndDayBtnEvents,
+      data: {name: "tabindex", value: "0"},
     });
+
     const subscribeBtn = create("button", {
       copy: MODAL_SUB_BTN_TEXT,
       classname: cssClass.MODAL_SUB_BTN,
-      event: {type: "click", fn: this.handleSubscriptionRequest_.bind(this)},
+      event: subscribeBtnEvents,
+      data: {name: "tabindex", value: "0"},
     });
 
     this.line_ = e.detail.line;
@@ -205,6 +222,11 @@ export default class Modal extends HTMLElement {
       .forEach((el) => subWrapper.appendChild(el));
 
     this.appendChild(subWrapper);
+
+    // set focus and focus trap for modal
+    this.setAttribute("tabindex", "0");
+    this.focus();
+    createFocusTrap(this);
   }
 
   /**
@@ -286,17 +308,18 @@ export default class Modal extends HTMLElement {
 
   /**
    * Shows modal with line information relevant to clicked line.
-   * @param {KeyboardEvent|CustomEvent=} e
+   * @param {CustomEvent=} e
    * @private
    */
   toggleModal_(e) {
-    const {which} = e;
+    const which = e ? e.which : null;
+    const type = e ? e.type : null;
     const modalIconEl = /** @type {HTMLImageElement} */ (
       document.querySelector(`.${cssClass.MODAL_ICON}`));
-    const enterKeyIconPressed = (
-      which === 13 && document.activeElement === modalIconEl);
+    const enterKey = which === 13;
+    const clicked = type === "line-click" || type === "click";
 
-    if (which === 27 || !which || enterKeyIconPressed) {
+    if (clicked || enterKey || !e) {
       const {lineInformation} = getStore();
       const line = e ? e.detail.line : null;
 
@@ -307,6 +330,7 @@ export default class Modal extends HTMLElement {
         this.overlay_.classList.add(cssClass.OVERLAY_DIM);
         this.classList.add(cssClass.MODAL_ACTIVE);
         this.populateModal_(removeDuplicate(lineInformation[line]));
+
         createFocusTrap(this);
       } else {
         this.overlay_.classList.remove(cssClass.OVERLAY_DIM);

@@ -93,11 +93,13 @@ export default class Authentication extends HTMLElement {
     this.classList.add(cssClass.AUTHENTICATION);
     this.toggleOnEl_ = document.querySelector(cssSelector.TOGGLE_ON);
 
+    // listeners
     this.addEventListener("keyup", (e) => {
       e.stopImmediatePropagation();
       e.which === 9 && handleTabFocus(this);
     });
     this.addEventListener("keypress", (e) => {
+      e.stopImmediatePropagation();
       e.which === 13 && this.handleAuth_();
     });
     this.addEventListener("click", this.handleAuth_.bind(this));
@@ -180,7 +182,6 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   handleAuth_() {
-    this.blur();
     const {userProfile} = getStore();
 
     switch (this.authPath_) {

@@ -1,6 +1,11 @@
 import {store} from "../utils/client-store.js";
 import {actions, customEvents} from "../constants.js";
-import {create, returnKeys} from "../utils/helpers.js";
+import {
+  create,
+  returnKeys,
+  createFocusTrap,
+  handleTabFocus,
+} from "../utils/helpers.js";
 const {updateStore, getStore} = store;
 
 /** @const {string} */
@@ -135,9 +140,14 @@ export default class Week extends HTMLElement {
    * @private
    */
   render_(e) {
+    const submitBtnEvents = [
+      {type: "click", fn: this.handleSubmitDays_.bind(this)},
+      {type: "keyup", fn: handleTabFocus},
+    ];
     const submitBtn = create("button", {
       classname: cssClass.SUBMIT_BTN,
-      event: {type: "click", fn: this.handleSubmitDays_.bind(this)},
+      event: submitBtnEvents,
+      data: {name: "tabindex", value: "0"},
       copy: SUBMIT_BTN_TEXT,
     });
     const table = create("table");
@@ -152,10 +162,19 @@ export default class Week extends HTMLElement {
     this.classList.add(cssClass.WEEK_ACTIVE);
 
     days.forEach((day) => {
+      const attributes = [
+        {name: "day", value: day.innerText},
+        {name: "tabindex", value: "0"},
+      ];
+      const events = [
+        {type: "click", fn: this.handleDayClick_.bind(this)},
+        {type: "keydown", fn: this.handleDayClick_.bind(this)},
+        {type: "keyup", fn: handleTabFocus},
+      ];
       const td = create("td", {
         classname: cssClass.DAY_SELECT,
-        data: {name: "day", value: day.innerText},
-        event: {type: "click", fn: this.handleDayClick_.bind(this)},
+        data: attributes,
+        event: events,
       });
 
       tablehead.appendChild(day);
@@ -165,9 +184,16 @@ export default class Week extends HTMLElement {
     table.appendChild(tablehead);
     tableBody.appendChild(tableRow);
     table.appendChild(tableBody);
+
     this.appendChild(table);
     this.appendChild(submitBtn);
+
     this.markupExists_ = true;
+
+    // set focus and focus trap for modal
+    this.setAttribute("tabindex", "0");
+    this.focus();
+    createFocusTrap(this);
   }
 
   /**
@@ -176,28 +202,31 @@ export default class Week extends HTMLElement {
    * @private
    */
   handleDayClick_(e) {
-    const target = /** @type {HTMLElement} */ (e.target);
-    const day = target.getAttribute("day");
-    const isActive = target.classList.contains(
-      cssClass.DAY_SELECT_ACTIVE);
+    const {target, which, type} = e;
 
-    if (isActive) {
-      target.classList.remove(cssClass.DAY_SELECT_ACTIVE);
+    if (type === "click" || which === 13) {
+      const day = target.getAttribute("day");
+      const isActive = target.classList.contains(
+        cssClass.DAY_SELECT_ACTIVE);
 
-      // remove day
-      this.days_ = this.days_.filter((currentDay) => {
-        return day !== currentDay;
-      });
-    } else {
-      target.classList.add(cssClass.DAY_SELECT_ACTIVE);
+      if (isActive) {
+        target.classList.remove(cssClass.DAY_SELECT_ACTIVE);
 
-      // do not add duplicate days
-      this.days_ = !this.days_.includes(day) ?
-        [...this.days_, day] :
-        [day];
+        // remove day
+        this.days_ = this.days_.filter((currentDay) => {
+          return day !== currentDay;
+        });
+      } else {
+        target.classList.add(cssClass.DAY_SELECT_ACTIVE);
+
+        // do not add duplicate days
+        this.days_ = !this.days_.includes(day) ?
+          [...this.days_, day] :
+          [day];
+      }
+
+      console.log(this.days_);
     }
-
-    console.log(this.days_);
   }
 
 

@@ -32,14 +32,18 @@ export const create = (elType, options = {}) => {
     data = {},
     classname,
   } = options;
-  const {name, value} = data;
 
-  if (!options) return el;
+  if (!Object.keys(options).length) return el;
 
   // set attributes
   classname && el.classList.add(classname);
   id && el.setAttribute("id", id);
-  Object.keys(data).length && el.setAttribute(name, value);
+
+  if (Array.isArray(data)) {
+    data.forEach(({name, value}) => el.setAttribute(name, value));
+  } else {
+    el.setAttribute(data.name, data.value);
+  }
 
   // set event listeners
   if (Array.isArray(options.event)) {
@@ -141,7 +145,12 @@ export const handleTabFocus = (el) => {
   const els = document.querySelectorAll(`.${cssClass.FOCUS}`);
 
   els.forEach((el) => el.classList.remove(cssClass.FOCUS));
-  el.classList.add(cssClass.FOCUS);
+
+  if (el instanceof HTMLElement) {
+    el.classList.add(cssClass.FOCUS);
+  } else {
+    el.target.classList.add(cssClass.FOCUS);
+  }
 };
 
 /**
