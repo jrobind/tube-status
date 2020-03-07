@@ -67,6 +67,7 @@ export default class Subscriptions extends HTMLElement {
       },
     ]);
 
+    // listeners
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
     this.addEventListener("keyup", (e) => {
       e.which === 9 && handleTabFocus(this);

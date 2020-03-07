@@ -37,10 +37,12 @@ export default class Header extends HTMLElement {
       callback: this.updateAvatar_.bind(this),
       action: actions.AUTHENTICATION,
     });
+
     this.avatarEl_ = /** @type {HTMLImageElement} */ (
       this.querySelector(cssSelector.HEADER_AVATAR));
     this.authenticationEl_ = this.querySelector(
       cssSelector.HEADER_AUTHENTICATION);
+
     this.updateAvatar_();
   }
 

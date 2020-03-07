@@ -11,6 +11,7 @@ const {updateStore, getStore} = store;
 const cssSelector = {
   TUBE_LINE: ".tube-line",
   MESSAGE_WRAPPER: ".tube-status-wrapper__message",
+  FOOTER: ".tube-status-footer-reference",
 };
 
 /**
@@ -20,6 +21,7 @@ const cssSelector = {
 const cssClass = {
   MESSAGE_WRAPPER: "tube-status-wrapper__message",
   FILTER: "tube-status-filter",
+  HIDDEN: "tube-status-hide",
 };
 
 /** @type {number} */
@@ -43,18 +45,23 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   async connectedCallback() {
+    updateStore({
+      action: actions.LOADING_APP,
+      data: {loadingState: {state: true, line: null}},
+    });
+
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
     this.order_();
-
-    document.dispatchEvent(new CustomEvent(customEvents.READY));
-    console.log(getStore());
 
     updateStore({
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
 
+    this.appReady_();
+
+    // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
     // get data every 60 seconds
@@ -109,11 +116,6 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getAllLineData_() {
-    updateStore({
-      action: actions.LOADING_APP,
-      data: {loadingState: {state: true, line: null}},
-    });
-
     const result = await apiGetAllLineData();
     let lineInformation;
 
@@ -211,6 +213,19 @@ export default class TubeStatusWrapper extends HTMLElement {
     });
 
     this.appendChild(messsageEl);
+  }
+
+  /**
+   * Handles the app ready state.
+   * @private
+   */
+  appReady_() {
+    this.classList.remove(cssClass.HIDDEN);
+    document.querySelector(
+      cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
+
+    document.dispatchEvent(new CustomEvent(customEvents.READY));
+    console.log(getStore());
   }
 
   /**

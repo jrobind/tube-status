@@ -41,6 +41,7 @@ export default class Week extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    // listeners
     document.addEventListener(
       customEvents.SHOW_WEEK, this.initHandler_.bind(this));
     document.addEventListener(

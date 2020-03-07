@@ -28,7 +28,8 @@ export const customEvents = {
   SHOW_TIME: "show-time",
   TIME: "time-selected",
   FILTER_SUBSCRIPTIONS: "filter-subscriptions",
-  READY: "ready",
+  SUBSCRIPTIONS_LOADED: "subscriptions-loaded",
+  READY: "app-ready",
 };
 
 /**

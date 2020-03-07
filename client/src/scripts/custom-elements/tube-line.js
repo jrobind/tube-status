@@ -53,9 +53,13 @@ export default class TubeLine extends HTMLElement {
       action: actions.LINES,
     });
 
+    // listeners
     this.addEventListener("click", this.handleClick_.bind(this));
     this.addEventListener("keyup", (e) => {
       e.which === 9 && handleTabFocus(this);
+    });
+    this.addEventListener("keypress", (e) => {
+      e.which === 13 && this.handleClick_(e);
     });
 
     this.tubeStatusWrapper_ = document.querySelector(

@@ -56,6 +56,7 @@ export default class Time extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
+    // listeners
     document.addEventListener(
       customEvents.SHOW_TIME, this.initHandler_.bind(this));
     document.addEventListener(

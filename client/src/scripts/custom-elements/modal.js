@@ -5,6 +5,7 @@ import {
   create,
   removeSubscriptionId,
   removeDuplicate,
+  handleTabFocus,
 } from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
@@ -44,6 +45,8 @@ const cssClass = {
   MODAL_SUB_BTN_TIMES: "tube-status-modal-sub__btn-times",
   MODAL_SUB_BTN_DAYS: "tube-status-modal-sub__btn-days",
   BTN_SELECTED: "tube-status-btn--selected",
+  WEEK_ELEMENT: "tube-status-week",
+  TIME_ELEMENT: "tube-status-time",
 };
 
 /**
@@ -52,8 +55,6 @@ const cssClass = {
  */
 const cssSelector = {
   OVERLAY: ".overlay",
-  WEEK_ELEMENT: "tube-status-week",
-  TIME_ELEMENT: "tube-status-time",
 };
 
 /**
@@ -89,6 +90,7 @@ export default class Modal extends HTMLElement {
 
     subscribeToStore(subscribers);
 
+    // listeners
     document.addEventListener(
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
     document.addEventListener(
@@ -275,31 +277,45 @@ export default class Modal extends HTMLElement {
 
       this.renderDelayContext_(context);
     });
+
+    // set focus
+    this.setAttribute("tabindex", "0");
+    this.focus();
   }
 
   /**
    * Shows modal with line information relevant to clicked line.
-   * @param {CustomEvent=} e
+   * @param {KeyboardEvent|CustomEvent=} e
    * @private
    */
   toggleModal_(e) {
-    const {lineInformation} = getStore();
-    const line = e ? e.detail.line : null;
+    const {which} = e;
+    const modalIconEl = /** @type {HTMLImageElement} */ (
+      document.querySelector(`.${cssClass.MODAL_ICON}`));
+    const enterKeyIconPressed = (
+      which === 13 && document.activeElement === modalIconEl);
 
-    // remove old markup before toggling visibility
-    this.removeContent_();
+    if (which === 27 || !which || enterKeyIconPressed) {
+      const {lineInformation} = getStore();
+      const line = e ? e.detail.line : null;
 
-    if (line) {
-      this.overlay_.classList.add(cssClass.OVERLAY_DIM);
-      this.classList.add(cssClass.MODAL_ACTIVE);
-      this.populateModal_(removeDuplicate(lineInformation[line]));
-    } else {
-      this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
-      this.classList.remove(cssClass.MODAL_ACTIVE);
-      this.classList.remove(cssClass.MODAL_SUBSCRIBE);
+      // remove old markup before toggling visibility
+      this.removeContent_();
 
-      document.dispatchEvent(
-        new CustomEvent(customEvents.MODAL_CLOSE));
+      if (line) {
+        this.overlay_.classList.add(cssClass.OVERLAY_DIM);
+        this.classList.add(cssClass.MODAL_ACTIVE);
+        this.populateModal_(removeDuplicate(lineInformation[line]));
+      } else {
+        this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
+        this.classList.remove(cssClass.MODAL_ACTIVE);
+        this.classList.remove(cssClass.MODAL_SUBSCRIBE);
+
+        document.dispatchEvent(
+          new CustomEvent(customEvents.MODAL_CLOSE));
+      }
+    } else if (which === 9) {
+      handleTabFocus(modalIconEl);
     }
   }
 
@@ -309,9 +325,16 @@ export default class Modal extends HTMLElement {
    * @return {Element}
    */
   createModalIcon_() {
+    const events = [
+      {type: "click", fn: this.toggleModal_.bind(this)},
+      {type: "keyup", fn: this.toggleModal_.bind(this)},
+      {type: "keypress", fn: this.toggleModal_.bind(this)},
+    ];
+
     return create("div", {
       classname: cssClass.MODAL_ICON,
-      event: {type: "click", fn: this.toggleModal_.bind(this)},
+      event: events,
+      data: {name: "tabindex", value: "0"},
     });
   }
 
@@ -342,7 +365,7 @@ export default class Modal extends HTMLElement {
     const children = Array.from(this.childNodes)
       .filter((node) => {
         const name = node.nodeName.toLowerCase();
-        const exclude = [cssSelector.WEEK_ELEMENT, cssSelector.TIME_ELEMENT];
+        const exclude = [cssClass.WEEK_ELEMENT, cssClass.TIME_ELEMENT];
 
         if (!exclude.includes(name)) return node;
       });
