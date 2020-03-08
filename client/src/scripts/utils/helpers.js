@@ -42,7 +42,7 @@ export const create = (elType, options = {}) => {
   if (Array.isArray(data)) {
     data.forEach(({name, value}) => el.setAttribute(name, value));
   } else {
-    el.setAttribute(data.name, data.value);
+    if (Object.keys(data).length) el.setAttribute(data.name, data.value);
   }
 
   // set event listeners
