@@ -5,6 +5,7 @@ const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const compression = require("compression");
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const JWTStrategy = require("passport-jwt").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
@@ -22,14 +23,8 @@ const logout = require("./routes/logout");
 
 const app = express();
 
-// const options = {
-//   setHeaders(res, path, stat) {
-//     res.set("Service-Worker-Allowed", "/");
-//   },
-// };
-
+app.use(compression());
 app.use(express.static(path.join(__dirname, "/client")));
-// app.use(express.static(path.join(__dirname, "/")));
 app.use(bodyParser.json());
 db.mongoSetup();
 app.use(passport.initialize());
