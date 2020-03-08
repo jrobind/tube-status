@@ -154,6 +154,7 @@ export default class Time extends HTMLElement {
 
     // resets
     this.classList.remove(cssClass.TIME_ACTIVE);
+    this.removeAttribute("tabindex");
     this.hours_ = [];
     this.markupExists_ = false;
 
@@ -235,8 +236,7 @@ export default class Time extends HTMLElement {
 
     if (type === "click" || which === 13) {
       const hour = +target.getAttribute("hour");
-      const isActive = target.classList.contains(
-        cssClass.HOUR_SELECT_ACTIVE);
+      const isActive = target.classList.contains(cssClass.HOUR_SELECT_ACTIVE);
 
       if (isActive) {
         const active = this.querySelectorAll(`
@@ -248,6 +248,7 @@ export default class Time extends HTMLElement {
         this.hours_ = [];
       } else {
         target.classList.add(cssClass.HOUR_SELECT_ACTIVE);
+
         // if an hour has already been selected we must create a range
         if (!this.hours_.length) {
           this.hours_ = [hour];

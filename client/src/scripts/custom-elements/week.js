@@ -126,6 +126,7 @@ export default class Week extends HTMLElement {
 
     // resets
     this.classList.remove(cssClass.WEEK_ACTIVE);
+    this.removeAttribute("tabindex");
     this.days_ = [];
     this.markupExists_ = false;
 
@@ -206,8 +207,7 @@ export default class Week extends HTMLElement {
 
     if (type === "click" || which === 13) {
       const day = target.getAttribute("day");
-      const isActive = target.classList.contains(
-        cssClass.DAY_SELECT_ACTIVE);
+      const isActive = target.classList.contains(cssClass.DAY_SELECT_ACTIVE);
 
       if (isActive) {
         target.classList.remove(cssClass.DAY_SELECT_ACTIVE);
@@ -220,7 +220,7 @@ export default class Week extends HTMLElement {
         target.classList.add(cssClass.DAY_SELECT_ACTIVE);
 
         // do not add duplicate days
-        this.days_ = !this.days_.includes(day) ?
+        this.days_ = (!this.days_.includes(day)) ?
           [...this.days_, day] :
           [day];
       }
