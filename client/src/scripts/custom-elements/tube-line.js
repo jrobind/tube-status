@@ -55,12 +55,8 @@ export default class TubeLine extends HTMLElement {
 
     // listeners
     this.addEventListener("click", this.handleClick_.bind(this));
-    this.addEventListener("keyup", (e) => {
-      e.which === 9 && handleTabFocus(this);
-    });
-    this.addEventListener("keypress", (e) => {
-      e.which === 13 && this.handleClick_(e);
-    });
+    this.addEventListener("keyup", this.handleKeyup_.bind(this));
+    this.addEventListener("keypress", this.handleKeyPress_.bind(this));
 
     this.tubeStatusWrapper_ = document.querySelector(
       `.${cssClass.STATUS_WRAPPER}`);
@@ -70,6 +66,24 @@ export default class TubeLine extends HTMLElement {
       `.${cssClass.INFO_REASON_TITLE}`);
 
     this.connectedCalled_ = true;
+  }
+
+  /**
+   * Handler for a tab keyup event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyup_(e) {
+    e.which === 9 && handleTabFocus(this);
+  }
+
+  /**
+   * Handler for a enter keypress event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyPress_(e) {
+    e.which === 13 && this.handleClick_(e);
   }
 
   /**
@@ -161,5 +175,15 @@ export default class TubeLine extends HTMLElement {
       this.setAttribute("score", "1");
       break;
     }
+  }
+
+  /**
+   * Called each time custom element is disconnected from the DOM.
+   * @private
+   */
+  disconnectedCallback() {
+    this.removeEventListener("click", this.handleClick_);
+    this.removeEventListener("keyup", this.handleKeyup_);
+    this.removeEventListener("keypress", this.handleKeyPress_);
   }
 }

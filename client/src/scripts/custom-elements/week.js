@@ -229,14 +229,15 @@ export default class Week extends HTMLElement {
     }
   }
 
-
   /**
    * Called each time custom element is disconnected from the DOM.
    * @private
    */
   disconnectedCallback() {
     document.removeEventListener(
-      customEvents.SHOW_WEEK, this.render_);
-    // TODO: remove remaining td element listeners
+      customEvents.SHOW_WEEK, this.initHandler_);
+    document.removeEventListener(
+      customEvents.MODAL_CLOSE, this.reset_);
+    document.removeEventListener("click", this.reset_);
   }
 }

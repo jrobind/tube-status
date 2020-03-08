@@ -291,7 +291,9 @@ export default class Time extends HTMLElement {
    */
   disconnectedCallback() {
     document.removeEventListener(
-      customEvents.SHOW_WEEK, this.render_);
-    // TODO: remove remaining td element listeners
+      customEvents.SHOW_TIME, this.initHandler_);
+    document.removeEventListener(
+      customEvents.MODAL_CLOSE, this.reset_);
+    document.removeEventListener("click", this.reset_);
   }
 }

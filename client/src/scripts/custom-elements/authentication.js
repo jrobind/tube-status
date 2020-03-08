@@ -94,14 +94,8 @@ export default class Authentication extends HTMLElement {
     this.toggleOnEl_ = document.querySelector(cssSelector.TOGGLE_ON);
 
     // listeners
-    this.addEventListener("keyup", (e) => {
-      e.stopImmediatePropagation();
-      e.which === 9 && handleTabFocus(this);
-    });
-    this.addEventListener("keypress", (e) => {
-      e.stopImmediatePropagation();
-      e.which === 13 && this.handleAuth_();
-    });
+    this.addEventListener("keyup", this.handleKeyup_.bind(this));
+    this.addEventListener("keypress", this.handleKeyPress_.bind(this));
     this.addEventListener("click", this.handleAuth_.bind(this));
 
     if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
@@ -112,6 +106,26 @@ export default class Authentication extends HTMLElement {
     this.handleJWT_();
     this.render_();
     this.connectedCalled_ = true;
+  }
+
+  /**
+   * Handler for a tab keyup event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyup_(e) {
+    e.stopImmediatePropagation();
+    e.which === 9 && handleTabFocus(this);
+  }
+
+  /**
+   * Handler for a enter keypress event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyPress_(e) {
+    e.stopImmediatePropagation();
+    e.which === 13 && this.handleAuth_();
   }
 
   /**
@@ -323,5 +337,12 @@ export default class Authentication extends HTMLElement {
    */
   disconnectedCallback() {
     this.removeEventListener("click", this.handleAuth_);
+    this.removeEventListener("keyup", this.handleKeyup_);
+    this.removeEventListener("keypress", this.handleKeyPress_);
+
+    if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
+      this.removeEventListener("mouseover", this.toggleTooltip_.bind(this));
+      this.removeEventListener("mouseout", this.toggleTooltip_.bind(this));
+    }
   }
 }

@@ -240,4 +240,13 @@ export default class TubeStatusWrapper extends HTMLElement {
     console.error(e);
     alert("Unable to retrieve API data.");
   }
+
+  /**
+   * Called each time custom element is disconnected from the DOM.
+   * @private
+   */
+  disconnectedCallback() {
+    document.removeEventListener(
+      customEvents.FILTER_SUBSCRIPTIONS, this.filterView_);
+  }
 }

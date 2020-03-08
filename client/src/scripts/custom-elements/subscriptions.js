@@ -69,14 +69,28 @@ export default class Subscriptions extends HTMLElement {
 
     // listeners
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
-    this.addEventListener("keyup", (e) => {
-      e.which === 9 && handleTabFocus(this);
-    });
-    this.addEventListener("keypress", (e) => {
-      e.which === 13 && this.toggleSubscriptions_(e);
-    });
+    this.addEventListener("keyup", this.handleKeyup_.bind(this));
+    this.addEventListener("keypress", this.handleKeyPress_.bind(this));
 
     this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
+  }
+
+  /**
+   * Handler for a tab keyup event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyup_(e) {
+    e.which === 9 && handleTabFocus(this);
+  }
+
+  /**
+   * Handler for a enter keypress event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyPress_(e) {
+    e.which === 13 && this.toggleSubscriptions_(e);
   }
 
   /**
@@ -207,5 +221,7 @@ export default class Subscriptions extends HTMLElement {
    */
   disconnectedCallback() {
     this.removeEventListener("click", this.toggleSubscriptions_);
+    this.removeEventListener("keyup", this.handleKeyup_);
+    this.removeEventListener("keypress", this.handleKeyPress_);
   }
 }

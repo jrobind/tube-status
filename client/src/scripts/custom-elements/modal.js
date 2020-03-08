@@ -421,6 +421,6 @@ export default class Modal extends HTMLElement {
     document.removeEventListener(
       customEvents.LINE_CLICK, this.toggleModal_);
     document.removeEventListener(
-      "click", this.handleSubscriptionRequest_);
+      customEvents.SHOW_SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
   }
 }

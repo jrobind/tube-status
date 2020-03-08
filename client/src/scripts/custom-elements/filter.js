@@ -59,23 +59,45 @@ export default class Filter extends HTMLElement {
       action: actions.AUTHENTICATION,
     });
 
+    // listeners
     this.toggleIconEls_.forEach((el) => {
-      el.addEventListener("click", () => {
-        this.emit_();
-        this.toggleIcon_();
-      });
+      el.addEventListener("click", this.handleClick_.bind(this));
     });
-    this.addEventListener("keyup", (e) => {
-      e.which === 9 && handleTabFocus(this.filterToggle_);
-    });
-    this.addEventListener("keypress", (e) => {
-      if (e.which === 13) {
-        this.emit_();
-        this.toggleIcon_();
-      }
-    });
+    this.addEventListener("keyup", this.handleKeyup_.bind(this));
+    this.addEventListener("keypress", this.handleKeyPress_);
     document.addEventListener(
       customEvents.READY, this.toggleDisplay_.bind(this));
+  }
+
+  /**
+   * Handler for a tab keyup event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyup_(e) {
+    e.which === 9 && handleTabFocus(this.filterToggle_);
+  }
+
+  /**
+   * Handler for a enter keypress event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyPress_(e) {
+    if (e.which === 13) {
+      this.emit_();
+      this.toggleIcon_();
+    }
+  }
+
+  /**
+   * Handler for a click event.
+   * @param {Event} e
+   * @private
+   */
+  handleClick_(e) {
+    this.emit_();
+    this.toggleIcon_();
   }
 
   /**
@@ -115,5 +137,15 @@ export default class Filter extends HTMLElement {
         el.classList.add(cssClass.HIDE);
       }
     });
+  }
+
+  /**
+   * Called each time custom element is disconnected from the DOM.
+   * @private
+   */
+  disconnectedCallback() {
+    this.removeEventListener("click", this.handleClick_);
+    this.removeEventListener("keyup", this.handleKeyup_);
+    this.removeEventListener("keypress", this.handleKeyPress_);
   }
 }
