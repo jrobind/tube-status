@@ -12,6 +12,7 @@ const cssSelector = {
   TUBE_LINE: ".tube-line",
   MESSAGE_WRAPPER: ".tube-status-wrapper__message",
   FOOTER: ".tube-status-footer-reference",
+  HEADER: ".tube-status-header__profile",
 };
 
 /**
@@ -223,6 +224,8 @@ export default class TubeStatusWrapper extends HTMLElement {
     this.classList.remove(cssClass.HIDDEN);
     document.querySelector(
       cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
+    document.querySelector(
+      cssSelector.HEADER).classList.remove(cssClass.HIDDEN);
 
     document.dispatchEvent(new CustomEvent(customEvents.READY));
     console.log(getStore());
