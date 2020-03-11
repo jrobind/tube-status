@@ -147,7 +147,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
   // retrieve current stored lines from db
   await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
 
-  mockData.forEach((line) => {
+  result.forEach((line) => {
     line.lineStatuses.forEach((status, i) => {
       const {statusSeverityDescription, reason} = status;
 
