@@ -1,8 +1,10 @@
 import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
+import {initPushSubscription} from "../push-setup.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 const {updateStore, getStore} = store;
+const socket = io();
 
 /**
  * CSS class selectors.
@@ -46,11 +48,7 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   async connectedCallback() {
-    updateStore({
-      action: actions.LOADING_APP,
-      data: {loadingState: {state: true, line: null}},
-    });
-
+    await initPushSubscription();
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
     this.order_();
@@ -65,6 +63,10 @@ export default class TubeStatusWrapper extends HTMLElement {
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
+
+    socket.on("notification", function() {
+      console.log('notification received');
+    });
     // get data every 60 seconds
     // this.fetchInterval_();
   }
@@ -117,6 +119,11 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getAllLineData_() {
+    updateStore({
+      action: actions.LOADING_APP,
+      data: {loadingState: {state: true, line: null}},
+    });
+
     const result = await apiGetAllLineData();
     let lineInformation;
 
@@ -248,5 +255,6 @@ export default class TubeStatusWrapper extends HTMLElement {
   disconnectedCallback() {
     document.removeEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_);
+    channel.removeEventListener("message", this.handleBroadcast_);
   }
 }
