@@ -16,12 +16,15 @@ const {matchesDay, matchesTime} = require("./utlis/date-checker");
 const middleware = require("./middleware");
 require("dotenv").config({path: "./env"});
 
+const app = express();
+const server = app.listen(
+  4000, () => console.log("Server started on port 4000"));
+const io = require("socket.io").listen(server);
+
 // require routes
 const subscribe = require("./routes/subscribe");
 const line = require("./routes/lines");
 const logout = require("./routes/logout");
-
-const app = express();
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, "/client")));
@@ -144,7 +147,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
   // retrieve current stored lines from db
   await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
 
-  result.forEach((line) => {
+  mockData.forEach((line) => {
     line.lineStatuses.forEach((status, i) => {
       const {statusSeverityDescription, reason} = status;
 
@@ -181,7 +184,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
               // send push notification
               webpush
                 .sendNotification(pushSubscription, payload)
-                .then((res) => console.log(res))
+                .then((res) => io.sockets.emit("notification"))
                 .catch((err) => console.error(err));
             }
           }
@@ -198,5 +201,3 @@ job.start();
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "./index.html"));
 });
-
-app.listen(4000, () => console.log("Server started on port 4000"));
