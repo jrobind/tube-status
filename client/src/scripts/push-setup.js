@@ -4,9 +4,15 @@ const {updateStore} = store;
 /** @const {string} */ // eslint-disable-next-line
 const PUBLIC_KEY = "BKpELtYde7iajTdW7hw1LOIksmgzApC5IMLUtwDkqDA_fdqWmdQ3FqU2azo0LH0G-2cIqq11gRrxCLtFj-pPSmE";
 
-if ("serviceWorker" in navigator) {
-  pushSubscriptionSetup().catch(handleError);
-}
+/**
+ * Initiates push subscription setup.
+ * @private
+ */
+export const initPushSubscription = () => {
+  if ("serviceWorker" in navigator) {
+    pushSubscriptionSetup().catch(handleError);
+  }
+};
 
 /**
  * Creates push subscription object and updates client store.
@@ -18,12 +24,14 @@ async function pushSubscriptionSetup() {
   const register = await /** @type {Promise} */ (
     navigator.serviceWorker.register("/sw.js"))
     .catch(handleError);
+
   // register for push once registration is active
   if (register.active) {
     const pushSubscription = await register.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: convertUint8Array(PUBLIC_KEY),
     }).catch(handleError);
+
     // update client store with the push subscription object
     updateStore({action: "PUSH-SUBSCRIPTION", data: {pushSubscription}});
   }
