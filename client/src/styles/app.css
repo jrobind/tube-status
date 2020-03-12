@@ -124,6 +124,15 @@ body {
   position: relative;
 }
 
+.tube-status-header__authentication {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 4px;
+}
+
+.tube-status-header__authentication:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
 .tube-status-subscriptions__heading {
   font-size: 18px;
   border-bottom: 1px solid var(--dividing-line-color);
@@ -673,7 +682,7 @@ footer {
   }
 
   .tube-status-header__subscription-image {
-    width: 43px;
+    width: 45px;
   }
 
   .tube-status-subscriptions__notifcation {
