@@ -60,5 +60,9 @@ export const storeUpdater = (store, {action, data}) => {
     store = {...store, selectedSubscriptionWindow: {...data}};
 
     return store;
+  case "RESET-APP":
+    store = {...store, lineSubscriptions: []};
+
+    return store;
   }
 };

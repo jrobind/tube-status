@@ -88,6 +88,10 @@ export default class Authentication extends HTMLElement {
         callback: this.attemptAttrUpdate_.bind(this),
         action: actions.LINE_UNSUBSCRIBE,
       },
+      {
+        callback: this.attemptAttrUpdate_.bind(this),
+        action: actions.RESET_APP,
+      },
     ]);
 
     this.classList.add(cssClass.AUTHENTICATION);
@@ -173,18 +177,20 @@ export default class Authentication extends HTMLElement {
    */
   attemptAttrUpdate_() {
     const {userProfile: {signedIn}} = getStore();
+    const isHeaderAuth = this.classList.contains(
+      cssClass.HEADER_AUTHENTICATION);
 
-    if (!signedIn || this.authPath_ === "Sign out") return;
-
-    if (this.authPath_ === "Sign in") {
+    if (signedIn && isHeaderAuth) {
       this.setAttribute("auth-path", "Sign out");
     } else {
-      // check if line subscription exists for current line
-      if (Object.keys(findLineSubscription(this.line_)).length) {
-        this.setAttribute("auth-path", "unsubscribe");
-      } else {
+      this.setAttribute("auth-path", "Sign in");
+    }
+
+    // check if line subscription exists for current line
+    if (!isHeaderAuth) {
+      Object.keys(findLineSubscription(this.line_)).length ?
+        this.setAttribute("auth-path", "unsubscribe") :
         this.setAttribute("auth-path", "subscribe");
-      }
     }
 
     this.authPath_ = this.getAttribute("auth-path");
@@ -258,8 +264,9 @@ export default class Authentication extends HTMLElement {
         action: actions.LOADING_HEADER,
         data: {loadingState: {state: false, line: null}},
       });
-      // reload page to reset line subscription states
-      window.location.href = "/";
+
+      updateStore({action: actions.RESET_APP});
+      console.log(store.getStore())
     } else {
       this.handleError_(result);
     }

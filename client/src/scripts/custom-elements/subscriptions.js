@@ -65,6 +65,10 @@ export default class Subscriptions extends HTMLElement {
         callback: this.renderNotificationIcon_.bind(this),
         action: actions.LINE_UNSUBSCRIBE,
       },
+      {
+        callback: this.removeContent_.bind(this),
+        action: actions.RESET_APP,
+      },
     ]);
 
     // listeners
@@ -204,12 +208,15 @@ export default class Subscriptions extends HTMLElement {
    * @private
    */
   removeContent_() {
+    const {userProfile: {signedIn}} = store.getStore();
+
     const filteredChildren = Array.from(this.children).filter((child) => {
       const isImg = child.classList.contains(cssClass.SUBCRIPTION_IMAGE);
       const isNotification = child.classList.contains(
         cssClass.SUBSCRIPTIONS_NOTIFICATION);
+      const condition = signedIn ? (!isImg && !isNotification) : !isImg;
 
-      if (!isImg && !isNotification) return child;
+      if (condition) return child;
     });
 
     filteredChildren.forEach((child) => this.removeChild(child));
