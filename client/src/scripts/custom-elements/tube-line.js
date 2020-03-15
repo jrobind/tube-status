@@ -113,6 +113,8 @@ export default class TubeLine extends HTMLElement {
     const {lineInformation} = getStore();
     const lineInfo = removeDuplicate(lineInformation[this.line_]);
 
+    this.removeContent_();
+
     lineInfo.forEach((info, i)=> {
       const {status, reason} = info;
       const last = i === lineInfo.length -1;
@@ -122,11 +124,9 @@ export default class TubeLine extends HTMLElement {
       this.setScoreAttribute_(status);
 
       // line should appear clickable if there are delays/disruptions
-      if (reason) {
-        this.classList.add(cssClass.ACTIVE);
-      } else {
+      reason ?
+        this.classList.add(cssClass.ACTIVE) :
         this.classList.remove(cssClass.ACTIVE);
-      }
 
       // if there are multiple disruptions, we don't want to reset
       // the reason text content
@@ -175,6 +175,15 @@ export default class TubeLine extends HTMLElement {
       this.setAttribute("score", "1");
       break;
     }
+  }
+
+  /**
+   * Removes line status text content, including disruption copy.
+   * @private
+   */
+  removeContent_() {
+    this.subStatusEl_.textContent = "";
+    this.reasonTitleEl_.textContent = "";
   }
 
   /**
