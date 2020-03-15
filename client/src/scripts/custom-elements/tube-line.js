@@ -120,7 +120,6 @@ export default class TubeLine extends HTMLElement {
       const last = i === lineInfo.length -1;
       const pipe = last ? "" : " | ";
 
-      // set score attribute on line so we can order with flexbox
       this.setScoreAttribute_(status);
 
       // line should appear clickable if there are delays/disruptions
@@ -136,7 +135,12 @@ export default class TubeLine extends HTMLElement {
 
       this.subStatusEl_.textContent = "";
       this.subStatusEl_.textContent += `${this.line_}`;
-      this.reasonTitleEl_.textContent += ` ${status} ${pipe}`;
+
+      if (!this.reasonTitleEl_.textContent.includes(status)) {
+        this.reasonTitleEl_.textContent += ` ${status} ${pipe}`;
+      } else {
+        this.reasonTitleEl_.textContent = "";
+      }
     });
   }
 
