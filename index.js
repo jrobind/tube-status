@@ -19,7 +19,7 @@ require("dotenv").config({path: "./env"});
 const app = express();
 const server = app.listen(
   4000, () => console.log("Server started on port 4000"));
-const io = require("socket.io").listen(server, {pingTimeout: 6000});
+const io = require("socket.io").listen(server, {pingTimeout: 30000});
 
 // require routes
 const subscribe = require("./routes/subscribe");
