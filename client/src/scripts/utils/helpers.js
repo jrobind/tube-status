@@ -118,18 +118,13 @@ export const removeSubscriptionId = (subs) => {
 };
 
 /**
- * Checks for and removes duplicate disruption reasons and status'.
+ * Checks for, and removes duplicate disruption reasons.
  * @param {array} lines
  * @return {array}
  * @private
  */
 export const removeDuplicate = (lines) => {
   return lines.reduce((unique, line) => {
-    const hasDup = !!unique.filter((obj) => obj.status === line.status).length;
-
-    if (!hasDup) unique.push(line);
-    return unique;
-  }, []).reduce((unique, line) => {
     const hasDup = !!unique.filter((obj) => obj.reason === line.reason).length;
 
     if (!hasDup) unique.push(line);
