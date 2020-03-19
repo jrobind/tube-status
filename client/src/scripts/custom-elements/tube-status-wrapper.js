@@ -48,6 +48,11 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   async connectedCallback() {
+    updateStore({
+      action: actions.LOADING_APP,
+      data: {loadingState: {state: true, line: null}},
+    });
+
     await initPushSubscription();
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
@@ -64,9 +69,8 @@ export default class TubeStatusWrapper extends HTMLElement {
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
 
-    socket.on("notification", function() {
-      console.log('notification received');
-    });
+    // fires when push notification has been sent to client
+    socket.on("notification", this.handleNotificationRecieved_.bind(this));
     // get data every 60 seconds
     // this.fetchInterval_();
   }
@@ -119,11 +123,6 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async getAllLineData_() {
-    updateStore({
-      action: actions.LOADING_APP,
-      data: {loadingState: {state: true, line: null}},
-    });
-
     const result = await apiGetAllLineData();
     let lineInformation;
 
@@ -178,6 +177,25 @@ export default class TubeStatusWrapper extends HTMLElement {
         data: {loadingState: {state: false, line: null}},
       });
     }, FETCH_INTERVAL);
+  }
+
+  /**
+   * Fetches tube line data when a push notification has been recieved
+   * within the client.
+   * @private
+   */
+  async handleNotificationRecieved_() {
+    updateStore({
+      action: actions.LOADING_APP,
+      data: {loadingState: {state: true, line: null}},
+    });
+
+    await this.getAllLineData_();
+
+    updateStore({
+      action: actions.LOADING_APP,
+      data: {loadingState: {state: false, line: null}},
+    });
   }
 
   /**
@@ -255,6 +273,5 @@ export default class TubeStatusWrapper extends HTMLElement {
   disconnectedCallback() {
     document.removeEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_);
-    channel.removeEventListener("message", this.handleBroadcast_);
   }
 }
