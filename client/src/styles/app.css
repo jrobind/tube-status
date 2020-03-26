@@ -493,7 +493,8 @@ body {
 
 .tube-status-modal__caption {
   padding: 32px 27px;
-  font-size: 18px;
+  font-size: 14px;
+  height: 100%;
 }
 
 .tube-status-modal__icon:hover::after {
@@ -727,6 +728,11 @@ footer {
 
   .tube-line-sub__status {
     width: 220px;
+  }
+
+  /* modal styles */
+  .tube-status-modal__caption {
+    font-size: 18px;
   }
 }
 
