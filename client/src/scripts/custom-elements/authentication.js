@@ -129,11 +129,11 @@ export default class Authentication extends HTMLElement {
    */
   handleKeyPress_(e) {
     e.stopImmediatePropagation();
-    e.which === 13 && this.handleAuth_();
+    e.which === 13 && this.handleAuth_(e);
   }
 
   /**
-   * Verify existence of JWT and parse if present.
+   * Toggle authentication tooltip.
    * @param {Event} e
    * @private
    */
@@ -199,10 +199,13 @@ export default class Authentication extends HTMLElement {
 
   /**
    * Handles Google authentication process.
+   * @param {Event} e
    * @private
    */
-  handleAuth_() {
+  handleAuth_(e) {
     const {userProfile} = getStore();
+
+    e.stopPropagation();
 
     switch (this.authPath_) {
     case "Sign in":
