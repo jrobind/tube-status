@@ -138,7 +138,7 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   toggleTooltip_(e) {
-    const styles = {top: "11px", left: "400px"};
+    const styles = {top: "-18px", left: "50px"};
 
     if (e.type === "mouseout") {
       const tooltipEl = document.querySelector(cssSelector.TOOLTIP);
@@ -151,8 +151,8 @@ export default class Authentication extends HTMLElement {
       new Tooltip(TOOLTIP_MESSAGE_SUBSCRIBE, styles) :
       new Tooltip(TOOLTIP_MESSAGE_UNSUBSCRIBE, styles);
 
-    // render and and insert tooltip
-    this.insertAdjacentElement("afterend", tooltipEl);
+    // render tooltip
+    this.appendChild(tooltipEl);
   }
 
   /**

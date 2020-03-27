@@ -253,6 +253,10 @@ body {
   cursor: pointer;
 }
 
+.tube-status-authentication:not(.tube-status-header__authentication) {
+  position: relative;
+}
+
 /* tube-line styles */
 .tube-line {
   height: 70px;
@@ -412,7 +416,7 @@ body {
   width: 30px;
 }
 
-.tube-line tube-status-authentication {
+.tube-line .tube-status-authentication {
   margin-left: 10px;
 }
 
@@ -617,12 +621,13 @@ body {
 .tube-status-tooltip {
   position: absolute;
   padding: 8px;
-  max-width: 160px;
+  min-width: 100px;
   background-color: var(--tooltip-background-color);
   color: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
   animation: fade-in 0.5s ease;
+  z-index: 1;
 }
 
 .tube-status-tooltip__message {
@@ -722,7 +727,7 @@ footer {
     width: 120px;
   }
 
-  .tube-line tube-status-authentication {
+  .tube-line .tube-status-authentication {
     margin-left: 15px;
   }
 
@@ -733,6 +738,11 @@ footer {
   /* modal styles */
   .tube-status-modal__caption {
     font-size: 18px;
+  }
+
+  /* tooltip styles */
+  .tube-status-tooltip {
+    min-width: 145px;
   }
 }
 
@@ -809,7 +819,7 @@ footer {
     width: 35px;
   }
 
-  .tube-line tube-status-authentication {
+  .tube-line .tube-status-authentication {
     margin-left: 40px;
   }
 
