@@ -108,7 +108,7 @@ export default class Loading extends HTMLElement {
     const classList = this.classList;
 
     state ?
-      classList.add(cssClass.LOADING_LINE_ACTIVE) :
-      classList.remove(cssClass.LOADING_LINE_ACTIVE);
+      classList.add(cssClass.LOADING_HEADER_ACTIVE) :
+      classList.remove(cssClass.LOADING_HEADER_ACTIVE);
   }
 }
