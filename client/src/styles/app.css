@@ -363,6 +363,7 @@ body {
   background-repeat: no-repeat;
   margin-left: 8px;
   background-size: 100%;
+  min-width: 30px;
 }
 
 .tube-line--active .tube-line-info::after {
@@ -373,18 +374,20 @@ body {
   background-repeat: no-repeat;
   margin-left: 8px;
   background-size: 100%;
+  min-width: 30px;
 }
 
 .tube-line-info {
   justify-content: flex-end;
   margin-right: 10px;
+  overflow: hidden;
 }
 
 .tube-line-info__reason-title {
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  width: 100px;
+  overflow: hidden;
+  margin-left: 15px;
 }
 
 .tube-line-sub,
@@ -729,10 +732,6 @@ footer {
     font-size: 14px;
   }
 
-  .tube-line-info__reason-title {
-    width: 120px;
-  }
-
   .tube-line .tube-status-authentication {
     margin-left: 15px;
   }
@@ -809,10 +808,6 @@ footer {
 
   .tube-line--active {
     height: 90px;
-  }
-
-  .tube-line-info__reason-title {
-    width: auto;
   }
 
   .tube-line-info::after {
