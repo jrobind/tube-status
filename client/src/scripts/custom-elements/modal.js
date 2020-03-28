@@ -17,6 +17,9 @@ const LOADING_DELAY = 500;
 const MODAL_SUB_TITLE_TEXT = "Specify your subscription times:";
 
 /** @const {string} */
+const ERROR_MESSAGE = "Push subscription object not found";
+
+/** @const {string} */
 const MODAL_DAYS_BTN_TEXT = "Select days";
 
 /** @const {string} */
@@ -277,6 +280,8 @@ export default class Modal extends HTMLElement {
       } else {
         this.handleError_(result);
       }
+    } else {
+      this.handleError_(ERROR_MESSAGE);
     }
   }
 
@@ -406,7 +411,7 @@ export default class Modal extends HTMLElement {
 
   /**
    * Handles api fetch errors.
-   * @param {object} e
+   * @param {object|string} e
    * @private
    */
   handleError_(e) {
