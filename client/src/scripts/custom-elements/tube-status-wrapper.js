@@ -72,7 +72,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     // fires when push notification has been sent to client
     socket.on("notification", this.handleNotificationRecieved_.bind(this));
     // get data every 60 seconds
-    // this.fetchInterval_();
+    this.fetchInterval_();
   }
 
   /**
@@ -171,7 +171,13 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   fetchInterval_() {
     setInterval(async () => {
+      updateStore({
+        action: actions.LOADING_APP,
+        data: {loadingState: {state: true, line: null}},
+      });
+
       await this.getAllLineData_();
+
       updateStore({
         action: actions.LOADING_APP,
         data: {loadingState: {state: false, line: null}},
