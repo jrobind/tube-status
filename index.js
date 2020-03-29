@@ -77,8 +77,6 @@ app.get(
     const googleId = req.user.id;
     const profileData = {
       googleId, // store user in db using unique Google id
-      name: req.user.displayName,
-      email: req.user.emails[0].value,
       avatar: req.user.photos[0].value,
       signedIn: true,
     };
