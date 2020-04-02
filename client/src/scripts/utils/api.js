@@ -13,7 +13,7 @@ export const apiLogout = async () => {
   };
 
   const logoutResponse = await fetch("api/logout", options)
-    .catch((e) => e);
+    .catch((e) => console.error(e));
   return logoutResponse.status;
 };
 
@@ -36,7 +36,7 @@ export const apiSubscribe = async (pushSubscription, line, window) => {
   };
 
   const subscriptionResponse = await (fetch("api/subscribe", options)
-    .catch((e) => e));
+    .catch((e) => console.error(e)));
   console.log(subscriptionResponse);
   return await subscriptionResponse.json();
 };
@@ -58,7 +58,7 @@ export const apiUnsubscribe = async (line) => {
   };
 
   const unSubscriptionResponse = await fetch("api/subscribe", options)
-    .catch((e) => e);
+    .catch((e) => console.error(e));
   console.log(unSubscriptionResponse);
   return await unSubscriptionResponse.json();
 };
@@ -70,7 +70,7 @@ export const apiUnsubscribe = async (line) => {
  */
 export const apiGetAllLineData = async () => {
   const lines = await fetch("api/lines")
-    .catch((e) => e);
+    .catch((e) => console.error(e));
 
   return await lines.json();
 };
@@ -90,7 +90,25 @@ export const apiGetLineSubscriptions = async () => {
   };
 
   const subscriptionResults = await fetch("api/subscribe", options)
-    .catch((e) => e);
+    .catch((e) => console.error(e));
 
   return await subscriptionResults.json();
+};
+
+/**
+ * Updates the notifications feature flag.
+ * @param {boolean} flag
+ * @async
+ * @return {Promise}
+ */
+export const apiUpdateNotificationsFeature = async (flag) => {
+  const options = {
+    method: "POST",
+    body: JSON.stringify({notificationsFeature: flag}),
+    headers: {"content-type": "application/json"},
+  };
+  const response = await fetch("api/notifications", options)
+    .catch((e) => console.error(e));
+
+  return await response.json();
 };

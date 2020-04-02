@@ -1,10 +1,13 @@
 import {store} from "../utils/client-store.js";
-import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
+import {
+  apiGetAllLineData,
+  apiGetLineSubscriptions,
+  apiUpdateNotificationsFeature,
+} from "../utils/api.js";
 import {initPushSubscription} from "../push-setup.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
 const {updateStore, getStore} = store;
-const socket = io();
 
 /**
  * CSS class selectors.
@@ -12,9 +15,11 @@ const socket = io();
  */
 const cssSelector = {
   TUBE_LINE: ".tube-line",
+  SUB_ICON: ".tube-line-sub__image-wrapper",
   MESSAGE_WRAPPER: ".tube-status-wrapper__message",
-  FOOTER: ".tube-status-footer-reference",
-  HEADER: ".tube-status-header__profile",
+  FOOTER: ".tube-status-footer__reference",
+  HEADER: ".tube-status-header",
+  SUBSCRRIPTIONS: ".tube-status-subscriptions",
 };
 
 /**
@@ -53,26 +58,42 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    await initPushSubscription();
+    const pushResult = await initPushSubscription();
+    await this.updateNotifcationFeatureFlag_(pushResult);
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
+
     this.order_();
+    this.appReady_();
 
     updateStore({
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
 
-    this.appReady_();
-
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
 
-    // fires when push notification has been sent to client
-    socket.on("notification", this.handleNotificationRecieved_.bind(this));
     // get data every 60 seconds
     this.fetchInterval_();
+  }
+
+  /**
+   * Updates push subscription feature flag.
+   * @param {!Object} pushSubscription
+   * @async
+   * @private
+   */
+  async updateNotifcationFeatureFlag_(pushSubscription) {
+    const flag = pushSubscription ? true : false;
+
+    updateStore({
+      action: actions.NOTIFICATIONS_FEATURE,
+      data: {notificationsFeature: flag},
+    });
+
+    await apiUpdateNotificationsFeature(flag).catch(this.handleError_);
   }
 
   /**
@@ -252,13 +273,23 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   appReady_() {
-    this.classList.remove(cssClass.HIDDEN);
+    const {notificationsFeature, userProfile: {signedIn}} = getStore();
+
     document.querySelector(
       cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
     document.querySelector(
       cssSelector.HEADER).classList.remove(cssClass.HIDDEN);
 
+    if (notificationsFeature && signedIn) {
+      const tubeLineSubEls = this.querySelectorAll(cssSelector.SUB_ICON);
+
+      tubeLineSubEls.forEach((el) => el.classList.remove(cssClass.HIDDEN));
+      document.querySelector(
+        cssSelector.SUBSCRRIPTIONS).classList.remove(cssClass.HIDDEN);
+    }
+
     document.dispatchEvent(new CustomEvent(customEvents.READY));
+    this.classList.remove(cssClass.HIDDEN);
     console.log(getStore());
   }
 
