@@ -1,10 +1,24 @@
 import {store} from "../utils/client-store.js";
-import {actions, delayTypes, customEvents} from "../constants.js";
-import {removeDuplicate, handleTabFocus} from "../utils/helpers.js";
-const {subscribeToStore, getStore} = store;
+import {actions, delayTypes, customEvents, copy} from "../constants.js";
+import {apiUnsubscribe} from "../utils/api.js";
+import Tooltip from "./tooltip.js";
+import {
+  removeDuplicate,
+  handleTabFocus,
+  findLineSubscription,
+  removeSubscriptionId,
+} from "../utils/helpers.js";
+const {subscribeToStore, getStore, updateStore} = store;
 
-/** @const {string} */
-const AUTH_ELEMENT_NAME = "TUBE-STATUS-AUTHENTICATION";
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
+const cssSelector = {
+  TOGGLE_ON: ".tube-status__filter-toggle--on",
+  TOOLTIP: ".tube-status-tooltip",
+  SUB_ICON_WRAPPER: ".tube-line-sub__image-wrapper",
+};
 
 /**
  * CSS classes.
@@ -13,10 +27,23 @@ const AUTH_ELEMENT_NAME = "TUBE-STATUS-AUTHENTICATION";
 const cssClass = {
   STATUS_WRAPPER: "tube-status-wrapper",
   SUB_STATUS: "tube-line-sub__status",
+  SUB_ICON: "tube-line-sub__image",
+  SUB_ICON_WRAPPER: "tube-line-sub__image-wrapper",
   LINE_SUB: "tube-line-sub",
   INFO_REASON_TITLE: "tube-line-info__reason-title",
   ACTIVE: "tube-line--active",
+  HIDDEN: "tube-status-hide",
 };
+
+/** @const {number} */
+const LOADING_DELAY = 500;
+
+/** @const {string} */
+const UNSUBSCRIBE_IMG_PATH = "/images/unsubscribe.svg";
+
+/** @const {string} */
+const SUBSCRIBE_IMG_PATH = "/images/subscribe.svg";
+
 
 /**
  * Tube line custom element.
@@ -33,14 +60,21 @@ export default class TubeLine extends HTMLElement {
     this.tubeStatusWrapper_;
 
     /** @private {HTMLElement} */
-    this.subStatusEl_;
+    this.subStatusEl_ = this.querySelector(`.${cssClass.SUB_STATUS}`);
 
     /** @private {HTMLElement} */
-    this.reasonTitleEl_;
+    this.subIconWrapper_ = this.querySelector(cssSelector.SUB_ICON_WRAPPER);
+
+    /** @private {HTMLImageElement} */
+    this.subIconEl_ = this.querySelector(`.${cssClass.SUB_ICON}`);
+
+    /** @private {HTMLElement} */
+    this.reasonTitleEl_ = this.querySelector(`.${cssClass.INFO_REASON_TITLE}`);
 
     /** @private {boolean} */
     this.connectedCalled_ = false;
   }
+
 
   /**
    * Called every time element is inserted to DOM.
@@ -48,24 +82,131 @@ export default class TubeLine extends HTMLElement {
   connectedCallback() {
     if (this.connectedCalled_) return;
 
-    subscribeToStore({
-      callback: this.updateDOM_.bind(this),
-      action: actions.LINES,
-    });
+    subscribeToStore([
+      {
+        callback: this.updateTubeLineContent_.bind(this),
+        action: actions.LINES,
+      },
+      {
+        callback: this.toggleSubscriptionIcon_.bind(this),
+        action: actions.LINE_SUBSCRIBE,
+      },
+      {
+        callback: this.toggleSubscriptionIcon_.bind(this),
+        action: actions.LINE_UNSUBSCRIBE,
+      },
+      {
+        callback: this.toggleSubscriptionIcon_.bind(this),
+        action: actions.RESET_APP,
+      },
+      {
+        callback: this.hideSubscritpionIcons_.bind(this),
+        action: actions.RESET_APP,
+      },
+    ]);
 
     // listeners
     this.addEventListener("click", this.handleClick_.bind(this));
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
     this.addEventListener("keypress", this.handleKeyPress_.bind(this));
+    this.subIconWrapper_.addEventListener(
+      "keyup", this.handleKeyup_.bind(this));
+    this.subIconWrapper_.addEventListener(
+      "keypress", this.handleKeyPress_.bind(this));
+    this.subIconEl_.addEventListener(
+      "mouseover", this.toggleTooltip_.bind(this));
+    this.subIconEl_.addEventListener(
+      "mouseout", this.toggleTooltip_.bind(this));
 
     this.tubeStatusWrapper_ = document.querySelector(
       `.${cssClass.STATUS_WRAPPER}`);
-    this.subStatusEl_ = this.querySelector(
-      `.${cssClass.SUB_STATUS}`);
-    this.reasonTitleEl_ = this.querySelector(
-      `.${cssClass.INFO_REASON_TITLE}`);
-
     this.connectedCalled_ = true;
+  }
+
+  /**
+   * Emits a custom event to be consumed by the Modal element.
+   * @private
+   */
+  emit_() {
+    const detail = {detail: {line: this.line_}};
+
+    document.dispatchEvent(
+      new CustomEvent(customEvents.SHOW_SUBSCRIBE, detail));
+  }
+
+  /**
+   * Handles a subscription icon click.
+   * @param {Event} e
+   * @private
+   */
+  handleSubClick_(e) {
+    const {userProfile: {signedIn}} = getStore();
+
+    if (this.subIconWrapper_.getAttribute("type") === "subscribe") {
+      this.handleSubscribe_();
+    } else {
+      signedIn && this.handleUnSubscribeRequest_();
+    }
+  }
+
+  /**
+   * Handles the line subscription process.
+   * @private
+   */
+  handleSubscribe_() {
+    const {notificationsFeature, userProfile: {signedIn}} = getStore();
+
+    if (!notificationsFeature) return;
+
+    signedIn && this.emit_();
+  }
+
+  /**
+   * Handles line unsubscribe requests.
+   * @async
+   * @private
+   */
+  async handleUnSubscribeRequest_() {
+    const detail = {detail: {filter: true}};
+    const toggleOnEl = document.querySelector(cssSelector.TOGGLE_ON);
+
+    updateStore({
+      action: actions.LOADING_LINE,
+      data: {loadingState: {state: true, line: this.line_}},
+    });
+
+    const result = await apiUnsubscribe(this.line_);
+    const {subscription} = result;
+
+    if (subscription) {
+      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
+
+      updateStore({
+        action: actions.LINE_UNSUBSCRIBE,
+        data: {lineSubscriptions: removeSubscriptionId(subscription)},
+      });
+    } else {
+      this.handleError_(result);
+    }
+
+    updateStore({
+      action: actions.LOADING_LINE,
+      data: {loadingState: {state: false, line: this.line_}},
+    });
+
+    // if we are within a filtered view, we should update the filter again
+    if (!toggleOnEl.classList.contains(cssClass.HIDDEN)) {
+      document.dispatchEvent(
+        new CustomEvent(customEvents.FILTER_SUBSCRIPTIONS, detail));
+    }
+  }
+
+  /**
+   * Hides tube line subscription icons.
+   * @private
+   */
+  hideSubscritpionIcons_() {
+    this.subIconEl_.classList.add(cssClass.HIDDEN);
   }
 
   /**
@@ -74,7 +215,7 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   handleKeyup_(e) {
-    e.which === 9 && handleTabFocus(this);
+    e.which === 9 && handleTabFocus(e.target);
   }
 
   /**
@@ -83,7 +224,35 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   handleKeyPress_(e) {
+    e.stopImmediatePropagation();
     e.which === 13 && this.handleClick_(e);
+  }
+
+  /**
+   * Toggle subscribe/unsubscribe tooltip.
+   * @param {Event} e
+   * @private
+   */
+  toggleTooltip_(e) {
+    const {notificationsFeature} = getStore();
+
+    if (!notificationsFeature) return;
+
+    const styles = {top: "-18px", left: "50px"};
+    const type = this.subIconWrapper_.getAttribute("type");
+
+    if (e.type === "mouseout") {
+      const tooltipEl = document.querySelector(cssSelector.TOOLTIP);
+
+      tooltipEl.parentNode.removeChild(tooltipEl);
+      return;
+    }
+
+    const tooltipEl = type === "subscribe" ?
+      new Tooltip(copy.TOOLTIP_MSG_SUBSCRIBE, styles) :
+      new Tooltip(copy.TOOLTIP_MSG_UNSUBSCRIBE, styles);
+
+    this.subIconWrapper_.appendChild(tooltipEl);
   }
 
   /**
@@ -95,11 +264,14 @@ export default class TubeLine extends HTMLElement {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
     const isActive = this.classList.contains(cssClass.ACTIVE);
-    const isAuthEl = target.parentNode.nodeName === AUTH_ELEMENT_NAME;
+    const isSubEl = target.classList.contains(cssClass.SUB_ICON);
 
-    // return if the line is not active or the element clicked
-    // is an authentication custom element
-    if (!isActive || isAuthEl) return;
+    if (!isActive) return;
+
+    if (isSubEl) {
+      this.handleSubClick_(e);
+      return;
+    }
 
     document.dispatchEvent(
       new CustomEvent(customEvents.LINE_CLICK, detail));
@@ -109,11 +281,12 @@ export default class TubeLine extends HTMLElement {
    * Updates DOM with every new line status.
    * @private
    */
-  updateDOM_() {
+  updateTubeLineContent_() {
     const {lineInformation} = getStore();
     const lineInfo = removeDuplicate(lineInformation[this.line_]);
 
-    this.removeContent_();
+    this.subStatusEl_.textContent = "";
+    this.reasonTitleEl_.textContent = "";
 
     lineInfo.forEach((info, i)=> {
       const {status, reason} = info;
@@ -127,25 +300,34 @@ export default class TubeLine extends HTMLElement {
         this.classList.add(cssClass.ACTIVE) :
         this.classList.remove(cssClass.ACTIVE);
 
-      // if there are multiple disruptions, we don't want to reset
-      // the reason text content
-      if (lineInfo.length <= 1) {
-        this.reasonTitleEl_.textContent = "";
-      }
+      // if there are multiple disruptions, we should not reset text content
+      if (lineInfo.length <= 1) this.reasonTitleEl_.textContent = "";
 
       this.subStatusEl_.textContent = "";
       this.subStatusEl_.textContent += `${this.line_}`;
 
-      if (!this.reasonTitleEl_.textContent.includes(status)) {
-        this.reasonTitleEl_.textContent += ` ${status} ${pipe}`;
-      } else {
+      !this.reasonTitleEl_.textContent.includes(status) ?
+        this.reasonTitleEl_.textContent += ` ${status} ${pipe}` :
         this.reasonTitleEl_.textContent = "";
-      }
     });
   }
 
   /**
-   * Updates DOM with every new line status.
+   * Toggles the tube line subscription icon state
+   * @private
+   */
+  toggleSubscriptionIcon_() {
+    if (Object.keys(findLineSubscription(this.line_)).length) {
+      this.subIconEl_.src = UNSUBSCRIBE_IMG_PATH;
+      this.subIconWrapper_.setAttribute("type", "unsubscribe");
+    } else {
+      this.subIconEl_.src = SUBSCRIBE_IMG_PATH;
+      this.subIconWrapper_.setAttribute("type", "subscribe");
+    }
+  }
+
+  /**
+   * Updates tube line score attribute with every new line status.
    * @private
    * @param {string} status
    */
@@ -182,12 +364,12 @@ export default class TubeLine extends HTMLElement {
   }
 
   /**
-   * Removes line status text content, including disruption copy.
+   * Handles api fetch errors.
+   * @param {object} e
    * @private
    */
-  removeContent_() {
-    this.subStatusEl_.textContent = "";
-    this.reasonTitleEl_.textContent = "";
+  handleError_(e) {
+    console.error(`Unable to subscribe to line at this time. ${e}`);
   }
 
   /**
@@ -198,5 +380,9 @@ export default class TubeLine extends HTMLElement {
     this.removeEventListener("click", this.handleClick_);
     this.removeEventListener("keyup", this.handleKeyup_);
     this.removeEventListener("keypress", this.handleKeyPress_);
+    this.subIconEl_.removeEventListener(
+      "mouseover", this.toggleTooltip_.bind(this));
+    this.subIconEl_.removeEventListener(
+      "mouseout", this.toggleTooltip_.bind(this));
   }
 }

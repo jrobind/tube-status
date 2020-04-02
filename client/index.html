@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="Description" content="Tube status is a PWA built using the custom elements api that provides London tube status updates">
+    <meta name="description" content="Tube status is a PWA built using the custom elements api that provides London tube status updates">
     <meta name="viewport" content="width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ffffff" />
@@ -13,7 +13,6 @@
     <title>Tube status</title>
     <link rel="stylesheet" href="/src/styles/app.css">
     <link rel="manifest" href="/manifest.json">
-    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <!-- app loading element -->
@@ -28,16 +27,17 @@
         <tube-status-time class="tube-status-time"></tube-status-time>
       </tube-status-modal>
       <!-- header -->
-      <tube-status-header class="tube-status-header">
+      <tube-status-header class="tube-status-header tube-status-hide">
         <div class="tube-status-header__heading">
-          <h1 class="tube-status-header__heading-title">TUBE STATUS</h1>
+          <h1 class="tube-status-header__heading-title">TUBE-STATUS</h1>
         </div>
         <div class="tube-status-header__profile tube-status-hide">
           <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
-          <tube-status-authentication tabindex="0" class="tube-status-header__authentication" dest='/auth/google/callback' auth-path='Sign in'>
+          <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
+            <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
           </tube-status-authentication>
           <div class="tube-status-header__subscription">
-            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
+            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions tube-status-hide">
               <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-header__subscription-image"> 
             </tube-status-subscriptions>
           </div>
@@ -61,9 +61,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -74,9 +74,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">            
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
             <div class="tube-line-info">
               <div class="tube-line-info__reason-title"></div>
@@ -87,9 +87,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -100,9 +100,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -113,9 +113,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -126,9 +126,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -139,9 +139,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">            
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -152,9 +152,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
               <div class="tube-line-info__reason-title"></div>
@@ -165,9 +165,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">            
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -178,9 +178,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -191,9 +191,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">            
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -204,9 +204,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -217,9 +217,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">            
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -230,9 +230,9 @@
           <div class="tube-line-sub">
             <span class="tube-line-sub__status"></span>
             <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <tube-status-authentication tabindex="0" dest='/auth/google/callback' auth-path='subscribe'>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__subscription-image">            
-            </tube-status-authentication>
+            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type="unsubscribe">
+              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image">
+            </div>
           </div>
           <div class="tube-line-info">
             <div class="tube-line-info__reason-title"></div>
@@ -240,13 +240,18 @@
         </tube-line>
       </tube-status-wrapper>
       <!-- footer -->
-      <footer>
-        <div class="tube-status-footer-reference tube-status-hide">
-          <span class="tube-status-footer-reference__attribution">Powered by TfL Open Data</span>
-          <span class="tube-status-footer-reference__attribution">Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights 2019</span>
+      <footer class="tube-status-footer">
+        <div class="tube-status-footer__reference tube-status-hide">
+          <span class="tube-status-footer__reference-attribution">Powered by TfL Open Data</span>
+          <span class="tube-status-footer__reference-attribution">Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights 2019</span>
+        </div>
+        <div class="tube-status-footer__privacy">
+          <tube-status-privacy-modal class="tube-status-privacy-modal"><h1>test</h1></tube-status-privacy-modal>
         </div>
       </footer>
     </div>
-    <script type="module" src="./build/bundle.js"></script>
+    <!-- <script type="module" src="./build/bundle.js"></script> -->
+    <script type="module" src="./src/scripts/index.js"></script>
+    <script type="module" src="./src/scripts/push-setup.js"></script>
   </body>
 </html>

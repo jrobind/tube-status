@@ -1,10 +1,17 @@
 import {store} from "../utils/client-store.js";
-import {apiLogout, apiUnsubscribe} from "../utils/api.js";
-import {findLineSubscription, removeSubscriptionId} from "../utils/helpers.js";
-import {handleTabFocus} from "../utils/helpers.js";
-import {actions, customEvents} from "../constants.js";
-import Tooltip from "./tooltip.js";
+import {apiLogout} from "../utils/api.js";
+import {handleTabFocus, create} from "../utils/helpers.js";
+import {actions} from "../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
+
+/**
+ * CSS class selectors.
+ * @enum {string}
+ */
+const cssSelector = {
+  GOOGLE_SIGN_IN_IMAGE: ".tube-status-authentication__image",
+  SUBSCRRIPTIONS: ".tube-status-subscriptions",
+};
 
 /**
  * CSS classes.
@@ -12,39 +19,13 @@ const {updateStore, subscribeToStore, getStore} = store;
  */
 const cssClass = {
   AUTHENTICATION: "tube-status-authentication",
-  HEADER_AUTHENTICATION: "tube-status-header__authentication",
+  SIGN_OUT_BTN: "tube-status-authentication__btn",
   HIDDEN: "tube-status-hide",
 };
-
-/**
- * CSS class selectors.
- * @enum {string}
- */
-const cssSelector = {
-  AUTHENTICATION_SUBSCRIBE_ICON: ".tube-line-sub__subscription-image",
-  TOOLTIP: ".tube-status-tooltip",
-  TOGGLE_ON: ".tube-status__filter-toggle--on",
-};
-
-/** @const {number} */
-const LOADING_DELAY = 500;
 
 /** @const {number} */
 const LOADING_DELAY_LOGOUT = 300;
 
-/** @const {string} */
-const UNSUBSCRIBE_IMG_PATH = "/images/unsubscribe.svg";
-
-/** @const {string} */
-const SUBSCRIBE_IMG_PATH = "/images/subscribe.svg";
-
-/** @const {string} */
-const TOOLTIP_MESSAGE_SUBSCRIBE =
-  "Subscribe to line for push notification status updates";
-
-/** @const {string} */
-const TOOLTIP_MESSAGE_UNSUBSCRIBE =
-  "Unsubscribe from line push notification status updates";
 
 /**
  * Authentication custom element.
@@ -60,14 +41,11 @@ export default class Authentication extends HTMLElement {
     /** @private {string} */
     this.authPath_ = this.getAttribute("auth-path");
 
-    /** @private {string} */
-    this.line_ = this.parentElement.parentElement.getAttribute("line");
+    /** @private {HTMLImageElement} */
+    this.signInImageEl_ = this.querySelector(cssSelector.GOOGLE_SIGN_IN_IMAGE);
 
     /** @private {string} */
     this.token_ = localStorage.getItem("JWT");
-
-    /** @private {HTMLElement} */
-    this.toggleOnEl_;
 
     /** @private {boolean} */
     this.connectedCalled_ = false;
@@ -79,36 +57,19 @@ export default class Authentication extends HTMLElement {
   connectedCallback() {
     if (this.connectedCalled_) return;
 
-    subscribeToStore([
-      {
-        callback: this.attemptAttrUpdate_.bind(this),
-        action: actions.LINE_SUBSCRIBE,
-      },
-      {
-        callback: this.attemptAttrUpdate_.bind(this),
-        action: actions.LINE_UNSUBSCRIBE,
-      },
-      {
-        callback: this.attemptAttrUpdate_.bind(this),
-        action: actions.RESET_APP,
-      },
-    ]);
+    subscribeToStore({
+      callback: this.attemptAttrUpdate_.bind(this),
+      action: actions.AUTHENTICATION,
+    });
 
     this.classList.add(cssClass.AUTHENTICATION);
-    this.toggleOnEl_ = document.querySelector(cssSelector.TOGGLE_ON);
 
     // listeners
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
     this.addEventListener("keypress", this.handleKeyPress_.bind(this));
     this.addEventListener("click", this.handleAuth_.bind(this));
 
-    if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
-      this.addEventListener("mouseover", this.toggleTooltip_.bind(this));
-      this.addEventListener("mouseout", this.toggleTooltip_.bind(this));
-    }
-
     this.handleJWT_();
-    this.render_();
     this.connectedCalled_ = true;
   }
 
@@ -133,29 +94,6 @@ export default class Authentication extends HTMLElement {
   }
 
   /**
-   * Toggle authentication tooltip.
-   * @param {Event} e
-   * @private
-   */
-  toggleTooltip_(e) {
-    const styles = {top: "-18px", left: "50px"};
-
-    if (e.type === "mouseout") {
-      const tooltipEl = document.querySelector(cssSelector.TOOLTIP);
-
-      tooltipEl.parentNode.removeChild(tooltipEl);
-      return;
-    }
-
-    const tooltipEl = this.authPath_ === "subscribe" ?
-      new Tooltip(TOOLTIP_MESSAGE_SUBSCRIBE, styles) :
-      new Tooltip(TOOLTIP_MESSAGE_UNSUBSCRIBE, styles);
-
-    // render tooltip
-    this.appendChild(tooltipEl);
-  }
-
-  /**
    * Verify existence of JWT and parse if present.
    * @private
    */
@@ -177,24 +115,26 @@ export default class Authentication extends HTMLElement {
    */
   attemptAttrUpdate_() {
     const {userProfile: {signedIn}} = getStore();
-    const isHeaderAuth = this.classList.contains(
-      cssClass.HEADER_AUTHENTICATION);
+    if (signedIn) {
+      const signOutBtn = create("span", {
+        copy: "Sign out",
+        classname: cssClass.SIGN_OUT_BTN,
+      });
 
-    if (signedIn && isHeaderAuth) {
       this.setAttribute("auth-path", "Sign out");
+      this.signInImageEl_.classList.add(cssClass.HIDDEN);
+      this.appendChild(signOutBtn);
     } else {
-      this.setAttribute("auth-path", "Sign in");
-    }
+      const signOutBtn = this.querySelector(`.${cssClass.SIGN_OUT_BTN}`);
 
-    // check if line subscription exists for current line
-    if (!isHeaderAuth) {
-      Object.keys(findLineSubscription(this.line_)).length ?
-        this.setAttribute("auth-path", "unsubscribe") :
-        this.setAttribute("auth-path", "subscribe");
+      this.setAttribute("auth-path", "Sign in");
+      this.signInImageEl_.classList.remove(cssClass.HIDDEN);
+      document.querySelector(
+        cssSelector.SUBSCRRIPTIONS).classList.add(cssClass.HIDDEN);
+      this.removeChild(signOutBtn);
     }
 
     this.authPath_ = this.getAttribute("auth-path");
-    this.render_();
   }
 
   /**
@@ -203,39 +143,30 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   handleAuth_(e) {
-    const {userProfile} = getStore();
-
     e.stopPropagation();
 
-    switch (this.authPath_) {
-    case "Sign in":
-      window.location.href = this.dest_;
-      break;
-    case "Sign out":
+    this.authPath_ === "Sign in" ?
+      this.handleSignIn_() :
       this.handleLogout_();
-      break;
-    case "subscribe":
-      userProfile.signedIn ?
-        this.emit_() :
-        window.location.href = this.dest_;
-      break;
-    case "unsubscribe":
-      userProfile.signedIn ?
-        this.handleUnSubscribeRequest_() :
-        window.location.href = this.dest_;
-      break;
-    }
   }
 
   /**
-   * Emits a custom event to be consumed by the Modal element.
+   * Handles the user sign in process.
    * @private
    */
-  emit_() {
-    const detail = {detail: {line: this.line_}};
+  handleSignIn_() {
+    const {notificationsFeature} = getStore();
 
-    document.dispatchEvent(
-      new CustomEvent(customEvents.SHOW_SUBSCRIBE, detail));
+    this.classList.add(cssClass.HIDDEN);
+
+    if (!notificationsFeature) return;
+
+    updateStore({
+      action: actions.LOADING_HEADER,
+      data: {loadingState: {state: true, line: null}},
+    });
+
+    window.location.href = this.dest_;
   }
 
   /**
@@ -244,6 +175,10 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleLogout_() {
+    this.authPath_ = "Sign in";
+    this.querySelector(
+      `.${cssClass.SIGN_OUT_BTN}`).classList.add(cssClass.HIDDEN);
+
     updateStore({
       action: actions.LOADING_HEADER,
       data: {loadingState: {state: true, line: null}},
@@ -259,9 +194,6 @@ export default class Authentication extends HTMLElement {
         action: actions.AUTHENTICATION,
         data: {signedIn: false, avatar: null, id: null},
       });
-      // set authentication text back to login
-      this.authPath_ = "Sign in";
-      this.render_();
 
       updateStore({
         action: actions.LOADING_HEADER,
@@ -272,63 +204,6 @@ export default class Authentication extends HTMLElement {
       console.log(store.getStore())
     } else {
       this.handleError_(result);
-    }
-  }
-
-  /**
-   * Handles line unsubscribe requests.
-   * @async
-   * @private
-   */
-  async handleUnSubscribeRequest_() {
-    const detail = {detail: {filter: true}};
-    const toggleOnEl = document.querySelector(cssSelector.TOGGLE_ON);
-
-    updateStore({
-      action: actions.LOADING_LINE,
-      data: {loadingState: {state: true, line: this.line_}},
-    });
-
-    const result = await apiUnsubscribe(this.line_);
-    const {subscription} = result;
-
-    if (subscription) {
-      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
-
-      updateStore({
-        action: actions.LINE_UNSUBSCRIBE,
-        data: {lineSubscriptions: removeSubscriptionId(subscription)},
-      });
-    } else {
-      this.handleError_(result);
-    }
-
-    updateStore({
-      action: actions.LOADING_LINE,
-      data: {loadingState: {state: false, line: this.line_}},
-    });
-
-    // if we are within a filtered view, we should update the filter again
-    if (!toggleOnEl.classList.contains(cssClass.HIDDEN)) {
-      document.dispatchEvent(
-        new CustomEvent(customEvents.FILTER_SUBSCRIPTIONS, detail));
-    }
-  }
-
-  /**
-   * Renders authentication text and updates subscription icon src.
-   * @private
-   */
-  render_() {
-    if (this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
-      this.innerHTML = this.authPath_;
-    } else {
-      const subIconEl = /** @type {HTMLImageElement} */ (this.querySelector(
-        cssSelector.AUTHENTICATION_SUBSCRIBE_ICON));
-
-      subIconEl.src = (this.authPath_ === "unsubscribe") ?
-        UNSUBSCRIBE_IMG_PATH :
-        SUBSCRIBE_IMG_PATH;
     }
   }
 
@@ -349,10 +224,5 @@ export default class Authentication extends HTMLElement {
     this.removeEventListener("click", this.handleAuth_);
     this.removeEventListener("keyup", this.handleKeyup_);
     this.removeEventListener("keypress", this.handleKeyPress_);
-
-    if (!this.classList.contains(cssClass.HEADER_AUTHENTICATION)) {
-      this.removeEventListener("mouseover", this.toggleTooltip_.bind(this));
-      this.removeEventListener("mouseout", this.toggleTooltip_.bind(this));
-    }
   }
 }
