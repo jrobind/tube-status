@@ -17,11 +17,10 @@ const middleware = require("./middleware");
 require("dotenv").config({path: "./env"});
 
 const app = express();
-const server = app.listen(
-  4000, () => console.log("Server started on port 4000"));
-const io = require("socket.io").listen(server, {pingTimeout: 30000});
+app.listen(4000, () => console.log("Server started on port 4000"));
 
 // require routes
+const notifications = require("./routes/notifications");
 const subscribe = require("./routes/subscribe");
 const line = require("./routes/lines");
 const logout = require("./routes/logout");
@@ -31,6 +30,7 @@ app.use(express.static(path.join(__dirname, "/client")));
 app.use(bodyParser.json());
 db.mongoSetup();
 app.use(passport.initialize());
+app.use("/api/", notifications);
 app.use("/api/", subscribe);
 app.use("/api/", line);
 app.use("/api/", logout);
@@ -58,7 +58,7 @@ passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
   callbackURL: "http://localhost:4000/auth/google/callback",
-  scope: ["email", "profile"],
+  scope: ["profile"],
 },
 // verify function
 (accessToken, refreshToken, profile, cb) => {
@@ -68,6 +68,7 @@ passport.use(new GoogleStrategy({
 
 app.get(
   "/auth/google/callback",
+  middleware.checkNotificationsFeature,
   passport.authenticate(
     "google",
     {failureRedirect: "/", session: false, prompt: "select_account"},
