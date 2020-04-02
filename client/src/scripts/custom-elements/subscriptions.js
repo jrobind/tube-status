@@ -147,6 +147,10 @@ export default class Subscriptions extends HTMLElement {
    * @private
    */
   toggleSubscriptions_(e) {
+    const {notificationsFeature, userProfile: {signedIn}} = getStore();
+
+    if (!notificationsFeature || !signedIn) return;
+
     const target = /** @type {HTMLElement} */ (e.target);
     const which = /** @type {number} */ (e.which);
     const clickOutOfBounds = target.parentNode !== this;
