@@ -8,9 +8,9 @@ const PUBLIC_KEY = "BKpELtYde7iajTdW7hw1LOIksmgzApC5IMLUtwDkqDA_fdqWmdQ3FqU2azo0
  * Initiates push subscription setup.
  * @private
  */
-export const initPushSubscription = () => {
+export const initPushSubscription = async () => {
   if ("serviceWorker" in navigator) {
-    pushSubscriptionSetup().catch(handleError);
+    return await pushSubscriptionSetup().catch(handleError);
   }
 };
 
@@ -21,20 +21,26 @@ export const initPushSubscription = () => {
  */
 async function pushSubscriptionSetup() {
   // register service worker
-  const register = await /** @type {Promise} */ (
-    navigator.serviceWorker.register("/sw.js"))
-    .catch(handleError);
+  await navigator.serviceWorker.register("/sw.js").catch(handleError);
 
-  // register for push once registration is active
-  if (register.active) {
-    const pushSubscription = await register.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: convertUint8Array(PUBLIC_KEY),
-    }).catch(handleError);
+  return await navigator.serviceWorker.ready.then(async (reg) => {
+    // register for push once registration is active
+    if (reg.active) {
+      if (reg.pushManager) {
+        const pushSubscription = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: convertUint8Array(PUBLIC_KEY),
+        }).catch(handleError);
 
-    // update client store with the push subscription object
-    updateStore({action: "PUSH-SUBSCRIPTION", data: {pushSubscription}});
-  }
+        updateStore({action: "PUSH-SUBSCRIPTION", data: {pushSubscription}});
+        return pushSubscription;
+      } else {
+        updateStore(
+          {action: "PUSH-SUBSCRIPTION", data: {pushSubscription: null}});
+        return null;
+      }
+    }
+  });
 }
 
 /**
