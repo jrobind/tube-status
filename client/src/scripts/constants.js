@@ -15,6 +15,7 @@ export const actions = {
   SELECTED_HOURS: "SELECTED-HOURS",
   RESET_SELECTED: "RESET-SELECTED",
   RESET_APP: "RESET-APP",
+  NOTIFICATIONS_FEATURE: "NOTIFICATIONS-FEATURE",
 };
 
 /**
@@ -31,6 +32,7 @@ export const customEvents = {
   FILTER_SUBSCRIPTIONS: "filter-subscriptions",
   SUBSCRIPTIONS_LOADED: "subscriptions-loaded",
   READY: "app-ready",
+  DEFAULT_POLICY: "default-policy",
 };
 
 /**
@@ -47,4 +49,15 @@ export const delayTypes = {
   MINOR_DELAYS: "Minor Delays",
   GOOD_SERVICE: "Good Service",
   SPECIAL_SERVICE: "Special Service",
+};
+
+/**
+ * Copy.
+ * @enum {string}
+ */
+export const copy = {
+  TOOLTIP_MSG_SUBSCRIBE: "Subscribe for line notifications",
+  TOOLTIP_MSG_NO_PUSH_SUPPORT: "This browser does not support Push notifications",
+  TOOLTIP_MSG_UNSUBSCRIBE: "Unsubscribe from line notifications",
+  SUBSCRIPTION_ERROR_MSG: "Unable to subscribe to line at this time.",
 };
