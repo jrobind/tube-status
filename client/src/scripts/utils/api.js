@@ -94,21 +94,3 @@ export const apiGetLineSubscriptions = async () => {
 
   return await subscriptionResults.json();
 };
-
-/**
- * Updates the notifications feature flag.
- * @param {boolean} flag
- * @async
- * @return {Promise}
- */
-export const apiUpdateNotificationsFeature = async (flag) => {
-  const options = {
-    method: "POST",
-    body: JSON.stringify({notificationsFeature: flag}),
-    headers: {"content-type": "application/json"},
-  };
-  const response = await fetch("api/notifications", options)
-    .catch((e) => console.error(e));
-
-  return await response.json();
-};

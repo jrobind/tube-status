@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const globals = require("../utlis/global");
 
 const jwtVerify = (req, res, next) => {
   jwt.verify(
@@ -18,12 +17,4 @@ const jwtVerify = (req, res, next) => {
   );
 };
 
-const checkNotificationsFeature = (req, res, next) => {
-  if (globals.notificationsFeature) {
-    next();
-  } else {
-    res.redirect("/");
-  }
-};
-
-module.exports = {jwtVerify, checkNotificationsFeature};
+module.exports = {jwtVerify};

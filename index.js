@@ -20,7 +20,6 @@ const app = express();
 app.listen(4000, () => console.log("Server started on port 4000"));
 
 // require routes
-const notifications = require("./routes/notifications");
 const subscribe = require("./routes/subscribe");
 const line = require("./routes/lines");
 const logout = require("./routes/logout");
@@ -30,7 +29,6 @@ app.use(express.static(path.join(__dirname, "/client")));
 app.use(bodyParser.json());
 db.mongoSetup();
 app.use(passport.initialize());
-app.use("/api/", notifications);
 app.use("/api/", subscribe);
 app.use("/api/", line);
 app.use("/api/", logout);
@@ -62,19 +60,16 @@ passport.use(new GoogleStrategy({
 },
 // verify function
 (accessToken, refreshToken, profile, cb) => {
-  console.log("User authenticated with Google:", profile);
   return cb(null, profile);
 }));
 
 app.get(
   "/auth/google/callback",
-  middleware.checkNotificationsFeature,
   passport.authenticate(
     "google",
     {failureRedirect: "/", session: false, prompt: "select_account"},
   ),
   async (req, res) => {
-    console.log("user authentication success:", req.user);
     const googleId = req.user.id;
     const profileData = {
       googleId, // store user in db using unique Google id

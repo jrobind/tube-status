@@ -1,9 +1,5 @@
 import {store} from "../utils/client-store.js";
-import {
-  apiGetAllLineData,
-  apiGetLineSubscriptions,
-  apiUpdateNotificationsFeature,
-} from "../utils/api.js";
+import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
 import {initPushSubscription} from "../push-setup.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents} from "../constants.js";
@@ -92,8 +88,6 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.NOTIFICATIONS_FEATURE,
       data: {notificationsFeature: flag},
     });
-
-    await apiUpdateNotificationsFeature(flag).catch(this.handleError_);
   }
 
   /**
@@ -273,14 +267,14 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   appReady_() {
-    const {notificationsFeature, userProfile: {signedIn}} = getStore();
+    const {userProfile: {signedIn}} = getStore();
 
     document.querySelector(
       cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
     document.querySelector(
       cssSelector.HEADER).classList.remove(cssClass.HIDDEN);
 
-    if (notificationsFeature && signedIn) {
+    if (signedIn) {
       const tubeLineSubEls = this.querySelectorAll(cssSelector.SUB_ICON);
 
       tubeLineSubEls.forEach((el) => el.classList.remove(cssClass.HIDDEN));
