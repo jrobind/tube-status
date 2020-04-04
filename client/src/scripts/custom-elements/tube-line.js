@@ -168,7 +168,10 @@ export default class TubeLine extends HTMLElement {
    */
   async handleUnSubscribeRequest_() {
     const detail = {detail: {filter: true}};
+    const {notificationsFeature} = getStore();
     const toggleOnEl = document.querySelector(cssSelector.TOGGLE_ON);
+
+    if (!notificationsFeature) return;
 
     updateStore({
       action: actions.LOADING_LINE,
@@ -235,11 +238,9 @@ export default class TubeLine extends HTMLElement {
    */
   toggleTooltip_(e) {
     const {notificationsFeature} = getStore();
-
-    if (!notificationsFeature) return;
-
     const styles = {top: "-18px", left: "50px"};
     const type = this.subIconWrapper_.getAttribute("type");
+    let tooltipEl;
 
     if (e.type === "mouseout") {
       const tooltipEl = document.querySelector(cssSelector.TOOLTIP);
@@ -248,9 +249,13 @@ export default class TubeLine extends HTMLElement {
       return;
     }
 
-    const tooltipEl = type === "subscribe" ?
-      new Tooltip(copy.TOOLTIP_MSG_SUBSCRIBE, styles) :
-      new Tooltip(copy.TOOLTIP_MSG_UNSUBSCRIBE, styles);
+    if (!notificationsFeature) {
+      tooltipEl = new Tooltip(copy.TOOLTIP_MSG_NO_PUSH_SUPPORT, styles);
+    } else {
+      tooltipEl = type === "subscribe" ?
+        new Tooltip(copy.TOOLTIP_MSG_SUBSCRIBE, styles) :
+        new Tooltip(copy.TOOLTIP_MSG_UNSUBSCRIBE, styles);
+    }
 
     this.subIconWrapper_.appendChild(tooltipEl);
   }

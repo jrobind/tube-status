@@ -23,6 +23,7 @@
   --tooltip-background-color: #4c4c4c;
   --dividing-line-color: rgba(0,0,0,0.1);
   --app-green: #25d366;
+  --note-blue: #e8f0fe;
 }
 
 html, 
@@ -114,9 +115,14 @@ body {
   align-items: center;
 }
 
-.tube-status-header__profile .tube-status-header__authentication,
-.tube-status-header__profile .tube-status-header__subscription {
+.tube-status-authentication,
+.tube-status-header__subscription {
   margin-right: 10px;
+}
+
+/* authentication styles */
+.tube-status-authentication__image {
+  max-width: 185px;
 }
 
 /* header subscriptions styles */
@@ -124,13 +130,8 @@ body {
   position: relative;
 }
 
-.tube-status-header__authentication {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  padding: 3px;
-}
-
-.tube-status-header__authentication:hover {
-  background: rgba(0, 0, 0, 0.04);
+.tube-status-authentication:hover {
+  cursor: pointer;
 }
 
 .tube-status-subscriptions__heading {
@@ -201,6 +202,23 @@ body {
   cursor: pointer;
 }
 
+/* note styles */
+.tube-status-note {
+  background: var(--note-blue);
+  padding: 20px;
+  font-size: 14px;
+  margin: -45px 0 45px 0;
+}
+
+.tube-status-note__message {
+  display: flex;
+  align-items: center;
+}
+
+.tube-status-note__message img {
+  margin-right: 10px;
+}
+
 /* filter styles */
 .tube-status-filter {
   display: none;
@@ -251,15 +269,6 @@ body {
 .tube-status-wrapper__message {
   text-align: center;
   margin-top: 30px;
-}
-
-/* authentication styles */
-.tube-status-authentication:hover {
-  cursor: pointer;
-}
-
-.tube-status-authentication:not(.tube-status-header__authentication) {
-  position: relative;
 }
 
 /* tube-line styles */
@@ -402,6 +411,15 @@ body {
   flex: 50%;
 }
 
+.tube-line-sub__image-wrapper:hover {
+  cursor: pointer;
+}
+
+.tube-line-sub__image-wrapper {
+  position: relative;
+  margin-left: 10px;
+}
+
 .tube-line-info__reason-context {
   margin: 0 0 0 10px;
 }
@@ -420,12 +438,8 @@ body {
   border-top-left-radius: 10px;
 }
 
-.tube-line-sub__subscription-image {
+.tube-line-sub__image {
   width: 30px;
-}
-
-.tube-line .tube-status-authentication {
-  margin-left: 10px;
 }
 
 .tube-line-sub__status {
@@ -436,8 +450,8 @@ body {
 }
 
 /* loading wheel styles */
-.tube-status-loading.tube-status-loading--active-line + .tube-status-authentication,
-.tube-status-loading.tube-status-loading--active-header + .tube-status-authentication,
+.tube-status-loading.tube-status-loading--active-line + .tube-line-sub__image-wrapper,
+.tube-status-loading.tube-status-loading--active-header + .tube-line-sub__image-wrapper,
 .tube-status-loading,
 .tube-status-modal,
 .app-wrapper.app-wrapper--hidden {
@@ -445,7 +459,7 @@ body {
 }
 
 
-.tube-status-loading + .tube-status-authentication,
+.tube-status-loading + .tube-line-sub__image-wrapper,
 .tube-status-loading--active,
 .tube-status-loading--active-line,
 .tube-status-loading--active-header,
@@ -646,13 +660,24 @@ body {
   font-size: 12px;
 }
 
+/* privacy modal styles */
+.tube-status-modal-privacy__block:first-of-type .tube-status-modal-privacy__heading {
+  font-size: 30px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--dividing-line-color);
+}
+
+.tube-status-modal-privacy__content {
+  font-size: 16px;
+}
+
 /* footer styles */
-.tube-status-footer-reference {
+.tube-status-footer__reference {
   display: flex;
   flex-direction: column;
 }
 
-footer {
+.tube-status-footer {
   border-top: 1px solid #d8d8d8;
   padding: 25px;
   margin: 50px 20px 0 20px;
@@ -703,8 +728,8 @@ footer {
     font-size: 25px;
   }
 
-  .tube-status-header__profile .tube-status-header__authentication,
-  .tube-status-header__profile .tube-status-header__subscription {
+  .tube-status-authentication,
+  .tube-status-header__subscription {
     margin-right: 13px;
   }
 
@@ -734,7 +759,7 @@ footer {
     font-size: 14px;
   }
 
-  .tube-line .tube-status-authentication {
+  .tube-line-sub__image-wrapper {
     margin-left: 15px;
   }
 
@@ -778,8 +803,8 @@ footer {
     font-size: 30px;
   }
 
-  .tube-status-header__profile .tube-status-header__authentication,
-  .tube-status-header__profile .tube-status-header__subscription {
+  .tube-status-authentication,
+  .tube-status-header__subscription {
     margin-right: 20px;
   }
 
@@ -837,16 +862,16 @@ footer {
     width: 290px;
   }
 
-  .tube-line-sub__subscription-image {
+  .tube-line-sub__image {
     width: 35px;
   }
 
-  .tube-line .tube-status-authentication {
+  .tube-line-sub__image-wrapper {
     margin-left: 40px;
   }
 
   /* footer styles */
-  footer {
+  .tube-status-footer {
     padding: 25px;
     margin: 50px 20px 0 20px;
     font-size: 15px;

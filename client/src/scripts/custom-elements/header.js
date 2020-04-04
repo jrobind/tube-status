@@ -35,9 +35,6 @@ export default class Header extends HTMLElement {
     this.avatarEl_;
 
     /** @private {HTMLElement} */
-    this.authenticationEl_;
-
-    /** @private {HTMLElement} */
     this.profileEl_;
   }
 
@@ -45,18 +42,10 @@ export default class Header extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    const subscribers = [
-      {
-        callback: this.showProfile_.bind(this),
-        action: actions.NOTIFICATIONS_FEATURE,
-      },
-      {
-        callback: this.updateAvatar_.bind(this),
-        action: actions.AUTHENTICATION,
-      },
-    ];
-
-    subscribeToStore(subscribers);
+    subscribeToStore({
+      callback: this.updateAvatar_.bind(this),
+      action: actions.AUTHENTICATION,
+    });
 
     this.avatarEl_ = this.querySelector(cssSelector.HEADER_AVATAR);
     this.profileEl_ = this.querySelector(cssSelector.HEADER_PROFILE);
@@ -74,17 +63,5 @@ export default class Header extends HTMLElement {
     this.avatarEl_.src = (signedIn) ?
       avatar :
       AVATAR_IMG_PATH;
-  }
-
-  /**
-   * Removes profile block.
-   * @private
-   */
-  showProfile_() {
-    const {notificationsFeature} = getStore();
-
-    if (notificationsFeature) {
-      this.profileEl_.classList.remove(cssClass.HIDE);
-    }
   }
 }

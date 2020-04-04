@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
-import {customEvents, actions} from "../constants.js";
+import {customEvents, actions, copy} from "../constants.js";
 import {
   create,
   removeSubscriptionId,
@@ -215,7 +215,7 @@ export default class Modal extends HTMLElement {
     this.classList.add(cssClass.MODAL_ACTIVE);
     this.classList.add(cssClass.MODAL_SUBSCRIBE);
 
-    this.appendChild(this.createModalIcon_());
+    this.appendChild(Modal.createModalIcon(this.toggleModal_.bind(this)));
 
     selectWrapper.appendChild(selectDaysBtn);
     selectWrapper.appendChild(selectTimesBtn);
@@ -312,7 +312,7 @@ export default class Modal extends HTMLElement {
   }
 
   /**
-   * Shows modal with line information relevant to clicked line.
+   * Shows or hides the modal.
    * @param {CustomEvent=} e
    * @private
    */
@@ -352,14 +352,15 @@ export default class Modal extends HTMLElement {
 
   /**
    * Creates modal icon.
-   * @private
+   * @param {function} boundFn
+   * @static
    * @return {Element}
    */
-  createModalIcon_() {
+  static createModalIcon(boundFn) {
     const events = [
-      {type: "click", fn: this.toggleModal_.bind(this)},
-      {type: "keyup", fn: this.toggleModal_.bind(this)},
-      {type: "keypress", fn: this.toggleModal_.bind(this)},
+      {type: "click", fn: boundFn},
+      {type: "keyup", fn: boundFn},
+      {type: "keypress", fn: boundFn},
     ];
 
     return create("div", {
@@ -380,10 +381,10 @@ export default class Modal extends HTMLElement {
     if (captionEl) {
       // remove existing markup before appending new context
       this.removeContent_();
-      this.appendChild(this.createModalIcon_());
+      this.appendChild(Modal.createModalIcon(this.toggleModal_.bind(this)));
       this.appendChild(context);
     } else {
-      this.appendChild(this.createModalIcon_());
+      this.appendChild(Modal.createModalIcon(this.toggleModal_.bind(this)));
       this.appendChild(context);
     }
   }
@@ -415,7 +416,7 @@ export default class Modal extends HTMLElement {
    * @private
    */
   handleError_(e) {
-    console.error(`Unable to subscribe to line at this time. ${e}`);
+    console.error(`${copy.SUBSCRIPTION_ERROR_MSG} ${e}`);
   }
 
   /**

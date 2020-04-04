@@ -14,7 +14,7 @@ const cssClass = {
  */
 export default class Tooltip extends HTMLElement {
   /**
-   * Create loading custom element.
+   * Create Tooltip custom element.
    * @param {string} message
    * @param {object} styles
    */

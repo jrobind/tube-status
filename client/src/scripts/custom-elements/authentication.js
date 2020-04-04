@@ -155,11 +155,7 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   handleSignIn_() {
-    const {notificationsFeature} = getStore();
-
     this.classList.add(cssClass.HIDDEN);
-
-    if (!notificationsFeature) return;
 
     updateStore({
       action: actions.LOADING_HEADER,
