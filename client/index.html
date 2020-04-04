@@ -31,7 +31,7 @@
         <div class="tube-status-header__heading">
           <h1 class="tube-status-header__heading-title">TUBE-STATUS</h1>
         </div>
-        <div class="tube-status-header__profile tube-status-hide">
+        <div class="tube-status-header__profile">
           <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
           <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
             <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
@@ -46,6 +46,10 @@
           </div>
         </div>
       </tube-status-header>
+      <!-- note -->
+      <div class="tube-status-note">
+        <span class="tube-status-note__message"><img src="images/error-outline.svg">This browser does not support Push notifications. Please sign in with a different browser.</span>
+      </div>
       <!-- tube wrapper -->
       <tube-status-wrapper class="tube-status-wrapper tube-status-hide">
       <!-- filter component -->
