@@ -157,7 +157,7 @@ export const createFocusTrap = (el) => {
   const firstFocusableEl = focusableEls[0];
   const lastFocusableEl = focusableEls[focusableEls.length - 1];
 
-  el.addEventListener("keydown", function(e) {
+  el.addEventListener("keydown", (e) => {
     if (e.which === 9) {
       if (e.shiftKey) {
         if (document.activeElement === firstFocusableEl) {

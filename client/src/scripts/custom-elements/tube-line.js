@@ -218,6 +218,7 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   handleKeyup_(e) {
+    e.stopImmediatePropagation();
     e.which === 9 && handleTabFocus(e.target);
   }
 
@@ -269,7 +270,8 @@ export default class TubeLine extends HTMLElement {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
     const isActive = this.classList.contains(cssClass.ACTIVE);
-    const isSubEl = target.classList.contains(cssClass.SUB_ICON);
+    const isSubEl = target.classList.contains(cssClass.SUB_ICON) ||
+      target.classList.contains(cssClass.SUB_ICON_WRAPPER);
 
     if (!isActive) return;
 

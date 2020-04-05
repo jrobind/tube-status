@@ -1,14 +1,7 @@
-import {store} from "../utils/client-store.js";
-import {apiSubscribe} from "../utils/api.js";
 import copy from "../privacy-copy.js";
 import Modal from "../custom-elements/modal.js";
-import {customEvents, actions} from "../constants.js";
-import {
-  create,
-  handleTabFocus,
-  createFocusTrap,
-} from "../utils/helpers.js";
-const {getStore, updateStore, subscribeToStore} = store;
+import {customEvents} from "../constants.js";
+import {create, createFocusTrap, handleTabFocus} from "../utils/helpers.js";
 
 /**
  * CSS classes.
@@ -21,7 +14,9 @@ const cssClass = {
   PRIVACY_BLOCK: "tube-status-modal-privacy__block",
   PRIVACY_BLOCK_HEADING: "tube-status-modal-privacy__heading",
   PRIVACY_BLOCK_CONTENT: "tube-status-modal-privacy__content",
+  PRIVACY_TYPE: "tube-status-privacy-modal__type",
   OVERLAY_DIM: "dim",
+  HIDE: "tube-status-hide",
 };
 
 /**
@@ -42,6 +37,9 @@ export default class PrivacyModal extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.overlay_;
+
+    /** @private {string} */
+    this.typeEl_ = this.querySelector(`.${cssClass.PRIVACY_TYPE}`);
   }
 
   /**
@@ -52,43 +50,73 @@ export default class PrivacyModal extends HTMLElement {
 
     // listeners
     this.addEventListener("click", this.toggleModal_.bind(this));
+    this.addEventListener("keyup", this.handleKeyup_.bind(this));
+    this.addEventListener("keypress", this.handleKeyPress_.bind(this));
     document.addEventListener(
-      customEvents.DEFAULT_POLICY, this.toggleModal_.bind(this));
+      customEvents.PRIVACY_POLICY, this.toggleModal_.bind(this));
+  }
+
+  /**
+   * Handler for a tab keyup event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyup_(e) {
+    e.stopImmediatePropagation();
+    e.which === 9 && handleTabFocus(this);
+  }
+
+  /**
+   * Handler for a enter keypress event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyPress_(e) {
+    e.stopImmediatePropagation();
+    e.which === 13 && this.toggleModal_(e);
   }
 
   /**
    * Populates the modal with markup for privacy consent
    * or generic privacy copy.
-   * @param {string} type
    * @private
    */
-  populateModal_(type) {
+  populateModal_() {
     this.appendChild(Modal.createModalIcon(this.toggleModal_.bind(this)));
     const captionEl = create("div", {classname: cssClass.MODAL_CAPTION});
 
-    if (type === "click") {
-      Object.entries(copy["DEFAULT"]).forEach((section) => {
-        const {TITLE, CONTENT} = section[1];
+    Object.entries(copy.DEFAULT).forEach((section) => {
+      const {TITLE, CONTENT} = section[1];
 
-        const blockEL = create("div", {classname: cssClass.PRIVACY_BLOCK});
-        const headingEl = create("h2", {
-          classname: cssClass.PRIVACY_BLOCK_HEADING,
-          copy: TITLE,
-        });
-        const contentEl = create("p", {
-          classname: cssClass.PRIVACY_BLOCK_CONTENT,
-          copy: CONTENT,
-        });
-
-        blockEL.appendChild(headingEl);
-        blockEL.appendChild(contentEl);
-        captionEl.appendChild(blockEL);
+      const blockEL = create("div", {classname: cssClass.PRIVACY_BLOCK});
+      const headingEl = create("h2", {
+        classname: cssClass.PRIVACY_BLOCK_HEADING,
+        copy: TITLE,
+      });
+      const contentEl = create("p", {
+        classname: cssClass.PRIVACY_BLOCK_CONTENT,
+        copy: CONTENT,
       });
 
-      this.appendChild(captionEl);
-    } else {
-      // consent case
-    }
+      blockEL.appendChild(headingEl);
+      blockEL.appendChild(contentEl);
+      captionEl.appendChild(blockEL);
+    });
+
+    this.appendChild(captionEl);
+    // set focus
+    this.focus();
+  }
+
+  /**
+   * Updates the URL when the privacy modal is displayed or closed
+   * @param {string=} mode
+   * @private
+   */
+  updateURL_(mode) {
+    mode === "set" ?
+      window.history.pushState(null, null, "/privacy") :
+      window.history.pushState(null, null, "/");
   }
 
   /**
@@ -99,19 +127,32 @@ export default class PrivacyModal extends HTMLElement {
   toggleModal_(e) {
     e.stopImmediatePropagation();
 
+    const which = e ? e.which : null;
+    const target = e.target;
     const modalIcon = this.querySelector(`.${cssClass.MODAL_ICON}`);
+
+    if (e.type === "click" && modalIcon && target !== modalIcon) return;
+
+    if (which === 9 && modalIcon) {
+      handleTabFocus(modalIcon);
+      return;
+    }
 
     this.removeContent_();
 
     if (!modalIcon) {
-      // show privacy modal
+      this.updateURL_("set");
       this.overlay_.classList.add(cssClass.OVERLAY_DIM);
       this.classList.add(cssClass.MODAL_ACTIVE);
-      this.populateModal_(e.type);
+      this.typeEl_.classList.add(cssClass.HIDE);
+      this.populateModal_();
+
       createFocusTrap(this);
     } else {
       this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
       this.classList.remove(cssClass.MODAL_ACTIVE);
+      this.typeEl_.classList.remove(cssClass.HIDE);
+      this.updateURL_();
 
       document.dispatchEvent(
         new CustomEvent(customEvents.MODAL_CLOSE));
@@ -123,9 +164,13 @@ export default class PrivacyModal extends HTMLElement {
    * @private
    */
   removeContent_() {
-    const children = Array.from(this.childNodes);
+    const children = Array.from(this.children);
 
-    children.forEach((el) => this.removeChild(el));
+    children.forEach((el) => {
+      if (!el.classList.contains(cssClass.PRIVACY_TYPE)) {
+        this.removeChild(el);
+      }
+    });
   }
 
   /**
@@ -133,5 +178,8 @@ export default class PrivacyModal extends HTMLElement {
    * @private
    */
   disconnectedCallback() {
+    document.removeEventListener("click", this.toggleModal_);
+    document.removeEventListener(
+      customEvents.PRIVACY_POLICY, this.toggleModal_.bind(this));
   }
 }

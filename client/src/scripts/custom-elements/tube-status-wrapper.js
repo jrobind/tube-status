@@ -13,9 +13,10 @@ const cssSelector = {
   TUBE_LINE: ".tube-line",
   SUB_ICON: ".tube-line-sub__image-wrapper",
   MESSAGE_WRAPPER: ".tube-status-wrapper__message",
-  FOOTER: ".tube-status-footer__reference",
+  FOOTER: ".tube-status-footer",
   HEADER: ".tube-status-header",
-  SUBSCRRIPTIONS: ".tube-status-subscriptions",
+  SUBSCRRIPTIONS: ".tube-status-header__subscription",
+  NOTE: ".tube-status-note",
 };
 
 /**
@@ -41,8 +42,6 @@ export default class TubeStatusWrapper extends HTMLElement {
   /** Create tube status wrapper custom element. */
   constructor() {
     super();
-
-    this.token_ = localStorage.getItem("JWT");
   }
 
   /**
@@ -267,7 +266,7 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   appReady_() {
-    const {userProfile: {signedIn}} = getStore();
+    const {notificationsFeature, userProfile: {signedIn}} = getStore();
 
     document.querySelector(
       cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
@@ -282,8 +281,18 @@ export default class TubeStatusWrapper extends HTMLElement {
         cssSelector.SUBSCRRIPTIONS).classList.remove(cssClass.HIDDEN);
     }
 
+    if (!notificationsFeature) {
+      document.querySelector(
+        cssSelector.NOTE).classList.remove(cssClass.HIDDEN);
+    }
+
     document.dispatchEvent(new CustomEvent(customEvents.READY));
     this.classList.remove(cssClass.HIDDEN);
+
+    if (window.location.href.includes("privacy")) {
+      document.dispatchEvent(new CustomEvent(customEvents.PRIVACY_POLICY));
+    }
+
     console.log(getStore());
   }
 

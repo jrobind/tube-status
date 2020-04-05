@@ -312,7 +312,7 @@ export default class Modal extends HTMLElement {
   }
 
   /**
-   * Shows or hides the modal.
+   * Toggles modal with line information relevant to clicked line.
    * @param {CustomEvent=} e
    * @private
    */
