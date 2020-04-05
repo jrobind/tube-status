@@ -25,7 +25,7 @@ const line = require("./routes/lines");
 const logout = require("./routes/logout");
 
 app.use(compression());
-app.use(express.static(path.join(__dirname, "/client")));
+app.use(express.static(path.join(__dirname, "/client"), {index: false}));
 app.use(bodyParser.json());
 db.mongoSetup();
 app.use(passport.initialize());
@@ -55,7 +55,7 @@ passport.use(new JWTStrategy({
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: "http://localhost:4000/auth/google/callback",
+  callbackURL: "http://localhost:4000/auth/google/callback/",
   scope: ["profile"],
 },
 // verify function
@@ -64,10 +64,10 @@ passport.use(new GoogleStrategy({
 }));
 
 app.get(
-  "/auth/google/callback",
+  "/auth/google/callback/",
   passport.authenticate(
     "google",
-    {failureRedirect: "/", session: false, prompt: "select_account"},
+    {failureRedirect: "/", session: false, prompt: "select_account consent"},
   ),
   async (req, res) => {
     const googleId = req.user.id;
@@ -76,6 +76,8 @@ app.get(
       avatar: req.user.photos[0].value,
       signedIn: true,
     };
+    let signedIn;
+
     // check if user exists. If not, then add to db.
     await db.UserModel.findOne({googleId}, (err, resp) => {
       let subscriptions;
@@ -87,7 +89,11 @@ app.get(
             subscriptions = newUser.subscriptions;
           });
       } else {
-        // set signed in status
+        if (resp.signedIn) {
+          signedIn = true;
+          return;
+        }
+
         db.UserModel.updateOne(
           {googleId},
           {$set: {signedIn: true}},
@@ -100,6 +106,11 @@ app.get(
       // so we can sign token and send back to client
       req.user.subscriptions = subscriptions;
     });
+
+    if (signedIn) {
+      res.redirect("/");
+      return;
+    }
 
     const htmlWithEmbeddedJWT = `
     <html>
@@ -192,6 +203,10 @@ const job = new CronJob("0 */1 * * * *", async () => {
 
 job.start();
 
+app.get("/privacy", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/index.html"));
+});
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./index.html"));
+  res.sendFile(path.join(__dirname, "./client/index.html"));
 });
