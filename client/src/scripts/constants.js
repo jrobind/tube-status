@@ -32,7 +32,7 @@ export const customEvents = {
   FILTER_SUBSCRIPTIONS: "filter-subscriptions",
   SUBSCRIPTIONS_LOADED: "subscriptions-loaded",
   READY: "app-ready",
-  DEFAULT_POLICY: "default-policy",
+  PRIVACY_POLICY: "privacy-policy",
 };
 
 /**

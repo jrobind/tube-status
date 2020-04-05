@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * Privacy copy.
  */
@@ -5,11 +6,11 @@ export default {
   DEFAULT: {
     HEADING: {
       TITLE: "Privacy Policy",
-      CONTENT: "This privacy policy explains how we collect any personal information about you, and how we use it.",
+      CONTENT: "This privacy policy explains how we collect personal information about you, and how we use it.",
     },
     INFORMATION: {
-      TITLE: "Information collection",
-      CONTENT: "Information is only collected when you sign in to this website using your Google account. Once you are signed in, your Google avatar and Google account id will be stored. Your Google account avatar is used as your profile image, and your Google account id is used to create a unique user account.",
+      TITLE: "Social Login",
+      CONTENT: "Information is only collected from you when you choose to sign into this website using your Google account. By doing so, you authorise us to collect, store and use any information they may give us (e.g., your email address).",
     },
     SITE_SECURITY: {
       TITLE: "Site security",
@@ -25,13 +26,11 @@ export default {
     },
     REMOVE_MY_DATA: {
       TITLE: "Deleting my data",
-      CONTENT: "You can delete your account at any time by clicking your avatar/profile and selecting the 'delete account' option from the dropdown. Deleting your account will remove all of the data we have collected from you.",
+      CONTENT: "You can delete your tube-status account at any time by clicking your avatar/profile and selecting the 'delete account' option from the dropdown. Deleting your account will remove all of the data we have stored and collected from you and automatically sign you out.",
     },
     CONTACT: {
       TITLE: "Contact",
       CONTENT: "For any questions or concerns, please contact jrobind@outlook.com",
     },
-  },
-  CONSENT: {
   },
 };
