@@ -36,8 +36,8 @@
           <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
             <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
           </tube-status-authentication>
-          <div class="tube-status-header__subscription">
-            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions tube-status-hide">
+          <div class="tube-status-header__subscription tube-status-hide">
+            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
               <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-header__subscription-image"> 
             </tube-status-subscriptions>
           </div>
@@ -47,7 +47,7 @@
         </div>
       </tube-status-header>
       <!-- note -->
-      <div class="tube-status-note">
+      <div class="tube-status-note tube-status-hide">
         <span class="tube-status-note__message"><img src="images/error-outline.svg">This browser does not support Push notifications. Please sign in with a different browser.</span>
       </div>
       <!-- tube wrapper -->
@@ -244,13 +244,15 @@
         </tube-line>
       </tube-status-wrapper>
       <!-- footer -->
-      <footer class="tube-status-footer">
-        <div class="tube-status-footer__reference tube-status-hide">
+      <footer class="tube-status-footer tube-status-hide">
+        <div class="tube-status-footer__reference">
           <span class="tube-status-footer__reference-attribution">Powered by TfL Open Data</span>
           <span class="tube-status-footer__reference-attribution">Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights 2019</span>
         </div>
         <div class="tube-status-footer__privacy">
-          <tube-status-privacy-modal class="tube-status-privacy-modal"><h1>test</h1></tube-status-privacy-modal>
+          <tube-status-privacy-modal tabindex="0" class="tube-status-privacy-modal">
+            <span class="tube-status-privacy-modal__type">Privacy Policy</span>
+          </tube-status-privacy-modal>
         </div>
       </footer>
     </div>
