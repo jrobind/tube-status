@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions} from "../constants.js";
+import {apiDownload} from "../utils/api.js";
 import {handleTabFocus, create, createFocusTrap} from "../utils/helpers.js";
 const {subscribeToStore, getStore} = store;
 
@@ -12,6 +13,7 @@ const cssClass = {
   DOWNLOAD: "tube-status-avatar__dropdown-download-btn",
   HEADER_AVATAR: "tube-status-header__avatar-image",
   DELETE: "tube-status-avatar__dropdown-delete-btn",
+  TEMP_ANCHOR: "tube-status-temp-anchor",
 };
 
 /**
@@ -51,11 +53,16 @@ export default class Header extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    subscribeToStore({
-      callback: this.updateAvatar_.bind(this),
-      action: actions.AUTHENTICATION,
-    });
-
+    subscribeToStore([
+      {
+        callback: this.updateAvatar_.bind(this),
+        action: actions.AUTHENTICATION,
+      },
+      {
+        callback: this.toggleDropdown_.bind(this),
+        action: actions.RESET_APP,
+      },
+    ]);
 
     this.avatarWrapperEl_.addEventListener(
       "click", this.toggleDropdown_.bind(this));
@@ -123,13 +130,34 @@ export default class Header extends HTMLElement {
    * @private
    */
   handleDeleteRequest_() {
+    console.log('reaching')
   }
 
   /**
    * Handles user data download request.
+   * @param {Event} e
+   * @async
    * @private
    */
-  handleDownloadRequest_() {
+  async handleDownloadRequest_(e) {
+    e.stopImmediatePropagation();
+
+    const result = await apiDownload().catch(this.handleError_);
+    const blob = await result.blob().catch(this.handleError_);
+
+    const url = window.URL.createObjectURL(blob);
+    const anchorEl = create("a", {
+      data: {name: "href", value: url},
+      classname: cssClass.TEMP_ANCHOR,
+    });
+
+    anchorEl.style.display = "none";
+    anchorEl.download = "data.txt";
+    this.appendChild(anchorEl);
+    anchorEl.click();
+    window.URL.revokeObjectURL(url);
+
+    this.removeChild(this.querySelector(`.${cssClass.TEMP_ANCHOR}`));
   }
 
   /**
@@ -138,16 +166,18 @@ export default class Header extends HTMLElement {
    * @private
    */
   toggleDropdown_(e) {
-    const {target, target: {tagName}} = e;
+    if (e) {
+      const {target, target: {tagName}} = e;
 
-    if (tagName === "BUTTON") {
-      const downloadBtn = target.classList.contains(cssClass.DOWNLOAD);
+      if (tagName === "BUTTON") {
+        const downloadBtn = target.classList.contains(cssClass.DOWNLOAD);
 
-      downloadBtn ?
-        this.handleDownloadRequest_() :
-        this.handleDeleteRequest_();
+        downloadBtn ?
+          this.handleDownloadRequest_(e) :
+          this.handleDeleteRequest_();
 
-      return;
+        return;
+      }
     }
 
     const {userProfile: {signedIn}} = getStore();
@@ -159,16 +189,25 @@ export default class Header extends HTMLElement {
         this.removeContent_();
         return;
       }
+
+      const downloadBtnEvents = [
+        {type: "click", fn: this.handleDownloadRequest_.bind(this)},
+        {type: "keyup", fn: handleTabFocus},
+      ];
+      const deleteBtnEvents = [
+        {type: "click", fn: this.handleDeleteRequest_.bind(this)},
+        {type: "keyup", fn: handleTabFocus},
+      ];
       const downloadBtn = create("button", {
         classname: cssClass.DOWNLOAD,
         copy: "download data",
-        event: {type: "keyup", fn: handleTabFocus},
+        event: downloadBtnEvents,
         data: {name: "tabindex", value: "0"},
       });
       const deleteBtn = create("button", {
         classname: cssClass.DELETE,
         copy: "delete data",
-        event: {type: "keyup", fn: handleTabFocus},
+        event: deleteBtnEvents,
         data: {name: "tabindex", value: "0"},
       });
 
@@ -180,6 +219,27 @@ export default class Header extends HTMLElement {
       // set focus and focus trap for dropdown elements
       this.avatarWrapperEl_.focus();
       createFocusTrap(this.avatarWrapperEl_);
+    } else {
+      this.removeContent_();
     }
+  }
+
+  /**
+   * Handles api fetch errors.
+   * @param {object} e
+   * @private
+   */
+  handleError_(e) {
+    console.error(`We are currently unable to handle this request. ${e}`);
+  }
+
+  /**
+   * Called each time custom element is disconnected from the DOM.
+   * @private
+   */
+  disconnectedCallback() {
+    this.avatarWrapperEl_.removeEventListener("click", this.toggleDropdown_);
+    this.avatarWrapperEl_.removeEventListener("keyup", this.handleKeyup_);
+    this.avatarWrapperEl_.removeEventListener("keypress", this.handleKeyPress_);
   }
 }

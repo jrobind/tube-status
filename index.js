@@ -23,6 +23,7 @@ app.listen(4000, () => console.log("Server started on port 4000"));
 const subscribe = require("./routes/subscribe");
 const line = require("./routes/lines");
 const logout = require("./routes/logout");
+const download = require("./routes/download");
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, "/client"), {index: false}));
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 app.use("/api/", subscribe);
 app.use("/api/", line);
 app.use("/api/", logout);
+app.use("/api/", download);
 
 // vapid keys
 const PUBLIC_KEY = process.env.PUBLIC_KEY;

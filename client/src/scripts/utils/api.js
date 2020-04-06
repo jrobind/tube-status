@@ -18,6 +18,25 @@ export const apiLogout = async () => {
 };
 
 /**
+ * Request for .txt file containing all user data.
+ * @async
+ * @return {Promise}
+ */
+export const apiDownload = async () => {
+  const options = {
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
+    },
+  };
+
+  const downloadResponse = await fetch("api/download", options)
+    .catch((e) => console.error(e));
+  return downloadResponse;
+};
+
+/**
  * Subscribes to tube line for push notification updates.
  * @async
  * @param {object} pushSubscription
