@@ -1,6 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {actions} from "../constants.js";
-import {apiDownload} from "../utils/api.js";
+import {apiDownload, apiRemoveAccount} from "../utils/api.js";
 import {handleTabFocus, create, createFocusTrap} from "../utils/helpers.js";
 const {subscribeToStore, getStore} = store;
 
@@ -13,7 +13,11 @@ const cssClass = {
   DOWNLOAD: "tube-status-avatar__dropdown-download-btn",
   HEADER_AVATAR: "tube-status-header__avatar-image",
   DELETE: "tube-status-avatar__dropdown-delete-btn",
+  BTN_WRAPPER: "tube-status-avatar__btn-block",
   TEMP_ANCHOR: "tube-status-temp-anchor",
+  HEADER_OPEN: "tube-status-header--open",
+  BTN: "tube-status-btn",
+  BTN_DANGER: "tube-status-btn--danger",
 };
 
 /**
@@ -24,11 +28,12 @@ const cssSelector = {
   HEADER_AVATAR_WRAPPER: ".tube-status-header__avatar",
   HEADER_AVATAR: ".tube-status-header__avatar-image",
   HEADER_PROFILE: ".tube-status-header__profile",
+  AUTHENTICATION: ".tube-status-authentication",
+  TOAST: ".tube-status-toast",
 };
 
 /** @const {string} */
 const AVATAR_IMG_PATH = "/images/account_circle.svg";
-
 
 /**
  * Header custom element.
@@ -43,6 +48,9 @@ export default class Header extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.profileEl_ = this.querySelector(cssSelector.HEADER_PROFILE);
+
+    /** @private {HTMLElement} */
+    this.authenticationEl_ = this.querySelector(cssSelector.AUTHENTICATION);
 
     /** @private {HTMLElement} */
     this.avatarWrapperEl_ = this.querySelector(
@@ -64,7 +72,7 @@ export default class Header extends HTMLElement {
       },
     ]);
 
-    this.avatarWrapperEl_.addEventListener(
+    document.addEventListener(
       "click", this.toggleDropdown_.bind(this));
     this.avatarWrapperEl_.addEventListener(
       "keyup", this.handleKeyup_.bind(this));
@@ -123,14 +131,30 @@ export default class Header extends HTMLElement {
     });
 
     this.avatarEl_.removeAttribute("tabindex");
+    this.classList.remove(cssClass.HEADER_OPEN);
   }
 
   /**
-   * Handles user data deletion request.
+   * Handles user account removal request.
+   * @param {Event} e
+   * @async
    * @private
    */
-  handleDeleteRequest_() {
-    console.log('reaching')
+  async handleRemoveRequest_(e) {
+    e.stopImmediatePropagation();
+
+    const toastEl = /** @type {HTMLElement} */ (
+      document.querySelector(cssSelector.TOAST));
+    const result = await apiRemoveAccount();
+
+    if (result === 200) {
+      this.removeContent_();
+      // sign out user after successful account deletion
+      this.authenticationEl_.click();
+
+      // show toast
+      toastEl.setAttribute("delete", "");
+    }
   }
 
   /**
@@ -142,6 +166,7 @@ export default class Header extends HTMLElement {
   async handleDownloadRequest_(e) {
     e.stopImmediatePropagation();
 
+    const btnWrapperEl = this.querySelector(`.${cssClass.BTN_WRAPPER}`);
     const result = await apiDownload().catch(this.handleError_);
     const blob = await result.blob().catch(this.handleError_);
 
@@ -151,13 +176,13 @@ export default class Header extends HTMLElement {
       classname: cssClass.TEMP_ANCHOR,
     });
 
-    anchorEl.style.display = "none";
+    anchorEl.style.display = "none"; 
     anchorEl.download = "data.txt";
-    this.appendChild(anchorEl);
+    btnWrapperEl.appendChild(anchorEl);
     anchorEl.click();
     window.URL.revokeObjectURL(url);
-
-    this.removeChild(this.querySelector(`.${cssClass.TEMP_ANCHOR}`));
+    btnWrapperEl.removeChild(
+      btnWrapperEl.querySelector(`.${cssClass.TEMP_ANCHOR}`));
   }
 
   /**
@@ -167,15 +192,20 @@ export default class Header extends HTMLElement {
    */
   toggleDropdown_(e) {
     if (e) {
-      const {target, target: {tagName}} = e;
+      const {target} = e;
+      const tempAnchorEl = this.querySelector(`.${cssClass.TEMP_ANCHOR}`);
+      const btnWrapperEl = this.querySelector(`.${cssClass.BTN_WRAPPER}`);
+      const clickOutOfBounds =
+        target !== tempAnchorEl && target !== btnWrapperEl;
+      const isAvatar =
+        target === this.avatarEl_ || target === this.avatarWrapperEl_;
 
-      if (tagName === "BUTTON") {
-        const downloadBtn = target.classList.contains(cssClass.DOWNLOAD);
+      if (!isAvatar && clickOutOfBounds) {
+        this.removeContent_();
+        return;
+      }
 
-        downloadBtn ?
-          this.handleDownloadRequest_(e) :
-          this.handleDeleteRequest_();
-
+      if (!isAvatar && !clickOutOfBounds) {
         return;
       }
     }
@@ -190,38 +220,49 @@ export default class Header extends HTMLElement {
         return;
       }
 
-      const downloadBtnEvents = [
-        {type: "click", fn: this.handleDownloadRequest_.bind(this)},
-        {type: "keyup", fn: handleTabFocus},
-      ];
-      const deleteBtnEvents = [
-        {type: "click", fn: this.handleDeleteRequest_.bind(this)},
-        {type: "keyup", fn: handleTabFocus},
-      ];
-      const downloadBtn = create("button", {
-        classname: cssClass.DOWNLOAD,
-        copy: "download data",
-        event: downloadBtnEvents,
-        data: {name: "tabindex", value: "0"},
-      });
-      const deleteBtn = create("button", {
-        classname: cssClass.DELETE,
-        copy: "delete data",
-        event: deleteBtnEvents,
-        data: {name: "tabindex", value: "0"},
-      });
-
-      this.avatarWrapperEl_.appendChild(downloadBtn);
-      this.avatarWrapperEl_.appendChild(deleteBtn);
-
-      this.avatarEl_.setAttribute("tabindex", "0");
-
-      // set focus and focus trap for dropdown elements
-      this.avatarWrapperEl_.focus();
-      createFocusTrap(this.avatarWrapperEl_);
+      this.createDropdown_();
     } else {
       this.removeContent_();
     }
+  }
+
+  /**
+   * Create dropdown component.
+   * @private
+   */
+  createDropdown_() {
+    const btnWrapperEl = create("div", {classname: cssClass.BTN_WRAPPER});
+    const downloadBtnEvents = [
+      {type: "click", fn: this.handleDownloadRequest_.bind(this)},
+      {type: "keyup", fn: handleTabFocus},
+    ];
+    const deleteBtnEvents = [
+      {type: "click", fn: this.handleRemoveRequest_.bind(this)},
+      {type: "keyup", fn: handleTabFocus},
+    ];
+    const downloadBtn = create("button", {
+      classname: [cssClass.DOWNLOAD, cssClass.BTN],
+      copy: "Download data",
+      event: downloadBtnEvents,
+      data: {name: "tabindex", value: "0"},
+    });
+    const deleteBtn = create("button", {
+      classname: [cssClass.DELETE, cssClass.BTN, cssClass.BTN_DANGER],
+      copy: "Delete account",
+      event: deleteBtnEvents,
+      data: {name: "tabindex", value: "0"},
+    });
+
+    btnWrapperEl.appendChild(downloadBtn);
+    btnWrapperEl.appendChild(deleteBtn);
+    this.avatarWrapperEl_.appendChild(btnWrapperEl);
+    this.classList.add(cssClass.HEADER_OPEN);
+
+    this.avatarEl_.setAttribute("tabindex", "0");
+
+    // set focus and focus trap for dropdown elements
+    this.avatarWrapperEl_.focus();
+    createFocusTrap(this.avatarWrapperEl_);
   }
 
   /**
@@ -238,7 +279,7 @@ export default class Header extends HTMLElement {
    * @private
    */
   disconnectedCallback() {
-    this.avatarWrapperEl_.removeEventListener("click", this.toggleDropdown_);
+    document.removeEventListener("click", this.toggleDropdown_);
     this.avatarWrapperEl_.removeEventListener("keyup", this.handleKeyup_);
     this.avatarWrapperEl_.removeEventListener("keypress", this.handleKeyPress_);
   }
