@@ -28,9 +28,6 @@ const MODAL_TIMES_BTN_TEXT = "Select times";
 /** @const {string} */
 const MODAL_SUB_BTN_TEXT = "Subscribe";
 
-/** @const {string} */
-const BTN_SELECTED_TEXT = "Selected";
-
 /**
  * CSS classes.
  * @enum {string}
@@ -51,6 +48,7 @@ const cssClass = {
   BTN_SELECTED: "tube-status-btn--selected",
   WEEK_ELEMENT: "tube-status-week",
   TIME_ELEMENT: "tube-status-time",
+  BTN: "tube-status-btn",
 };
 
 /**
@@ -59,6 +57,7 @@ const cssClass = {
  */
 const cssSelector = {
   OVERLAY: ".overlay",
+  TOAST: ".tube-status-toast",
 };
 
 /**
@@ -129,7 +128,7 @@ export default class Modal extends HTMLElement {
    * @private
    */
   updateSelectDaysBtn_() {
-    const {selectedSubscriptionWindow: {days}} = getStore();
+    const {selectedSubscriptionWindow: {days, hours}} = getStore();
     const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_DAYS}`);
 
     if (!days) return;
@@ -138,8 +137,12 @@ export default class Modal extends HTMLElement {
       btn.textContent = MODAL_DAYS_BTN_TEXT;
       btn.classList.remove(cssClass.BTN_SELECTED);
     } else {
-      btn.textContent = BTN_SELECTED_TEXT;
+      btn.textContent = "Days selected";
       btn.classList.add(cssClass.BTN_SELECTED);
+
+      if (hours) {
+        this.querySelector(`.${cssClass.MODAL_SUB_BTN}`).disabled = false;
+      }
     }
   }
 
@@ -149,7 +152,7 @@ export default class Modal extends HTMLElement {
    * @private
    */
   updateSelectTimesBtn_() {
-    const {selectedSubscriptionWindow: {hours}} = getStore();
+    const {selectedSubscriptionWindow: {hours, days}} = getStore();
     const btn = this.querySelector(`.${cssClass.MODAL_SUB_BTN_TIMES}`);
 
     if (!hours) return;
@@ -158,8 +161,12 @@ export default class Modal extends HTMLElement {
       btn.textContent = MODAL_TIMES_BTN_TEXT;
       btn.classList.remove(cssClass.BTN_SELECTED);
     } else {
-      btn.textContent = BTN_SELECTED_TEXT;
+      btn.textContent = "Times selected";
       btn.classList.add(cssClass.BTN_SELECTED);
+
+      if (days) {
+        this.querySelector(`.${cssClass.MODAL_SUB_BTN}`).disabled = false;
+      }
     }
   }
 
@@ -189,23 +196,23 @@ export default class Modal extends HTMLElement {
 
     const selectDaysBtn = create("button", {
       copy: MODAL_DAYS_BTN_TEXT,
-      classname: cssClass.MODAL_SUB_BTN_DAYS,
+      classname: [cssClass.MODAL_SUB_BTN_DAYS, cssClass.BTN],
       event: timeAndDayBtnEvents,
       data: {name: "tabindex", value: "0"},
     });
 
     const selectTimesBtn = create("button", {
       copy: MODAL_TIMES_BTN_TEXT,
-      classname: cssClass.MODAL_SUB_BTN_TIMES,
+      classname: [cssClass.MODAL_SUB_BTN_TIMES, cssClass.BTN],
       event: timeAndDayBtnEvents,
       data: {name: "tabindex", value: "0"},
     });
 
     const subscribeBtn = create("button", {
       copy: MODAL_SUB_BTN_TEXT,
-      classname: cssClass.MODAL_SUB_BTN,
+      classname: [cssClass.MODAL_SUB_BTN, cssClass.BTN],
       event: subscribeBtnEvents,
-      data: {name: "tabindex", value: "0"},
+      data: [{name: "tabindex", value: "0"}, {name: "disabled", value: ""}],
     });
 
     this.line_ = e.detail.line;
@@ -249,6 +256,8 @@ export default class Modal extends HTMLElement {
       const result = await apiSubscribe(
         pushSubscription, this.line_, selectedSubscriptionWindow);
       const {subscription} = result;
+      const toastEl = /** @type {HTMLElement} */ (
+        document.querySelector(cssSelector.TOAST));
 
       if (subscription.length) {
         this.toggleModal_();
@@ -277,6 +286,8 @@ export default class Modal extends HTMLElement {
           action: actions.RESET_SELECTED,
           data: {days: null, hours: null},
         });
+
+        toastEl.setAttribute("subscribe", "");
       } else {
         this.handleError_(result);
       }

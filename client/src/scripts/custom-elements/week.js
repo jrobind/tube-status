@@ -22,6 +22,7 @@ const cssClass = {
   DAY_SELECT_ACTIVE: "tube-status-week-day__select--active",
   SUBMIT_BTN: "tube-status-week__btn",
   MODAL_SUB_BTN_TIMES: "tube-status-modal-sub__btn-times",
+  BTN: "tube-status-btn",
 };
 
 /**
@@ -60,6 +61,7 @@ export default class Week extends HTMLElement {
    */
   handlePreselect_() {
     const {selectedSubscriptionWindow: {days}} = getStore();
+    const submitBtn = this.querySelector(`.${cssClass.SUBMIT_BTN}`);
     const currentDays = Array.from(
       this.querySelectorAll(`.${cssClass.DAY_SELECT}`));
 
@@ -72,6 +74,8 @@ export default class Week extends HTMLElement {
         day.classList.add(cssClass.DAY_SELECT_ACTIVE);
       }
     });
+
+    submitBtn.disabled = false;
   }
 
   /**
@@ -146,9 +150,9 @@ export default class Week extends HTMLElement {
       {type: "keyup", fn: handleTabFocus},
     ];
     const submitBtn = create("button", {
-      classname: cssClass.SUBMIT_BTN,
+      classname: [cssClass.SUBMIT_BTN, cssClass.BTN],
       event: submitBtnEvents,
-      data: {name: "tabindex", value: "0"},
+      data: [{name: "tabindex", value: "0"}, {name: "disabled", value: ""}],
       copy: SUBMIT_BTN_TEXT,
     });
     const table = create("table");
@@ -204,6 +208,7 @@ export default class Week extends HTMLElement {
    */
   handleDayClick_(e) {
     const {target, which, type} = e;
+    const submitBtn = this.querySelector(`.${cssClass.SUBMIT_BTN}`);
 
     if (type === "click" || which === 13) {
       const day = target.getAttribute("day");
@@ -216,6 +221,8 @@ export default class Week extends HTMLElement {
         this.days_ = this.days_.filter((currentDay) => {
           return day !== currentDay;
         });
+
+        if (!this.days_.length) submitBtn.disabled = true;
       } else {
         target.classList.add(cssClass.DAY_SELECT_ACTIVE);
 
@@ -223,9 +230,9 @@ export default class Week extends HTMLElement {
         this.days_ = (!this.days_.includes(day)) ?
           [...this.days_, day] :
           [day];
-      }
 
-      console.log(this.days_);
+        submitBtn.disabled = false;
+      }
     }
   }
 

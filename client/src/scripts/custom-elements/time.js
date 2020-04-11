@@ -6,15 +6,10 @@ import {
   handleTabFocus,
   createFocusTrap,
 } from "../utils/helpers.js";
-import Tooltip from "./tooltip.js";
 const {updateStore, getStore} = store;
 
 /** @const {string} */
 const SUBMIT_BTN_TEXT = "Submit time range";
-
-/** @const {string} */
-const TOOLTIP_MESSAGE =
-  "Please select a range of a least one hour i.e. 09:00 – 10:00.";
 
 /**
  * CSS classes.
@@ -28,15 +23,7 @@ const cssClass = {
   SUBMIT_BTN: "tube-status-time__btn",
   MODAL_SUB_BTN_DAYS: "tube-status-modal-sub__btn-days",
   TABLE_WRAPPER: "tube-status-time__table-wrapper",
-};
-
-/**
-* CSS class selectors.
-* @enum {string}
-*/
-const cssSelector = {
-  TOOLTIP: ".tube-status-tooltip",
-  TOOLTIP_MESSAGE: ".tube-status-tooltip__message",
+  BTN: "tube-status-btn",
 };
 
 /**
@@ -75,6 +62,7 @@ export default class Time extends HTMLElement {
    */
   handlePreselect_() {
     const {selectedSubscriptionWindow: {hours}} = getStore();
+    const submitBtn = this.querySelector(`.${cssClass.SUBMIT_BTN}`);
     const currentHours = Array.from(
       this.querySelectorAll(`.${cssClass.HOUR_SELECT}`));
 
@@ -87,6 +75,8 @@ export default class Time extends HTMLElement {
         hr.classList.add(cssClass.HOUR_SELECT_ACTIVE);
       }
     });
+
+    submitBtn.disabled = false;
   }
 
   /**
@@ -114,19 +104,6 @@ export default class Time extends HTMLElement {
    */
   handleSubmitHours_() {
     const {selectedSubscriptionWindow: {days}} = getStore();
-    const tooltipExists = this.querySelector(cssSelector.TOOLTIP_MESSAGE);
-    const styles = {bottom: "-45px", left: "-60px"};
-
-    if (this.hours_.length === 1) {
-      if (tooltipExists) return;
-
-      // render and and insert tooltip
-      this.querySelector(`.${cssClass.SUBMIT_BTN}`)
-        .insertAdjacentElement(
-          "afterend", new Tooltip(TOOLTIP_MESSAGE, styles));
-
-      return;
-    }
 
     updateStore({
       action: actions.SELECTED_HOURS,
@@ -173,9 +150,9 @@ export default class Time extends HTMLElement {
       {type: "keyup", fn: handleTabFocus},
     ];
     const submitBtn = create("button", {
-      classname: cssClass.SUBMIT_BTN,
+      classname: [cssClass.SUBMIT_BTN, cssClass.BTN],
       copy: SUBMIT_BTN_TEXT,
-      data: {name: "tabindex", value: "0"},
+      data: [{name: "tabindex", value: "0"}, {name: "disabled", value: ""}],
       event: submitBtnEvents,
     });
     const tableWrapper = create("div", {classname: cssClass.TABLE_WRAPPER});
@@ -233,6 +210,7 @@ export default class Time extends HTMLElement {
    */
   handleHourClick_(e) {
     const {target, which, type} = e;
+    const submitBtn = this.querySelector(`.${cssClass.SUBMIT_BTN}`);
 
     if (type === "click" || which === 13) {
       const hour = +target.getAttribute("hour");
@@ -246,6 +224,8 @@ export default class Time extends HTMLElement {
         active.forEach((el) => el.classList.remove(
           cssClass.HOUR_SELECT_ACTIVE));
         this.hours_ = [];
+
+        if (!this.hours_.length) submitBtn.disabled = true;
       } else {
         target.classList.add(cssClass.HOUR_SELECT_ACTIVE);
 
@@ -260,10 +240,10 @@ export default class Time extends HTMLElement {
             this.querySelector(`[hour="${hr}"]`)
               .classList.add(cssClass.HOUR_SELECT_ACTIVE);
           });
+
+          submitBtn.disabled = false;
         }
       }
-
-      console.log(this.hours_);
     }
   }
 
