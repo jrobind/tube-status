@@ -34,10 +34,14 @@ export const create = (elType, options = {}) => {
   } = options;
 
   if (!Object.keys(options).length) return el;
+  if (copy) el.innerText = copy;
+  if (id) el.setAttribute("id", id);
 
-  // set attributes
-  classname && el.classList.add(classname);
-  id && el.setAttribute("id", id);
+  if (Array.isArray(classname)) {
+    classname.forEach((cls) => el.classList.add(cls));
+  } else {
+    if (classname) el.classList.add(classname);
+  }
 
   if (Array.isArray(data)) {
     data.forEach(({name, value}) => el.setAttribute(name, value));
@@ -45,7 +49,6 @@ export const create = (elType, options = {}) => {
     if (Object.keys(data).length) el.setAttribute(data.name, data.value);
   }
 
-  // set event listeners
   if (Array.isArray(options.event)) {
     options.event.forEach((ev) => el.addEventListener(ev.type, ev.fn));
   } else if (typeof options.event === "object") {
@@ -53,8 +56,6 @@ export const create = (elType, options = {}) => {
 
     el.addEventListener(type, fn);
   }
-  // set copy
-  if (copy) el.innerText = copy;
 
   return el;
 };
