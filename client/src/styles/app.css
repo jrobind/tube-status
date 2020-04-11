@@ -19,11 +19,13 @@
   --disruption-background-color: #fbf7e7;
   --week-day-color: #d4ebf2;
   --week-day-hover-color: #bed3d9;
-  --btn-selected-color: #add9e6;
   --tooltip-background-color: #4c4c4c;
   --dividing-line-color: rgba(0,0,0,0.1);
   --app-green: #25d366;
   --note-blue: #e8f0fe;
+  --toast-background-color: #3c4043;
+  --danger-red: #F32013;
+  --danger-red-hover: #CA0B00;
 }
 
 html, 
@@ -39,9 +41,38 @@ body {
 }
 
 /* global styles */
+.tube-status-btn {
+  font-size: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: none;
+  border-radius: 3px;
+  padding: 4px;
+}
+
 .tube-status-btn--selected {
-  background-color: var(--btn-selected-color);
+  background-color: var(--app-green) !important;
+  color: var(--default-white) !important;
+}
+
+.tube-status-btn[disabled] {
+  opacity: 0.65; 
+}
+
+.tube-status-btn--danger {
   color: var(--default-white);
+  background: var(--danger-red);
+}
+
+.tube-status-btn:not(.tube-status-btn--danger):not([disabled]):hover {
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.1);
+  transition: background .15s ease-out;
+}
+
+.tube-status-btn.tube-status-btn--danger:hover {
+  cursor: pointer;
+  background: var(--danger-red-hover);
+  transition: background .15s ease-out;
 }
 
 .tube-status-hide,
@@ -105,7 +136,12 @@ body {
   border-radius: 55px;
 }
 
+.tube-status-header__avatar-image:hover {
+  cursor: pointer;
+}
+
 .tube-status-header__profile {
+  flex-direction: column-reverse;
   font-size: 11px;
 }
 
@@ -115,15 +151,19 @@ body {
   align-items: center;
 }
 
-.tube-status-authentication,
 .tube-status-header__subscription {
   margin-right: 10px;
 }
 
+.tube-status-authentication {
+  margin-right: 3px;
+}
+
 /* authentication styles */
 .tube-status-authentication__image {
-  max-width: 185px;
+  max-width: 140px;
 }
+
 
 /* header subscriptions styles */
 .tube-status-subscriptions {
@@ -172,11 +212,12 @@ body {
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   padding: 10px;
   right: -73px;
-  top: 53px;
+  top: 64px;
   min-width: 180px;
   animation: slide-down 0.25s ease;
 }
 
+.tube-status-header--open .tube-status-avatar__btn-block:before,
 .tube-status-subscriptions__dropdown:before {
   content: "";
   height: 7px;
@@ -200,6 +241,24 @@ body {
   font-size: 9px;
   text-align: center;
   cursor: pointer;
+}
+
+/* header open styles */
+.tube-status-header--open .tube-status-avatar__btn-block {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--default-white);
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
+  padding: 15px;
+  right: 0;
+  top: 130px;
+  animation: slide-down 0.25s ease;
+}
+
+.tube-status-header--open .tube-status-avatar__btn-block button {
+  margin: 10px 0;
+  font-size: 12px;
 }
 
 /* note styles */
@@ -534,7 +593,7 @@ body {
 
 .tube-status-modal__icon {
   position: absolute;
-  right: 7px;
+  right: 12px;
   top: 7px;
 }
 
@@ -671,6 +730,21 @@ body {
   font-size: 16px;
 }
 
+/* toast styles */
+.tube-status-toast {
+  position: fixed;
+  top: 132px;
+  box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
+  padding: 15px 25px;
+  text-align: center;
+  margin: 0 50px;
+  left: 0;
+  border-radius: 5px;
+  background: var(--toast-background-color);
+  color: var(--default-white);
+  z-index: 1;
+}
+
 /* footer styles */
 .tube-status-footer__reference {
   display: flex;
@@ -728,12 +802,15 @@ body {
     font-size: 25px;
   }
 
-  .tube-status-authentication,
   .tube-status-header__subscription {
     margin-right: 13px;
   }
 
   /* subscription header styles */
+  .tube-status-header__profile {
+    flex-direction: row;
+  }
+
   .tube-status-header__subscription-image {
     width: 40px;
   }
@@ -751,6 +828,11 @@ body {
     height: 19px;
     line-height: 19px;
     font-size: 11px;
+  }
+
+  /* authentication styles */
+  .tube-status-authentication__image {
+    max-width: 180px;
   }
 
   /* tube line styles */
@@ -803,7 +885,6 @@ body {
     font-size: 30px;
   }
 
-  .tube-status-authentication,
   .tube-status-header__subscription {
     margin-right: 20px;
   }
