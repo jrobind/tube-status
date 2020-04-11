@@ -46,7 +46,7 @@ export default class Tooltip extends HTMLElement {
     });
 
     for (const key in this.styles_) {
-      if (this.styles_.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(this.styles_, key)) {
         this.style[key] = this.styles_[key];
       }
     }

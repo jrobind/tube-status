@@ -176,7 +176,7 @@ export default class Header extends HTMLElement {
       classname: cssClass.TEMP_ANCHOR,
     });
 
-    anchorEl.style.display = "none"; 
+    anchorEl.style.display = "none";
     anchorEl.download = "data.txt";
     btnWrapperEl.appendChild(anchorEl);
     anchorEl.click();

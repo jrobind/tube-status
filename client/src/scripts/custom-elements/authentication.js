@@ -10,7 +10,7 @@ const {updateStore, subscribeToStore, getStore} = store;
  */
 const cssSelector = {
   GOOGLE_SIGN_IN_IMAGE: ".tube-status-authentication__image",
-  SUBSCRRIPTIONS: ".tube-status-subscriptions",
+  SUBSCRRIPTIONS: ".tube-status-header__subscription ",
 };
 
 /**
@@ -21,6 +21,7 @@ const cssClass = {
   AUTHENTICATION: "tube-status-authentication",
   SIGN_OUT_BTN: "tube-status-authentication__btn",
   HIDDEN: "tube-status-hide",
+  BTN: "tube-status-btn",
 };
 
 /** @const {number} */
@@ -118,7 +119,7 @@ export default class Authentication extends HTMLElement {
     if (signedIn) {
       const signOutBtn = create("span", {
         copy: "Sign out",
-        classname: cssClass.SIGN_OUT_BTN,
+        classname: [cssClass.SIGN_OUT_BTN, cssClass.BTN],
       });
 
       this.setAttribute("auth-path", "Sign out");
@@ -197,7 +198,7 @@ export default class Authentication extends HTMLElement {
       });
 
       updateStore({action: actions.RESET_APP});
-      console.log(store.getStore())
+      console.log(store.getStore());
     } else {
       this.handleError_(result);
     }
