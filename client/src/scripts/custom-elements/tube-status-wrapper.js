@@ -53,7 +53,9 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
+    const channel = new BroadcastChannel("sw-messages");
     const pushResult = await initPushSubscription();
+
     await this.updateNotifcationFeatureFlag_(pushResult);
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
@@ -69,6 +71,8 @@ export default class TubeStatusWrapper extends HTMLElement {
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
+    channel.addEventListener(
+      "message", this.handleNotificationRecieved_.bind(this));
 
     // get data every 60 seconds
     this.fetchInterval_();
@@ -138,19 +142,24 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   async getAllLineData_() {
     const result = await apiGetAllLineData();
-    let lineInformation;
 
-    if (Array.isArray(result)) {
-      lineInformation = this.formatLineInformation_(result);
+    if (result) {
+      let lineInformation;
+
+      if (Array.isArray(result)) {
+        lineInformation = this.formatLineInformation_(result);
+      } else {
+        this.handleError_(result);
+      }
+
+      // update store with successful API response
+      return updateStore({
+        action: actions.LINES,
+        data: {result, lineInformation},
+      });
     } else {
       this.handleError_(result);
     }
-
-    // update store with successful API response
-    return updateStore({
-      action: actions.LINES,
-      data: {result, lineInformation},
-    });
   }
 
   /**
@@ -202,20 +211,25 @@ export default class TubeStatusWrapper extends HTMLElement {
   /**
    * Fetches tube line data when a push notification has been recieved
    * within the client.
+   * @param {Event} e
    * @private
    */
-  async handleNotificationRecieved_() {
-    updateStore({
-      action: actions.LOADING_APP,
-      data: {loadingState: {state: true, line: null}},
-    });
+  async handleNotificationRecieved_(e) {
+    const {data: {title}} = e;
 
-    await this.getAllLineData_();
+    if (title === "push received") {
+      updateStore({
+        action: actions.LOADING_APP,
+        data: {loadingState: {state: true, line: null}},
+      });
 
-    updateStore({
-      action: actions.LOADING_APP,
-      data: {loadingState: {state: false, line: null}},
-    });
+      await this.getAllLineData_();
+
+      updateStore({
+        action: actions.LOADING_APP,
+        data: {loadingState: {state: false, line: null}},
+      });
+    }
   }
 
   /**
