@@ -13,6 +13,7 @@ const cssClass = {
   DOWNLOAD: "tube-status-avatar__dropdown-download-btn",
   HEADER_AVATAR: "tube-status-header__avatar-image",
   DELETE: "tube-status-avatar__dropdown-delete-btn",
+  HEADER_PROFILE_SIGNED_IN: "tube-status-header__profile--signed-in",
   BTN_WRAPPER: "tube-status-avatar__btn-block",
   TEMP_ANCHOR: "tube-status-temp-anchor",
   HEADER_OPEN: "tube-status-header--open",
@@ -112,9 +113,16 @@ export default class Header extends HTMLElement {
   updateAvatar_() {
     const {userProfile: {signedIn, avatar}} = getStore();
 
-    this.avatarEl_.src = (signedIn) ?
-      avatar :
-      AVATAR_IMG_PATH;
+    if ("safari" in window !== true) {
+      this.profileEl_.classList.remove(cssClass.HIDE);
+
+      this.avatarEl_.src = (signedIn) ?
+        avatar :
+        AVATAR_IMG_PATH;
+
+      signedIn && this.profileEl_.classList.add(
+        cssClass.HEADER_PROFILE_SIGNED_IN);
+    }
   }
 
   /**
@@ -223,6 +231,8 @@ export default class Header extends HTMLElement {
       this.createDropdown_();
     } else {
       this.removeContent_();
+      this.profileEl_.classList.remove(
+        cssClass.HEADER_PROFILE_SIGNED_IN);
     }
   }
 
