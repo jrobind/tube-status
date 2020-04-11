@@ -53,7 +53,6 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    const channel = new BroadcastChannel("sw-messages");
     const pushResult = await initPushSubscription();
 
     await this.updateNotifcationFeatureFlag_(pushResult);
@@ -71,8 +70,13 @@ export default class TubeStatusWrapper extends HTMLElement {
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
-    channel.addEventListener(
-      "message", this.handleNotificationRecieved_.bind(this));
+
+    if ("safari" in window !== true) {
+      const channel = new BroadcastChannel("sw-messages");
+
+      channel.addEventListener(
+        "message", this.handleNotificationRecieved_.bind(this));
+    }
 
     // get data every 60 seconds
     this.fetchInterval_();
