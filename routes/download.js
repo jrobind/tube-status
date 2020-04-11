@@ -16,10 +16,14 @@ router.get(
       if (err) res.status(500).json({error: "error retrieving user data"});
 
       if (resp) {
+        const filteredSubIds = resp.subscriptions.map((sub) => {
+          return {days: sub.days, hours: sub.hours, line: sub.line};
+        });
+
         const response = {
           googleid: resp.googleId,
           avatar: resp.avatar,
-          subscriptions: resp.subscriptions,
+          subscriptions: filteredSubIds,
           signedIn: resp.signedIn,
         };
         res.json(response);

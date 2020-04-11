@@ -6,8 +6,12 @@ const router = new express.Router();
 router.get("/lines", (req, res) => {
   // send results
   (async () => {
-    const results = await apiResults.fetchAllLineStatus();
-    res.json(results);
+    try {
+      const results = await apiResults.fetchAllLineStatus();
+      res.json(results);
+    } catch (e) {
+      res.status(500).json({error: e});
+    }
   })();
 });
 
