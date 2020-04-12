@@ -46,16 +46,12 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: none;
   border-radius: 3px;
-  padding: 4px;
+  padding: 2px;
 }
 
 .tube-status-btn--selected {
   background-color: var(--app-green) !important;
   color: var(--default-white) !important;
-}
-
-.tube-status-btn[disabled] {
-  opacity: 0.65; 
 }
 
 .tube-status-btn--danger {
@@ -109,7 +105,7 @@ body {
 .tube-status-header {
   background-color: var(--default-white);
   display: flex;
-  min-height: 85px;
+  min-height: 94px;
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   margin-bottom: 35px;
   padding: 8px 8px;
@@ -132,17 +128,19 @@ body {
 }
 
 .tube-status-header__avatar-image {
-  width: 55px;
-  border-radius: 55px;
+  width: 53px;
+  border-radius: 53px;
 }
 
 .tube-status-header__avatar-image:hover {
   cursor: pointer;
 }
 
-.tube-status-header__profile {
+.tube-status-header__profile:not(.tube-status-header__profile--signed-in) {
   flex-direction: column-reverse;
   font-size: 11px;
+  min-width: 140px;
+  justify-content: space-between;
 }
 
 .tube-status-header__profile,
@@ -151,19 +149,20 @@ body {
   align-items: center;
 }
 
-.tube-status-header__subscription {
-  margin-right: 10px;
+.tube-status-header__profile.tube-status-header__profile--signed-in .tube-status-loading__header,
+.tube-status-header__subscription,
+.tube-status-authentication {
+  margin-right: 6px;
 }
 
-.tube-status-authentication {
-  margin-right: 3px;
+.tube-status-header__profile:not(.tube-status-header__profile--signed-in) .tube-status-authentication {
+  margin-right: 0;
 }
 
 /* authentication styles */
 .tube-status-authentication__image {
   max-width: 140px;
 }
-
 
 /* header subscriptions styles */
 .tube-status-subscriptions {
@@ -190,7 +189,7 @@ body {
 }
 
 .tube-status-header__subscription-image {
-  width: 30px;
+  width: 32px;
 }
 
 .tube-status-header__subscription-image:hover {
@@ -231,7 +230,6 @@ body {
 .tube-status-subscriptions__notifcation {
   position: absolute;
   top: 4px;
-  right: 0;
   color: var(--default-white);
   background-color: var(--app-green);
   width: 14px;
@@ -251,8 +249,9 @@ body {
   background-color: var(--default-white);
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   padding: 15px;
-  right: 0;
   top: 130px;
+  width: 100px;
+  right: 0;
   animation: slide-down 0.25s ease;
 }
 
@@ -517,7 +516,6 @@ body {
   display: none;
 }
 
-
 .tube-status-loading + .tube-line-sub__image-wrapper,
 .tube-status-loading--active,
 .tube-status-loading--active-line,
@@ -552,8 +550,8 @@ body {
   margin-left: 15px;
 }
 
-.tube-status-loading__header {
-  margin-right: 10px;
+.tube-status-loading__header.tube-status-header__profile--signed-in {
+  margin-right: 20px;
 }
 
 /* modal styles */
@@ -655,8 +653,12 @@ body {
 
 .tube-status-week table,
 .tube-status-time table {
-  min-height: 65px;
   width: 100%;
+}
+
+.tube-status-week tr,
+.tube-status-time tr {
+  height: 40px;
 }
   
 .tube-status-week-day__select,
@@ -719,17 +721,6 @@ body {
   font-size: 12px;
 }
 
-/* privacy modal styles */
-.tube-status-modal-privacy__block:first-of-type .tube-status-modal-privacy__heading {
-  font-size: 30px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--dividing-line-color);
-}
-
-.tube-status-modal-privacy__content {
-  font-size: 16px;
-}
-
 /* toast styles */
 .tube-status-toast {
   position: fixed;
@@ -758,6 +749,29 @@ body {
   font-size: 13px;
 }
 
+.tube-status-footer__reference-attribution {
+  margin-bottom: 5px;
+}
+
+/* privacy modal styles */
+.tube-status-modal-privacy__block:first-of-type .tube-status-modal-privacy__heading {
+  margin-top: 15px;
+  font-size: 24px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--dividing-line-color);
+}
+
+.tube-status-modal-privacy__content {
+  font-size: 16px;
+}
+.tube-status-privacy-modal__type {
+  font-weight: 600;
+}
+
+.tube-status-privacy-modal__type:hover {
+  cursor: pointer;
+}
+
 /* animations */
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -782,9 +796,14 @@ body {
 
 /* tablet */
 @media (min-width: 500px) {
+  /* button styles */
+  .tube-status-btn {
+    padding: 4px;
+  }
+
   /* header styles */
   .tube-status-header {
-    min-height: 100px;
+    min-height: 115px;
     margin-bottom: 45px;
     padding: 10px 15px;
   }
@@ -802,6 +821,12 @@ body {
     font-size: 25px;
   }
 
+  .tube-status-header__profile:not(.tube-status-header__profile--signed-in) {
+    min-width: 180px;
+  }
+
+  .tube-status-header__profile.tube-status-header__profile--signed-in .tube-status-loading__header,
+  .tube-status-header__subscription, .tube-status-authentication,
   .tube-status-header__subscription {
     margin-right: 13px;
   }
@@ -858,6 +883,11 @@ body {
   .tube-status-tooltip {
     min-width: 145px;
   }
+
+  /* privacy modal styles */
+  .tube-status-modal-privacy__block:first-of-type .tube-status-modal-privacy__heading {
+    font-size: 30px;
+  }
 }
 
 /* desktop */
@@ -876,6 +906,17 @@ body {
     font-size: 15px;
   }
 
+  .tube-status-header__profile.tube-status-header__profile--signed-in .tube-status-loading__header,
+  .tube-status-header__subscription, .tube-status-authentication,
+  .tube-status-header__subscription {
+    margin-right: 20px;
+  }
+
+  .tube-status-header__profile:not(.tube-status-header__profile--signed-in) {
+    flex-direction: row;
+    font-size: 11px;
+  }
+
   .tube-status-header__avatar-image {
     height: 75px;
     width: 75px;
@@ -885,17 +926,13 @@ body {
     font-size: 30px;
   }
 
-  .tube-status-header__subscription {
-    margin-right: 20px;
-  }
-
   /* loading styles */
   .tube-status-loading--active-line {
     margin-left: 40px;
   }
 
-  .tube-status-loading__header {
-    margin-right: 20px;
+  .tube-status-header__profile:not(.tube-status-header__profile--signed-in) .tube-status-loading__header {
+    margin-right: 60px;
   }
 
   /* subscription header styles */
@@ -931,12 +968,14 @@ body {
     height: 40px;
     width: 40px;
     margin-left: 25px;
+    min-width: 40px;
   }
 
   .tube-line--active .tube-line-info::after {
     height: 40px;
     width: 40px;
     margin-left: 25px;
+    min-width: 40px;
   }
 
   .tube-line-sub__status {
