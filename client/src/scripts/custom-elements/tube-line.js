@@ -18,6 +18,7 @@ const cssSelector = {
   TOGGLE_ON: ".tube-status__filter-toggle--on",
   TOOLTIP: ".tube-status-tooltip",
   SUB_ICON_WRAPPER: ".tube-line-sub__image-wrapper",
+  TOAST: ".tube-status-toast",
 };
 
 /**
@@ -136,10 +137,9 @@ export default class TubeLine extends HTMLElement {
 
   /**
    * Handles a subscription icon click.
-   * @param {Event} e
    * @private
    */
-  handleSubClick_(e) {
+  handleSubClick_() {
     const {userProfile: {signedIn}} = getStore();
 
     if (this.subIconWrapper_.getAttribute("type") === "subscribe") {
@@ -170,6 +170,8 @@ export default class TubeLine extends HTMLElement {
     const detail = {detail: {filter: true}};
     const {notificationsFeature} = getStore();
     const toggleOnEl = document.querySelector(cssSelector.TOGGLE_ON);
+    const toastEl = /** @type {HTMLElement} */ (
+      document.querySelector(cssSelector.TOAST));
 
     if (!notificationsFeature) return;
 
@@ -202,6 +204,8 @@ export default class TubeLine extends HTMLElement {
       document.dispatchEvent(
         new CustomEvent(customEvents.FILTER_SUBSCRIPTIONS, detail));
     }
+
+    toastEl.setAttribute("unsubscribe", "");
   }
 
   /**
@@ -291,31 +295,24 @@ export default class TubeLine extends HTMLElement {
   updateTubeLineContent_() {
     const {lineInformation} = getStore();
     const lineInfo = removeDuplicate(lineInformation[this.line_]);
+    const {status, reason} = lineInfo[0];
 
-    this.subStatusEl_.textContent = "";
+    this.subStatusEl_.textContent = `${this.line_}`;
     this.reasonTitleEl_.textContent = "";
 
+    this.setScoreAttribute_(status);
+
+    // line should appear clickable if there are delays/disruptions
+    reason ?
+      this.classList.add(cssClass.ACTIVE) :
+      this.classList.remove(cssClass.ACTIVE);
+
     lineInfo.forEach((info, i)=> {
-      const {status, reason} = info;
+      const {status} = info;
       const last = i === lineInfo.length -1;
       const pipe = last ? "" : " | ";
 
-      this.setScoreAttribute_(status);
-
-      // line should appear clickable if there are delays/disruptions
-      reason ?
-        this.classList.add(cssClass.ACTIVE) :
-        this.classList.remove(cssClass.ACTIVE);
-
-      // if there are multiple disruptions, we should not reset text content
-      if (lineInfo.length <= 1) this.reasonTitleEl_.textContent = "";
-
-      this.subStatusEl_.textContent = "";
-      this.subStatusEl_.textContent += `${this.line_}`;
-
-      !this.reasonTitleEl_.textContent.includes(status) ?
-        this.reasonTitleEl_.textContent += ` ${status} ${pipe}` :
-        this.reasonTitleEl_.textContent = "";
+      this.reasonTitleEl_.textContent += ` ${status} ${pipe}`;
     });
   }
 
