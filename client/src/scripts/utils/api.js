@@ -37,6 +37,25 @@ export const apiDownload = async () => {
 };
 
 /**
+ * Remove user account.
+ * @async
+ * @return {Promise}
+ */
+export const apiRemoveAccount = async () => {
+  const options = {
+    method: "DELETE",
+    headers: {
+      "content-type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
+    },
+  };
+
+  const response = await fetch("api/remove", options)
+    .catch((e) => console.error(e));
+  return response.status;
+};
+
+/**
  * Subscribes to tube line for push notification updates.
  * @async
  * @param {object} pushSubscription
