@@ -310,8 +310,6 @@ export default class TubeStatusWrapper extends HTMLElement {
     if (window.location.href.includes("privacy")) {
       document.dispatchEvent(new CustomEvent(customEvents.PRIVACY_POLICY));
     }
-
-    console.log(getStore());
   }
 
   /**

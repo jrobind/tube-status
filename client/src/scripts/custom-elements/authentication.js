@@ -198,7 +198,6 @@ export default class Authentication extends HTMLElement {
       });
 
       updateStore({action: actions.RESET_APP});
-      console.log(store.getStore());
     } else {
       this.handleError_(result);
     }

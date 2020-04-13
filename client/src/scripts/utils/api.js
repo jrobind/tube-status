@@ -75,7 +75,6 @@ export const apiSubscribe = async (pushSubscription, line, window) => {
 
   const subscriptionResponse = await (fetch("api/subscribe", options)
     .catch((e) => console.error(e)));
-  console.log(subscriptionResponse);
   return await subscriptionResponse.json();
 };
 
@@ -97,7 +96,6 @@ export const apiUnsubscribe = async (line) => {
 
   const unSubscriptionResponse = await fetch("api/subscribe", options)
     .catch((e) => console.error(e));
-  console.log(unSubscriptionResponse);
   return await unSubscriptionResponse.json();
 };
 

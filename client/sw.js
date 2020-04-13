@@ -15,7 +15,6 @@ const CONTENT_TO_CACHE = [
  * Handles service worker push event.
  */
 self.addEventListener("push", (e) => {
-  console.log(e);
   const channel = new BroadcastChannel("sw-messages");
   const {line, status} = e.data.json();
   const options = {
