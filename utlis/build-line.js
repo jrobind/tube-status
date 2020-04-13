@@ -1,9 +1,10 @@
 const db = require("../models");
 const fetch = require("node-fetch");
+const debug = require("debug")("app:buildline");
 
 module.exports = async () => {
   const url = "http://localhost:4000/api/lines";
-  const response = await fetch(url).catch((e) => console.log(e));
+  const response = await fetch(url).catch((e) => debug(`error fetching line data ${e}`));
   const result = await response.json();
   const lineData = {};
 
@@ -27,13 +28,14 @@ module.exports = async () => {
   });
 
   db.LinesModel.findOneAndUpdate({}, lineData, (err, resp) => {
+    if (err) debug(`error updating line build ${err}`);
     if (!resp) {
       // first line db entry
       const newLineData = new db.LinesModel(lineData);
       newLineData.save()
-        .then((lines) => console.log("First line data added to db", lines));
+        .then((lines) => debug("First line data added to db", lines));
     } else {
-      console.log("line data updated in db from build-line");
+      debug("line data updated in db from build-line");
     }
   });
 };

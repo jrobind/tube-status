@@ -13,11 +13,11 @@ const CronJob = require("cron").CronJob;
 const db = require("./models");
 const buildLine = require("./utlis/build-line");
 const {matchesDay, matchesTime} = require("./utlis/date-checker");
-const middleware = require("./middleware");
+const debug = require("debug")("app:server");
 require("dotenv").config({path: "./env"});
 
 const app = express();
-app.listen(4000, () => console.log("Server started on port 4000"));
+app.listen(4000, () => debug("Server started on port 4000"));
 
 // require routes
 const subscribe = require("./routes/subscribe");
@@ -86,11 +86,13 @@ app.get(
     // check if user exists. If not, then add to db.
     await db.UserModel.findOne({googleId}, (err, resp) => {
       let subscriptions;
+
+      if (err) debug(`error finding user in db ${err}`);
       if (!resp) {
         const newUser = new db.UserModel(profileData);
         newUser.save()
           .then((newUser) => {
-            console.log("User added to db", newUser);
+            debug("User added to db", newUser);
             subscriptions = newUser.subscriptions;
           });
       } else {
@@ -98,7 +100,8 @@ app.get(
           {googleId},
           {$set: {signedIn: true}},
           (err, resp) => {
-            if (resp) console.log("updated signed in status", resp);
+            if (err) debug(`error signing in user ${err}`);
+            if (resp) debug(`updated signed in status ${resp}`);
           },
         );
       }
@@ -127,30 +130,19 @@ app.get(
   },
 );
 
-// A secret endpoint accessible only to logged-in users
-app.get(
-  "/protected",
-  passport.authenticate("jwt", {session: false}),
-  middleware.jwtVerify,
-  (req, res) => {
-    console.log("protected accessed");
-    res.json({
-      message: "You have accessed the protected endpoint!",
-      yourUserInfo: req.user,
-    });
-  },
-);
-
 // run line status check every minute,
 // and send push notification to relevant line subscribers
 const job = new CronJob("0 */1 * * * *", async () => {
-  const response = await fetch("http://localhost:4000/api/lines").catch((e) => console.log(e));
+  const response = await fetch("http://localhost:4000/api/lines").catch((e) => debug(`error fetching lines ${e}`));
   const result = await response.json();
   let lineDbData;
   let diffExists;
 
   // retrieve current stored lines from db
-  await db.LinesModel.find({}, (err, resp) => lineDbData = resp);
+  await db.LinesModel.find({}, (err, resp) => {
+    if (err) debug(`error retrieving current stored lines ${err}`);
+    lineDbData = resp;
+  });
 
   result.forEach((line) => {
     line.lineStatuses.forEach((status, i) => {
@@ -173,6 +165,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
         };
 
         db.UserModel.find(params, (err, resp) => {
+          if (err) debug(`error finding subscribed line ${err}`);
           if (resp.length) {
             const {days, hours} = resp[0].subscriptions.filter((sub) =>{
               return sub.line === line.id;
@@ -189,7 +182,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
               // send push notification
               webpush
                 .sendNotification(pushSubscription, payload)
-                .catch((err) => console.error(err));
+                .catch((err) => debug(`error sending push notification ${err}`));
             }
           }
         });

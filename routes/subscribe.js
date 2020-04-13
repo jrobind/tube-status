@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const db = require("../models");
 const middleware = require("../middleware");
-
+const debug = require("debug")("app:subscribe");
 const router = new express.Router();
 
 // get user"s line subscriptions
@@ -13,10 +13,11 @@ router.get("/subscribe",
     const googleId = res.locals.decoded._json.sub;
     // find current user line subscriptions and send to client
     db.UserModel.findOne({googleId}, (err, resp) => {
+      if (err) debug(`error finding user line subscriptions ${err}`);
       if (resp) {
         res.json({subscriptions: resp.subscriptions});
       } else {
-        console.log("not finding user");
+        debug("error updating user line subscription");
       }
     });
   },
@@ -40,10 +41,9 @@ router.post(
     // subscription object to user model
     db.UserModel.findOneAndUpdate(
       {googleId}, params, {new: true}, (err, resp) => {
-        if (err) {
-          console.log("Failed to update");
-        } else {
-          console.log("Successfully updated!!!", resp);
+        if (err) debug(`Failed to update user line subscription ${err}`);
+        if (resp) {
+          debug("Successfully updated user line subscription", resp);
           res.json({subscription: resp.subscriptions});
         }
       },
@@ -69,10 +69,9 @@ router.delete(
       params,
       {new: true},
       (err, resp) => {
-        if (err) {
-          console.log("Failed to remove subscription data");
-        } else {
-          console.log("Successfully removed line", resp);
+        if (err) debug(`Failed to remove subscription data ${err}`);
+        if (resp) {
+          debug("Successfully removed line", resp);
           res.json({subscription: resp.subscriptions});
         }
       });

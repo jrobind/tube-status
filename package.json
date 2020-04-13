@@ -4,7 +4,7 @@
   "description": "PWA providing current London tube line status",
   "main": "server/index.js",
   "scripts": {
-    "start": "nodemon server/index.js",
+    "start": "NODE_ENV=dev DEBUG=app:* nodemon server/index.js",
     "build": "webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .js",
@@ -34,6 +34,7 @@
     "compression": "^1.7.4",
     "config": "^3.2.2",
     "cron": "^1.7.2",
+    "debug": "^4.1.1",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-session": "^1.16.2",

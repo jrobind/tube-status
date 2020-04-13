@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const db = require("../models");
 const middleware = require("../middleware");
+const debug = require("debug")("app:logout");
 const router = new express.Router();
 
 // post route for user logout
@@ -16,9 +17,12 @@ router.post(
       {googleId},
       {$set: {signedIn: false}}, (err, resp) => {
         if (err) {
+          debug(`failed to logo out ${err}`);
           res.status(400).send({error: "Failed to log out."});
-        } else {
-          console.log("Successfully updated signed in status", resp);
+        }
+
+        if (resp) {
+          debug("Successfully updated signed in status");
           res.status(200).send({message: "You have logged out."});
         }
       },

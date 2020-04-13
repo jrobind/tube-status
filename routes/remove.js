@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const middleware = require("../middleware");
 const db = require("../models");
+const debug = require("debug")("app:remove");
 const router = new express.Router();
 
 // delete route for removing user document.
@@ -13,7 +14,10 @@ router.delete(
     const googleId = res.locals.decoded._json.sub;
     // find current user data and send .txt file
     db.UserModel.findOneAndRemove({googleId}, (err, resp) => {
-      if (err) res.status(500).json({error: "error removing user document"});
+      if (err) {
+        debug(`error removing user document ${err}`);
+        res.status(500).json({error: "error removing user document"});
+      }
 
       if (resp) res.sendStatus(200);
     });
