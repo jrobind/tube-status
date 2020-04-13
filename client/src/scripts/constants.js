@@ -57,6 +57,7 @@ export const delayTypes = {
  */
 export const copy = {
   TOOLTIP_MSG_SUBSCRIBE: "Subscribe for line notifications",
+  // eslint-disable-next-line max-len
   TOOLTIP_MSG_NO_PUSH_SUPPORT: "This browser does not support Push notifications",
   TOOLTIP_MSG_UNSUBSCRIBE: "Unsubscribe from line notifications",
   SUBSCRIPTION_ERROR_MSG: "Unable to subscribe to line at this time.",

@@ -4,7 +4,7 @@ import {actions} from "../constants.js";
 const {getStore, subscribeToStore} = store;
 
 /** @const {string} */
-const SUBSCRIPTIONS_COPY = "Current subscriptions";
+const SUBSCRIPTIONS_COPY = "Subscriptions";
 
 /** @const {string} */
 const NO_SUBSCRIPTIONS_COPY = "No subscriptions";

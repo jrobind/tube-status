@@ -14,6 +14,7 @@ const db = require("./models");
 const buildLine = require("./utlis/build-line");
 const {matchesDay, matchesTime} = require("./utlis/date-checker");
 const debug = require("debug")("app:server");
+const helmet = require("helmet");
 require("dotenv").config({path: "./env"});
 
 const app = express();
@@ -27,6 +28,7 @@ const download = require("./routes/download");
 const remove = require("./routes/remove");
 
 app.use(compression());
+app.use(helmet());
 app.use(express.static(path.join(__dirname, "/client"), {index: false}));
 app.use(bodyParser.json());
 db.mongoSetup();
