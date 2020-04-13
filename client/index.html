@@ -26,12 +26,14 @@
         <tube-status-week class="tube-status-week"></tube-status-week>
         <tube-status-time class="tube-status-time"></tube-status-time>
       </tube-status-modal>
+      <!-- toast element -->
+      <tube-status-toast class="tube-status-toast tube-status-hide"><span class="tube-status-toast__message"></span></tube-status-toast>
       <!-- header -->
       <tube-status-header class="tube-status-header tube-status-hide">
         <div class="tube-status-header__heading">
           <h1 class="tube-status-header__heading-title">TUBE-STATUS</h1>
         </div>
-        <div class="tube-status-header__profile">
+        <div class="tube-status-header__profile tube-status-hide">
           <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
           <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
             <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
