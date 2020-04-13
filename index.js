@@ -24,16 +24,19 @@ const subscribe = require("./routes/subscribe");
 const line = require("./routes/lines");
 const logout = require("./routes/logout");
 const download = require("./routes/download");
+const remove = require("./routes/remove");
 
 app.use(compression());
 app.use(express.static(path.join(__dirname, "/client"), {index: false}));
 app.use(bodyParser.json());
 db.mongoSetup();
 app.use(passport.initialize());
+// routes
 app.use("/api/", subscribe);
 app.use("/api/", line);
 app.use("/api/", logout);
 app.use("/api/", download);
+app.use("/api/", remove);
 
 // vapid keys
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
@@ -91,11 +94,6 @@ app.get(
             subscriptions = newUser.subscriptions;
           });
       } else {
-        if (resp.signedIn) {
-          signedIn = true;
-          return;
-        }
-
         db.UserModel.updateOne(
           {googleId},
           {$set: {signedIn: true}},
@@ -191,7 +189,6 @@ const job = new CronJob("0 */1 * * * *", async () => {
               // send push notification
               webpush
                 .sendNotification(pushSubscription, payload)
-                .then((res) => io.sockets.emit("notification"))
                 .catch((err) => console.error(err));
             }
           }

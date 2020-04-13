@@ -1,6 +1,11 @@
 const jwt = require("jsonwebtoken");
 
 const jwtVerify = (req, res, next) => {
+  if (!req.headers.authorization) {
+    res.status(401).json({message: "user not authorised"});
+    return;
+  }
+
   jwt.verify(
     req.headers.authorization.split(" ")[1],
     process.env.JWT_SECRET,

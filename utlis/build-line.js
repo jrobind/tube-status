@@ -33,7 +33,7 @@ module.exports = async () => {
       newLineData.save()
         .then((lines) => console.log("First line data added to db", lines));
     } else {
-      console.log("line data updated in db from build-line", resp);
+      console.log("line data updated in db from build-line");
     }
   });
 };
