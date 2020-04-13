@@ -25,4 +25,3 @@ window.customElements.define("tube-status-tooltip", tooltip);
 window.customElements.define("tube-status-subscriptions", subscriptions);
 window.customElements.define("tube-status-filter", filter);
 window.customElements.define("tube-status-toast", toast);
-

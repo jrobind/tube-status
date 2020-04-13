@@ -20,6 +20,7 @@
     }],
     "start_url": "http://localhost:4000/",
     "display": "standalone",
-    "background_color": "#0b1b84",
+    "scope": "/",
+    "background_color": "#ffffff",
     "theme_color": "#ffffff"
 }

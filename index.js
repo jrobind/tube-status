@@ -83,7 +83,6 @@ app.get(
       avatar: req.user.photos[0].value,
       signedIn: true,
     };
-    let signedIn;
 
     // check if user exists. If not, then add to db.
     await db.UserModel.findOne({googleId}, (err, resp) => {
@@ -111,11 +110,6 @@ app.get(
       // so we can sign token and send back to client
       req.user.subscriptions = subscriptions;
     });
-
-    if (signedIn) {
-      res.redirect("/");
-      return;
-    }
 
     const htmlWithEmbeddedJWT = `
     <html>

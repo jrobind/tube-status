@@ -70,6 +70,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
+    window.addEventListener("appinstalled", this.handlePWA_.bind(this));
 
     if ("safari" in window !== true) {
       const channel = new BroadcastChannel("sw-messages");
@@ -95,6 +96,18 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.NOTIFICATIONS_FEATURE,
       data: {notificationsFeature: flag},
     });
+  }
+
+  /**
+   * Handles PWA case.
+   * @private
+   */
+  handlePWA_() {
+    // open PWA
+    window.open("https://tube-status.co.uk");
+
+    // close current tab/window
+    window.open("", "_self").close();
   }
 
   /**
