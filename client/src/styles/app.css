@@ -42,7 +42,7 @@ body {
 
 /* global styles */
 .tube-status-btn {
-  font-size: 12px;
+  font-size: 13px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: none;
   border-radius: 3px;
@@ -128,7 +128,7 @@ body {
 
 .tube-status-header__heading {
   flex: 50%;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .tube-status-header__avatar-image {
@@ -193,7 +193,7 @@ body {
 }
 
 .tube-status-header__subscription-image {
-  width: 32px;
+  width: 35px;
 }
 
 .tube-status-header__subscription-image:hover {
@@ -207,7 +207,7 @@ body {
 
 .tube-status-subscriptions__line-name {
   margin-right: 10px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .tube-status-subscriptions__dropdown {
@@ -262,7 +262,7 @@ body {
 
 .tube-status-header--open .tube-status-avatar__btn-block button {
   margin: 10px 0;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .tube-status-header--open .tube-status-avatar__btn-block button:first-of-type {
@@ -343,7 +343,7 @@ body {
   height: 70px;
   margin: 8px 10px;
   padding: 3px;
-  font-size: 12px;
+  font-size: 13px;
   display: flex;
   background-color: var(--default-white);
   border-radius: 10px;
@@ -728,7 +728,7 @@ body {
 }
 
 .tube-status-tooltip__message {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* toast styles */
@@ -816,11 +816,6 @@ body {
     min-height: 115px;
     margin-bottom: 45px;
     padding: 10px 15px;
-  }
-
-  .tube-status-header__profile,
-  .tube-status-subscriptions__line-name {
-    font-size: 13px;
   }
 
   .tube-status-header__avatar-image {
