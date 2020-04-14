@@ -322,9 +322,11 @@ export default class TubeLine extends HTMLElement {
    */
   toggleSubscriptionIcon_() {
     if (Object.keys(findLineSubscription(this.line_)).length) {
+      this.subIconEl_.classList.remove(cssClass.HIDDEN);
       this.subIconEl_.src = UNSUBSCRIBE_IMG_PATH;
       this.subIconWrapper_.setAttribute("type", "unsubscribe");
     } else {
+      this.subIconEl_.classList.remove(cssClass.HIDDEN);
       this.subIconEl_.src = SUBSCRIBE_IMG_PATH;
       this.subIconWrapper_.setAttribute("type", "subscribe");
     }
