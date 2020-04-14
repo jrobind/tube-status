@@ -17,6 +17,7 @@ const cssSelector = {
   HEADER: ".tube-status-header",
   SUBSCRRIPTIONS: ".tube-status-header__subscription",
   NOTE: ".tube-status-note",
+  AUTHENTICATION: ".tube-status-authentication",
 };
 
 /**
@@ -48,6 +49,13 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   async connectedCallback() {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      if (localStorage.getItem("from-browser")) {
+        localStorage.removeItem("from-broweser");
+        window.history.go(-2);
+      }
+    }
+
     updateStore({
       action: actions.LOADING_APP,
       data: {loadingState: {state: true, line: null}},
@@ -312,8 +320,8 @@ export default class TubeStatusWrapper extends HTMLElement {
     if (href.includes("privacy")) {
       document.dispatchEvent(new CustomEvent(customEvents.PRIVACY_POLICY));
     } else if (href.includes("pwa-installed")) {
-      noteEl.textContent = copy.NOTE_PWA;
-      noteEl.classList.remove(cssClass.HIDDEN);
+      localStorage.setItem("from-browser", "true");
+      document.querySelector(cssSelector.AUTHENTICATION).click();
     }
   }
 
