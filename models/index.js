@@ -5,7 +5,7 @@ const debug = require("debug")("app:database");
 require("dotenv").config();
 
 const mongoSetup = () => {
-  mongoose.connect(process.env.DATABASE_URL, {useNewUrlParser: true});
+  mongoose.connect(process.env.DATABASE_URL, {useUnifiedTopology: true, useNewUrlParser: true});
 
   mongoose.connection
     .once("open", () => debug("Connection to tube-status DB made"))

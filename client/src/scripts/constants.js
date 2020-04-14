@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * Client store action types.
  * @enum {string}
@@ -57,11 +58,12 @@ export const delayTypes = {
  */
 export const copy = {
   TOOLTIP_MSG_SUBSCRIBE: "Subscribe for line notifications",
-  // eslint-disable-next-line max-len
   TOOLTIP_MSG_NO_PUSH_SUPPORT: "This browser does not support Push notifications",
   TOOLTIP_MSG_UNSUBSCRIBE: "Unsubscribe from line notifications",
   SUBSCRIPTION_ERROR_MSG: "Unable to subscribe to line at this time.",
   TOAST_DELETE: "Account successfully deleted.",
   TOAST_SUBSCRIBE: "Line successfully subscribed!",
   TOAST_UNSUBSCRIBE: "Line successfully unsubscribed.",
+  NOTE_PUSH_API: "This browser does not support Push notifications. Please sign in with a different browser.",
+  NOTE_PWA: "This app has been added to your homescreen. To sign in, please use the app.",
 };

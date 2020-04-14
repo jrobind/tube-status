@@ -76,6 +76,13 @@ app.get(
     "google",
     {failureRedirect: "/", session: false, prompt: "select_account consent"},
   ),
+  (err, req, res, next) => {
+    if (err) {
+      res.redirect("/pwa-installed");
+    } else {
+      next();
+    }
+  },
   async (req, res) => {
     const googleId = req.user.id;
     const profileData = {
@@ -192,6 +199,10 @@ const job = new CronJob("0 */1 * * * *", async () => {
 job.start();
 
 app.get("/privacy", (req, res) => {
+  res.sendFile(path.join(__dirname, "./client/index.html"));
+});
+
+app.get("/pwa-installed", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/index.html"));
 });
 

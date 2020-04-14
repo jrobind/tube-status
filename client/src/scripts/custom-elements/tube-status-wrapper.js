@@ -2,7 +2,7 @@ import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
 import {initPushSubscription} from "../push-setup.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
-import {actions, customEvents} from "../constants.js";
+import {actions, customEvents, copy} from "../constants.js";
 const {updateStore, getStore} = store;
 
 /**
@@ -70,7 +70,6 @@ export default class TubeStatusWrapper extends HTMLElement {
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
-    window.addEventListener("appinstalled", this.handlePWA_.bind(this));
 
     if ("safari" in window !== true) {
       const channel = new BroadcastChannel("sw-messages");
@@ -96,18 +95,6 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.NOTIFICATIONS_FEATURE,
       data: {notificationsFeature: flag},
     });
-  }
-
-  /**
-   * Handles PWA case.
-   * @private
-   */
-  handlePWA_() {
-    // open PWA
-    window.open("https://tube-status.co.uk");
-
-    // close current tab/window
-    window.open("", "_self").close();
   }
 
   /**
@@ -298,6 +285,8 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   appReady_() {
     const {notificationsFeature, userProfile: {signedIn}} = getStore();
+    const href = window.location.href;
+    const noteEl = document.querySelector(cssSelector.NOTE);
 
     document.querySelector(
       cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
@@ -313,15 +302,18 @@ export default class TubeStatusWrapper extends HTMLElement {
     }
 
     if (!notificationsFeature) {
-      document.querySelector(
-        cssSelector.NOTE).classList.remove(cssClass.HIDDEN);
+      noteEl.textContent = copy.NOTE_PUSH_API;
+      noteEl.classList.remove(cssClass.HIDDEN);
     }
 
     document.dispatchEvent(new CustomEvent(customEvents.READY));
     this.classList.remove(cssClass.HIDDEN);
 
-    if (window.location.href.includes("privacy")) {
+    if (href.includes("privacy")) {
       document.dispatchEvent(new CustomEvent(customEvents.PRIVACY_POLICY));
+    } else if (href.includes("pwa-installed")) {
+      noteEl.textContent = copy.NOTE_PWA;
+      noteEl.classList.remove(cssClass.HIDDEN);
     }
   }
 
