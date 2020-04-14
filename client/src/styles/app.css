@@ -775,7 +775,8 @@ body {
   font-size: 16px;
 }
 .tube-status-privacy-modal__type {
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .tube-status-privacy-modal__type:hover {

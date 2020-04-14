@@ -50,13 +50,6 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   async connectedCallback() {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      if (localStorage.getItem("from-browser")) {
-        localStorage.removeItem("from-browser");
-        document.querySelector(cssSelector.BACK).click();
-      }
-    }
-
     updateStore({
       action: actions.LOADING_APP,
       data: {loadingState: {state: true, line: null}},
@@ -316,14 +309,14 @@ export default class TubeStatusWrapper extends HTMLElement {
     }
 
     document.dispatchEvent(new CustomEvent(customEvents.READY));
-    this.classList.remove(cssClass.HIDDEN);
 
     if (href.includes("privacy")) {
       document.dispatchEvent(new CustomEvent(customEvents.PRIVACY_POLICY));
     } else if (href.includes("pwa-installed")) {
-      localStorage.setItem("from-browser", "true");
       document.querySelector(cssSelector.AUTHENTICATION).click();
     }
+
+    this.classList.remove(cssClass.HIDDEN);
   }
 
   /**

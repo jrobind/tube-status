@@ -9,6 +9,11 @@ const CONTENT_TO_CACHE = [
   "/images/train-medium.png",
   "/images/train-small.png",
   "/images/train-splash-screen.png",
+  "/images/unsubscribe.svg",
+  "/images/subscribe.svg",
+  "/images/account_circle.svg",
+  "/images/subscriptions.svg",
+  "/images/subscriptions-filled.svg",
 ];
 
 /**
