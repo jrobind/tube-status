@@ -18,6 +18,7 @@ const cssSelector = {
   SUBSCRRIPTIONS: ".tube-status-header__subscription",
   NOTE: ".tube-status-note",
   AUTHENTICATION: ".tube-status-authentication",
+  BACK: ".tube-status-back",
 };
 
 /**
@@ -51,8 +52,8 @@ export default class TubeStatusWrapper extends HTMLElement {
   async connectedCallback() {
     if (window.matchMedia("(display-mode: standalone)").matches) {
       if (localStorage.getItem("from-browser")) {
-        localStorage.removeItem("from-broweser");
-        window.history.go(-2);
+        localStorage.removeItem("from-browser");
+        document.querySelector(cssSelector.BACK).click();
       }
     }
 
