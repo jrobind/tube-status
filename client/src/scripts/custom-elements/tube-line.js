@@ -28,7 +28,9 @@ const cssSelector = {
 const cssClass = {
   STATUS_WRAPPER: "tube-status-wrapper",
   SUB_STATUS: "tube-line-sub__status",
-  SUB_ICON: "tube-line-sub__image",
+  SUB_ICON: "tube-line-sub__image-sub",
+  ICON_IMAGE: "tube-line-sub__image",
+  UNSUB_ICON: "tube-line-sub__image-unsub",
   SUB_ICON_WRAPPER: "tube-line-sub__image-wrapper",
   LINE_SUB: "tube-line-sub",
   INFO_REASON_TITLE: "tube-line-info__reason-title",
@@ -38,13 +40,6 @@ const cssClass = {
 
 /** @const {number} */
 const LOADING_DELAY = 500;
-
-/** @const {string} */
-const UNSUBSCRIBE_IMG_PATH = "/images/unsubscribe.svg";
-
-/** @const {string} */
-const SUBSCRIBE_IMG_PATH = "/images/subscribe.svg";
-
 
 /**
  * Tube line custom element.
@@ -57,6 +52,9 @@ export default class TubeLine extends HTMLElement {
     /** @private {string} */
     this.line_ = this.getAttribute("line");
 
+    /** @private {boolean} */
+    this.touched_ = false;
+
     /** @private {HTMLElement} */
     this.tubeStatusWrapper_;
 
@@ -68,6 +66,12 @@ export default class TubeLine extends HTMLElement {
 
     /** @private {HTMLImageElement} */
     this.subIconEl_ = this.querySelector(`.${cssClass.SUB_ICON}`);
+
+    /** @private {HTMLImageElement} */
+    this.iconImageEl_ = this.querySelector(`.${cssClass.ICON_IMAGE}`);
+
+    /** @private {HTMLImageElement} */
+    this.unsSubIconEl_ = this.querySelector(`.${cssClass.UNSUB_ICON}`);
 
     /** @private {HTMLElement} */
     this.reasonTitleEl_ = this.querySelector(`.${cssClass.INFO_REASON_TITLE}`);
@@ -107,6 +111,7 @@ export default class TubeLine extends HTMLElement {
     ]);
 
     // listeners
+    window.addEventListener("touchstart", this.handleTouch_.bind(this));
     this.addEventListener("click", this.handleClick_.bind(this));
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
     this.addEventListener("keypress", this.handleKeyPress_.bind(this));
@@ -114,9 +119,9 @@ export default class TubeLine extends HTMLElement {
       "keyup", this.handleKeyup_.bind(this));
     this.subIconWrapper_.addEventListener(
       "keypress", this.handleKeyPress_.bind(this));
-    this.subIconEl_.addEventListener(
+    this.subIconWrapper_.addEventListener(
       "mouseover", this.toggleTooltip_.bind(this));
-    this.subIconEl_.addEventListener(
+    this.subIconWrapper_.addEventListener(
       "mouseout", this.toggleTooltip_.bind(this));
 
     this.tubeStatusWrapper_ = document.querySelector(
@@ -133,6 +138,17 @@ export default class TubeLine extends HTMLElement {
 
     document.dispatchEvent(
       new CustomEvent(customEvents.SHOW_SUBSCRIBE, detail));
+  }
+
+  /**
+   * Updates class property if user touched device.
+   * @param {Event} e
+   * @private
+   */
+  handleTouch_(e) {
+    e.stopImmediatePropagation();
+
+    this.touched_ = true;
   }
 
   /**
@@ -242,6 +258,8 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   toggleTooltip_(e) {
+    if (this.touched_) return;
+
     const {notificationsFeature} = getStore();
     const styles = {top: "-18px", left: "50px"};
     const type = this.subIconWrapper_.getAttribute("type");
@@ -274,7 +292,7 @@ export default class TubeLine extends HTMLElement {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
     const isActive = this.classList.contains(cssClass.ACTIVE);
-    const isSubEl = target.classList.contains(cssClass.SUB_ICON) ||
+    const isSubEl = target.classList.contains(cssClass.ICON_IMAGE) ||
       target.classList.contains(cssClass.SUB_ICON_WRAPPER);
 
     if (!isActive) return;
@@ -322,12 +340,12 @@ export default class TubeLine extends HTMLElement {
    */
   toggleSubscriptionIcon_() {
     if (Object.keys(findLineSubscription(this.line_)).length) {
-      this.subIconEl_.classList.remove(cssClass.HIDDEN);
-      this.subIconEl_.src = UNSUBSCRIBE_IMG_PATH;
+      this.subIconEl_.classList.add(cssClass.HIDDEN);
+      this.unsSubIconEl_.classList.remove(cssClass.HIDDEN);
       this.subIconWrapper_.setAttribute("type", "unsubscribe");
     } else {
       this.subIconEl_.classList.remove(cssClass.HIDDEN);
-      this.subIconEl_.src = SUBSCRIBE_IMG_PATH;
+      this.unsSubIconEl_.classList.add(cssClass.HIDDEN);
       this.subIconWrapper_.setAttribute("type", "subscribe");
     }
   }

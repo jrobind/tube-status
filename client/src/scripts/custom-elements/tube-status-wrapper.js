@@ -18,7 +18,6 @@ const cssSelector = {
   SUBSCRRIPTIONS: ".tube-status-header__subscription",
   NOTE: ".tube-status-note",
   AUTHENTICATION: ".tube-status-authentication",
-  BACK: ".tube-status-back",
 };
 
 /**
