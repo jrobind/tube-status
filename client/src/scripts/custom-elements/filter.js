@@ -54,10 +54,16 @@ export default class Filter extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    subscribeToStore({
-      callback: this.toggleDisplay_.bind(this),
-      action: actions.AUTHENTICATION,
-    });
+    subscribeToStore([
+      {
+        callback: this.toggleDisplay_.bind(this),
+        action: actions.AUTHENTICATION,
+      },
+      {
+        callback: this.emit_.bind(this, "reset"),
+        action: actions.RESET_APP,
+      },
+    ]);
 
     // listeners
     this.toggleIconEls_.forEach((el) => {
@@ -114,10 +120,11 @@ export default class Filter extends HTMLElement {
 
   /**
    * Emits a custom event to be consumed by the Tube status wrapper element.
+   * @param {string=} reset
    * @private
    */
-  emit_() {
-    this.filter_ = !this.filter_;
+  emit_(reset) {
+    this.filter_ = reset ? false : !this.filter_;
 
     const detail = {detail: {filter: this.filter_}};
 
