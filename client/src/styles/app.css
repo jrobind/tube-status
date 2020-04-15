@@ -37,7 +37,7 @@ body {
 
 body {
   background-color: var(--body-background-color);
-  font-family: Courier, monospace;
+  font-family: 'PT Sans', sans-serif;
 }
 
 /* global styles */
@@ -262,7 +262,7 @@ body {
 
 .tube-status-header--open .tube-status-avatar__btn-block button {
   margin: 10px 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .tube-status-header--open .tube-status-avatar__btn-block button:first-of-type {
@@ -506,7 +506,8 @@ body {
   border-top-left-radius: 10px;
 }
 
-.tube-line-sub__image {
+.tube-line-sub__image-sub,
+.tube-line-sub__image-unsub {
   width: 30px;
 }
 
@@ -572,7 +573,7 @@ body {
 .tube-status-modal--active {
   display: flex;
   min-height: 200px;
-  min-width: 300px;
+  min-width: 320px;
   position: fixed;
   top: 50%;
   right: 50%;
@@ -665,15 +666,12 @@ body {
 .tube-status-time table {
   width: 100%;
 }
-
-.tube-status-week tr,
-.tube-status-time tr {
-  height: 40px;
-}
   
 .tube-status-week-day__select,
 .tube-status-time-hour__select {
   background-color: var(--week-day-color);
+  height: 35px;
+  width: 40px;
 }
 
 .tube-status-time-hour__select {
@@ -711,7 +709,7 @@ body {
 }
 
 .tube-status-time__btn {
-  margin-bottom: 5px;
+  margin-bottom: 11px;
 }
 
 /* tooltip styles */
@@ -1017,7 +1015,8 @@ body {
     width: 290px;
   }
 
-  .tube-line-sub__image {
+  .tube-line-sub__image-sub,
+  .tube-line-sub__image-unsub {
     width: 35px;
   }
 
