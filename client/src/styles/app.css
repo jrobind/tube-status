@@ -156,7 +156,7 @@ body {
 .tube-status-header__profile.tube-status-header__profile--signed-in .tube-status-loading__header,
 .tube-status-header__subscription,
 .tube-status-authentication {
-  margin-right: 6px;
+  margin-right: 10px;
 }
 
 .tube-status-header__profile:not(.tube-status-header__profile--signed-in) .tube-status-authentication {
@@ -330,7 +330,7 @@ body {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  max-width: 680px;
+  max-width: 780px;
 }
 
 .tube-status-wrapper__message {
@@ -897,7 +897,7 @@ body {
 
   /* tooltip styles */
   .tube-status-tooltip {
-    min-width: 145px;
+    min-width: 98px;
   }
 
   /* privacy modal styles */
@@ -990,7 +990,7 @@ body {
   /* tube line styles */
   .tube-line {
     height: 90px;
-    font-size: 17px;
+    font-size: 18px;
   }
 
   .tube-line--active {

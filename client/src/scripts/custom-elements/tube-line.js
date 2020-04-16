@@ -111,7 +111,8 @@ export default class TubeLine extends HTMLElement {
     ]);
 
     // listeners
-    window.addEventListener("touchstart", this.handleTouch_.bind(this));
+    this.addEventListener(
+      "touchstart", this.handleTouch_.bind(this), {passive: true});
     this.addEventListener("click", this.handleClick_.bind(this));
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
     this.addEventListener("keypress", this.handleKeyPress_.bind(this));
