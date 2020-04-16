@@ -20,9 +20,6 @@ export const initPushSubscription = async () => {
  * @private
  */
 async function pushSubscriptionSetup() {
-  // register service worker
-  await navigator.serviceWorker.register("/sw.js").catch(handleError);
-
   return await navigator.serviceWorker.ready.then(async (reg) => {
     // register for push once registration is active
     if (reg.active) {
@@ -40,7 +37,7 @@ async function pushSubscriptionSetup() {
         return null;
       }
     }
-  });
+  }).catch(handleError);
 }
 
 /**

@@ -1031,4 +1031,8 @@ body {
     margin: 50px 20px 0 20px;
     font-size: 15px;
   }
+
+  .tube-status-privacy-modal__type {
+    font-size: 15px;
+  }
 }
