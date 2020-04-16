@@ -117,9 +117,16 @@ export default class Subscriptions extends HTMLElement {
     const exisitingNotificationEl = /** @type {HTMLElement} */ (
       this.querySelector(`.${cssClass.SUBSCRIPTIONS_NOTIFICATION}`));
 
-    if (!lineSubscriptions.length) return;
+    if (!exisitingNotificationEl && !lineSubscriptions.length) return;
 
-    if (exisitingNotificationEl) this.removeChild(exisitingNotificationEl);
+    if (exisitingNotificationEl) {
+      if (!lineSubscriptions.length) {
+        this.removeChild(exisitingNotificationEl);
+        return;
+      }
+
+      this.removeChild(exisitingNotificationEl);
+    }
 
     const notificationEl = create("div", {
       classname: cssClass.SUBSCRIPTIONS_NOTIFICATION,
