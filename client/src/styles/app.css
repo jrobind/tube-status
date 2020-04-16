@@ -46,7 +46,7 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: none;
   border-radius: 3px;
-  padding: 2px;
+  padding: 3px;
 }
 
 .tube-status-btn[disabled] {
@@ -772,6 +772,7 @@ body {
 .tube-status-modal-privacy__content {
   font-size: 16px;
 }
+
 .tube-status-privacy-modal__type {
   font-size: 14px;
   font-weight: 700;
