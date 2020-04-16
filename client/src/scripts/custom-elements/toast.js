@@ -10,7 +10,7 @@ const cssClass = {
 };
 
 /** @const {number} */
-const TOAST_DELAY_ = 4000;
+const TOAST_DELAY_ = 3500;
 
 /**
  * Toast custom element.

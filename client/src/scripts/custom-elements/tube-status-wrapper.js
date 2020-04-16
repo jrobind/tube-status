@@ -31,10 +31,7 @@ const cssClass = {
 };
 
 /** @type {number} */
-const FETCH_INTERVAL = 60000;
-
-/** @type {string} */
-const MESSAGE_TEXT = "There are currently no subscriptions";
+const FETCH_INTERVAL = 90000;
 
 /**
  * Tube status wrapper custom element.
@@ -274,7 +271,7 @@ export default class TubeStatusWrapper extends HTMLElement {
   renderMessage_() {
     const messsageEl = create("div", {
       classname: cssClass.MESSAGE_WRAPPER,
-      copy: MESSAGE_TEXT,
+      copy: copy.NO_SUBSCRIPTIONS,
     });
 
     this.appendChild(messsageEl);

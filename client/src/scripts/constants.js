@@ -61,6 +61,7 @@ export const copy = {
   TOOLTIP_MSG_NO_PUSH_SUPPORT: "This browser does not support Push notifications",
   TOOLTIP_MSG_UNSUBSCRIBE: "Unsubscribe from line notifications",
   SUBSCRIPTION_ERROR_MSG: "Unable to subscribe to line at this time.",
+  NO_SUBSCRIPTIONS: "There are currently no subscriptions",
   TOAST_DELETE: "Account successfully deleted.",
   TOAST_SUBSCRIBE: "Line successfully subscribed!",
   TOAST_UNSUBSCRIBE: "Line successfully unsubscribed.",
