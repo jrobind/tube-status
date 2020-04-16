@@ -1,6 +1,5 @@
 import {store} from "../utils/client-store.js";
 import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
-import {initPushSubscription} from "../push-setup.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents, copy} from "../constants.js";
 const {updateStore, getStore} = store;
@@ -16,7 +15,6 @@ const cssSelector = {
   FOOTER: ".tube-status-footer",
   HEADER: ".tube-status-header",
   SUBSCRRIPTIONS: ".tube-status-header__subscription",
-  NOTE: ".tube-status-note",
   AUTHENTICATION: ".tube-status-authentication",
 };
 
@@ -51,9 +49,6 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    const pushResult = await initPushSubscription();
-
-    await this.updateNotifcationFeatureFlag_(pushResult);
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
 
@@ -78,21 +73,6 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     // get data every 60 seconds
     this.fetchInterval_();
-  }
-
-  /**
-   * Updates push subscription feature flag.
-   * @param {!Object} pushSubscription
-   * @async
-   * @private
-   */
-  async updateNotifcationFeatureFlag_(pushSubscription) {
-    const flag = pushSubscription ? true : false;
-
-    updateStore({
-      action: actions.NOTIFICATIONS_FEATURE,
-      data: {notificationsFeature: flag},
-    });
   }
 
   /**
@@ -282,9 +262,8 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   appReady_() {
-    const {notificationsFeature, userProfile: {signedIn}} = getStore();
+    const {userProfile: {signedIn}} = getStore();
     const href = window.location.href;
-    const noteEl = document.querySelector(cssSelector.NOTE);
 
     document.querySelector(
       cssSelector.FOOTER).classList.remove(cssClass.HIDDEN);
@@ -297,11 +276,6 @@ export default class TubeStatusWrapper extends HTMLElement {
       tubeLineSubEls.forEach((el) => el.classList.remove(cssClass.HIDDEN));
       document.querySelector(
         cssSelector.SUBSCRRIPTIONS).classList.remove(cssClass.HIDDEN);
-    }
-
-    if (!notificationsFeature) {
-      noteEl.textContent = copy.NOTE_PUSH_API;
-      noteEl.classList.remove(cssClass.HIDDEN);
     }
 
     document.dispatchEvent(new CustomEvent(customEvents.READY));

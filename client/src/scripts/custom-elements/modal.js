@@ -1,5 +1,6 @@
 import {store} from "../utils/client-store.js";
 import {apiSubscribe} from "../utils/api.js";
+import {initPushSubscription} from "../push-setup.js";
 import {customEvents, actions, copy} from "../constants.js";
 import {
   create,
@@ -49,6 +50,7 @@ const cssClass = {
   WEEK_ELEMENT: "tube-status-week",
   TIME_ELEMENT: "tube-status-time",
   BTN: "tube-status-btn",
+  HIDDEN: "tube-status-hide",
 };
 
 /**
@@ -58,6 +60,7 @@ const cssClass = {
 const cssSelector = {
   OVERLAY: ".overlay",
   TOAST: ".tube-status-toast",
+  NOTE: ".tube-status-note",
 };
 
 /**
@@ -248,9 +251,15 @@ export default class Modal extends HTMLElement {
   async handleSubscriptionRequest_(e) {
     const {
       userProfile,
-      pushSubscription,
       selectedSubscriptionWindow,
     } = getStore();
+
+    const pushSubscription = await initPushSubscription();
+
+    if (!pushSubscription) {
+      this.updateNotifcationFeatureNote_();
+      return;
+    }
 
     if (userProfile.signedIn && pushSubscription) {
       const result = await apiSubscribe(
@@ -294,6 +303,22 @@ export default class Modal extends HTMLElement {
     } else {
       this.handleError_(ERROR_MESSAGE);
     }
+  }
+
+  /**
+   * Updates push subscription feature note.
+   * @private
+   */
+  updateNotifcationFeatureNote_() {
+    updateStore({
+      action: actions.NOTIFICATIONS_FEATURE,
+      data: {notificationsFeature: false},
+    });
+
+    const noteEl = document.querySelector(cssSelector.NOTE);
+
+    noteEl.textContent = copy.NOTE_PUSH_API;
+    noteEl.classList.remove(cssClass.HIDDEN);
   }
 
   /**

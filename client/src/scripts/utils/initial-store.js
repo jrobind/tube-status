@@ -19,5 +19,5 @@ export const initialStore = {
   },
   lineSubscriptions: [],
   lineInformation: null,
-  notificationsFeature: null,
+  notificationsFeature: true,
 };
