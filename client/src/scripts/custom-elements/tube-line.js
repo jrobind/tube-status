@@ -283,7 +283,7 @@ export default class TubeLine extends HTMLElement {
     if (!notificationsFeature) {
       tooltipEl = new Tooltip(copy.TOOLTIP_MSG_NO_PUSH_SUPPORT, styles);
     } else if (differentDevice) {
-      tooltipEl = new Tooltip(copy.SIGN_OUT, styles);
+      tooltipEl = new Tooltip(copy.TOOLTIP_UNAVAILABLE, styles);
     } else {
       tooltipEl = type === "subscribe" ?
         new Tooltip(copy.TOOLTIP_MSG_SUBSCRIBE, styles) :

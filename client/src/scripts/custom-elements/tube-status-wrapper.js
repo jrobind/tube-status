@@ -37,6 +37,9 @@ const cssClass = {
 /** @type {number} */
 const FETCH_INTERVAL = 90000;
 
+/** @const {number} */
+const SIGN_OUT_DELAY = 30000;
+
 /**
  * Tube status wrapper custom element.
  */
@@ -69,21 +72,9 @@ export default class TubeStatusWrapper extends HTMLElement {
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
 
-    if (getStore().userProfile.signedIn) {
-      const {pushSubscription: {endpoint}} = getStore();
-
-      const endpointResult = await apiSubscribeEndpoint();
-
-      if (endpointResult.endpoint && endpoint !== endpointResult.endpoint) {
-        this.noteEl.textContent = copy.SIGN_OUT;
-        this.noteEl.classList.remove(cssClass.HIDDEN);
-
-        updateStore({action: actions.DEVICE, data: true});
-      }
-    }
-
     this.order_();
     this.appReady_();
+    if (getStore().userProfile.signedIn) this.handleMultipleSignIn_();
 
     updateStore({
       action: actions.LOADING_APP,
@@ -138,6 +129,35 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.NOTIFICATIONS_FEATURE,
       data: {notificationsFeature: flag},
     });
+  }
+
+  /**
+   * Hide note element.
+   * @private
+   */
+  hideNote_() {
+    this.noteEl.classList.add(cssClass.HIDDEN);
+  }
+
+  /**
+   * Handles the case where a user has signed in on multiple devices.
+   * @async
+   * @private
+   */
+  async handleMultipleSignIn_() {
+    const {pushSubscription: {endpoint}} = getStore();
+
+    const endpointResult = await apiSubscribeEndpoint();
+
+    if (endpointResult.endpoint && endpoint !== endpointResult.endpoint) {
+      this.noteEl.textContent = copy.NOTE_SIGN_OUT;
+      this.noteEl.classList.remove(cssClass.HIDDEN);
+
+      updateStore({action: actions.DEVICE, data: true});
+
+      await new Promise((resolve) => setTimeout(resolve, SIGN_OUT_DELAY));
+
+      document.querySelector(cssSelector.AUTHENTICATION).click();
   }
 
   /**
