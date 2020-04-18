@@ -172,7 +172,7 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleLogout_() {
-    const {lineSubscriptions} = getStore();
+    const {lineSubscriptions, differentDevice} = getStore();
 
     this.authPath_ = "Sign in";
     this.querySelector(
@@ -183,7 +183,7 @@ export default class Authentication extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    const result = await apiLogout(!!lineSubscriptions.length);
+    const result = await apiLogout(!!lineSubscriptions.length, differentDevice);
 
     if (result === 200) {
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY_LOGOUT));

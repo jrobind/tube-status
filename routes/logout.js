@@ -13,11 +13,10 @@ router.post(
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
     const lineSubs = req.body.subscriptions;
+    const differentDevice = req.body.differentDevice;
     const params = !lineSubs ?
       {$set: {"signedIn": false, "pushSubscription": {}}} :
-      {$set: {"signedIn": false}};
-
-    console.log(params);
+      {$set: {"signedIn": differentDevice ? true : false}};
 
     db.UserModel.updateOne({googleId}, params, (err, resp) => {
       if (err) {

@@ -1,13 +1,14 @@
 /**
  * Logs the user out.
  * @param {boolean} subscriptions
+ * @param {boolean} differentDevice
  * @async
  * @return {Promise}
  */
-export const apiLogout = async (subscriptions) => {
+export const apiLogout = async (subscriptions, differentDevice) => {
   const options = {
     method: "POST",
-    body: JSON.stringify({subscriptions}),
+    body: JSON.stringify({subscriptions, differentDevice}),
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
