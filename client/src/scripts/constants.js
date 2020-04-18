@@ -16,6 +16,7 @@ export const actions = {
   SELECTED_HOURS: "SELECTED-HOURS",
   RESET_SELECTED: "RESET-SELECTED",
   RESET_APP: "RESET-APP",
+  DEVICE: "DEVICE",
   NOTIFICATIONS_FEATURE: "NOTIFICATIONS-FEATURE",
 };
 
@@ -65,6 +66,7 @@ export const copy = {
   TOAST_DELETE: "Account successfully deleted.",
   TOAST_SUBSCRIBE: "Line successfully subscribed!",
   TOAST_UNSUBSCRIBE: "Line successfully unsubscribed.",
-  NOTE_PUSH_API: "This browser does not support Push notifications. Please sign in with a different browser.",
+  NOTE_PUSH_API: "This browser does not support Push notifications. To use the notifications feature, please sign in with a different browser.",
+  SIGN_OUT: "Your account is already signed in elsewhere. Please sign out.",
   NOTE_PWA: "This app has been added to your homescreen. To sign in, please use the app.",
 };

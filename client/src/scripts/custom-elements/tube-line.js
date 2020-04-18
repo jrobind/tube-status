@@ -171,9 +171,12 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   handleSubscribe_() {
-    const {notificationsFeature, userProfile: {signedIn}} = getStore();
+    const {
+      notificationsFeature, userProfile: {signedIn},
+      differentDevice,
+    } = getStore();
 
-    if (!notificationsFeature) return;
+    if (!notificationsFeature || differentDevice) return;
 
     signedIn && this.emit_();
   }
@@ -184,6 +187,10 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   async handleUnSubscribeRequest_() {
+    const {differentDevice} = getStore();
+
+    if (differentDevice) return;
+
     const detail = {detail: {filter: true}};
     const {notificationsFeature} = getStore();
     const toggleOnEl = document.querySelector(cssSelector.TOGGLE_ON);
@@ -261,7 +268,7 @@ export default class TubeLine extends HTMLElement {
   toggleTooltip_(e) {
     if (this.touched_) return;
 
-    const {notificationsFeature} = getStore();
+    const {notificationsFeature, differentDevice} = getStore();
     const styles = {top: "-18px", left: "50px"};
     const type = this.subIconWrapper_.getAttribute("type");
     let tooltipEl;
@@ -275,6 +282,8 @@ export default class TubeLine extends HTMLElement {
 
     if (!notificationsFeature) {
       tooltipEl = new Tooltip(copy.TOOLTIP_MSG_NO_PUSH_SUPPORT, styles);
+    } else if (differentDevice) {
+      tooltipEl = new Tooltip(copy.SIGN_OUT, styles);
     } else {
       tooltipEl = type === "subscribe" ?
         new Tooltip(copy.TOOLTIP_MSG_SUBSCRIBE, styles) :

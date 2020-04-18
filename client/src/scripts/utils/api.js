@@ -79,6 +79,25 @@ export const apiSubscribe = async (pushSubscription, line, window) => {
 };
 
 /**
+ * Get user push subscription endpoint (if it exists).
+ * @async
+ * @return {Promise}
+ */
+export const apiSubscribeEndpoint = async () => {
+  const options = {
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
+    },
+  };
+
+  const endpointResponse = await (fetch("api/subscribe/endpoint", options)
+    .catch((e) => console.error(e)));
+  return await endpointResponse.json();
+};
+
+/**
  * Unsubscribe from tube line push notification updates.
  * @async
  * @param {string} line

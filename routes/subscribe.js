@@ -5,7 +5,7 @@ const middleware = require("../middleware");
 const debug = require("debug")("app:subscribe");
 const router = new express.Router();
 
-// get user"s line subscriptions
+// get user line subscriptions
 router.get("/subscribe",
   passport.authenticate("jwt", {session: false}),
   middleware.jwtVerify,
@@ -18,6 +18,26 @@ router.get("/subscribe",
         res.json({subscriptions: resp.subscriptions});
       } else {
         debug("error updating user line subscription");
+      }
+    });
+  },
+);
+
+// get user push subscription enpoint
+router.get("/subscribe/endpoint",
+  passport.authenticate("jwt", {session: false}),
+  middleware.jwtVerify,
+  (req, res) => {
+    const googleId = res.locals.decoded._json.sub;
+    // find current user line subscriptions and send to client
+    db.UserModel.findOne({googleId}, (err, resp) => {
+      if (err) debug(`error finding user push subscription endpoint ${err}`);
+      if (resp) {
+        const value = resp.pushSubscription ? resp.pushSubscription.endpoint : null;
+
+        res.json({endpoint: value});
+      } else {
+        debug("error finding user push subscription endpoint");
       }
     });
   },

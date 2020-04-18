@@ -68,5 +68,9 @@ export const storeUpdater = (store, {action, data}) => {
     store = {...store, ...data};
 
     return store;
+  case "DEVICE":
+    store = {...store, differentDevice: {...data}};
+
+    return store;
   }
 };

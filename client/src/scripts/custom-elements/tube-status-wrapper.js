@@ -1,8 +1,13 @@
 import {store} from "../utils/client-store.js";
-import {apiGetAllLineData, apiGetLineSubscriptions} from "../utils/api.js";
+import {initPushSubscription} from "../push-setup.js";
+import {
+  apiGetAllLineData,
+  apiGetLineSubscriptions,
+  apiSubscribeEndpoint,
+} from "../utils/api.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents, copy} from "../constants.js";
-const {updateStore, getStore} = store;
+const {updateStore, getStore, subscribeToStore} = store;
 
 /**
  * CSS class selectors.
@@ -16,6 +21,7 @@ const cssSelector = {
   HEADER: ".tube-status-header",
   SUBSCRRIPTIONS: ".tube-status-header__subscription",
   AUTHENTICATION: ".tube-status-authentication",
+  NOTE: ".tube-status-note",
 };
 
 /**
@@ -38,6 +44,9 @@ export default class TubeStatusWrapper extends HTMLElement {
   /** Create tube status wrapper custom element. */
   constructor() {
     super();
+
+    /** @private {HTMLElement} */
+    this.noteEl = document.querySelector(cssSelector.NOTE);
   }
 
   /**
@@ -49,8 +58,29 @@ export default class TubeStatusWrapper extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
+    subscribeToStore({
+      callback: this.hideNote_.bind(this),
+      action: actions.RESET_APP,
+    });
+
+    const pushResult = await initPushSubscription();
+
+    await this.updateNotifcationFeatureFlag_(pushResult);
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
+
+    if (getStore().userProfile.signedIn) {
+      const {pushSubscription: {endpoint}} = getStore();
+
+      const endpointResult = await apiSubscribeEndpoint();
+
+      if (endpointResult.endpoint && endpoint !== endpointResult.endpoint) {
+        this.noteEl.textContent = copy.SIGN_OUT;
+        this.noteEl.classList.remove(cssClass.HIDDEN);
+
+        updateStore({action: actions.DEVICE, data: true});
+      }
+    }
 
     this.order_();
     this.appReady_();
@@ -93,6 +123,29 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     // insert sorted lines back into DOM
     sorted.forEach((line) => this.appendChild(line));
+  }
+
+  /**
+   * Updates push subscription feature flag.
+   * @param {!Object} pushSubscription
+   * @async
+   * @private
+   */
+  async updateNotifcationFeatureFlag_(pushSubscription) {
+    const flag = pushSubscription ? true : false;
+
+    updateStore({
+      action: actions.NOTIFICATIONS_FEATURE,
+      data: {notificationsFeature: flag},
+    });
+  }
+
+  /**
+   * Hide note element.
+   * @private
+   */
+  hideNote_() {
+    this.noteEl.classList.add(cssClass.HIDDEN);
   }
 
   /**
@@ -262,7 +315,7 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   appReady_() {
-    const {userProfile: {signedIn}} = getStore();
+    const {notificationsFeature, userProfile: {signedIn}} = getStore();
     const href = window.location.href;
 
     document.querySelector(
@@ -276,6 +329,11 @@ export default class TubeStatusWrapper extends HTMLElement {
       tubeLineSubEls.forEach((el) => el.classList.remove(cssClass.HIDDEN));
       document.querySelector(
         cssSelector.SUBSCRRIPTIONS).classList.remove(cssClass.HIDDEN);
+    }
+
+    if (!notificationsFeature) {
+      this.noteEl.textContent = copy.NOTE_PUSH_API;
+      this.noteEl.classList.remove(cssClass.HIDDEN);
     }
 
     document.dispatchEvent(new CustomEvent(customEvents.READY));
