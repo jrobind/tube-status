@@ -29,13 +29,13 @@ router.post("/subscribe/endpoint",
   middleware.jwtVerify,
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
-    const {pushSubscription} = req.body;
+    const {pushSubscription, subscriptions} = req.body;
 
     // find current user line subscriptions and send to client
     db.UserModel.findOne({googleId}, (err, resp) => {
       if (err) debug(`error finding user push subscription endpoint ${err}`);
       if (resp) {
-        const value = resp.pushSubscription ? resp.pushSubscription.endpoint : null;
+        const value = resp.pushSubscription && !subscriptions ? resp.pushSubscription.endpoint : null;
 
         if (!value) {
           const params = {$set: {"pushSubscription": pushSubscription}};
@@ -68,12 +68,10 @@ router.post(
   middleware.jwtVerify,
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
-    const {pushSubscription, window: {days, hours}} = req.body;
+    const {window: {days, hours}} = req.body;
     const line = req.body.line || [];
     const params = {
-      $push: {"subscriptions": {"days": days, "hours": hours, "line": line}},
-      $set: {"pushSubscription": pushSubscription},
-    };
+      $push: {"subscriptions": {"days": days, "hours": hours, "line": line}}};
 
     // save new line subscription data and push
     // subscription object to user model
@@ -97,10 +95,7 @@ router.delete(
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
     const line = req.body.line;
-    const params = {
-      $pull: {"subscriptions": {"line": line}},
-      $set: {"pushSubscription": {}},
-    };
+    const params = {$pull: {"subscriptions": {"line": line}}};
 
     db.UserModel.findOneAndUpdate(
       {googleId},

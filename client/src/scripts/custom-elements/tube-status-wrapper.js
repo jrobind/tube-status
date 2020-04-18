@@ -146,9 +146,12 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async handleMultipleSignIn_(pushSubscription) {
+    const {lineSubscriptions} = getStore();
+
     if (!pushSubscription) return;
 
-    const {differentDevice} = await apiSubscribeEndpoint(pushSubscription);
+    const {differentDevice} = await apiSubscribeEndpoint(
+      pushSubscription, !!lineSubscriptions.length);
 
     if (differentDevice) {
       this.noteEl.textContent = copy.NOTE_SIGN_OUT;
