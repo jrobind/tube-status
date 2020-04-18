@@ -81,11 +81,13 @@ export const apiSubscribe = async (pushSubscription, line, window) => {
 /**
  * Get user push subscription endpoint (if it exists).
  * @async
+ * @param {object} pushSubscription
  * @return {Promise}
  */
-export const apiSubscribeEndpoint = async () => {
+export const apiSubscribeEndpoint = async (pushSubscription) => {
   const options = {
-    method: "GET",
+    method: "POST",
+    body: JSON.stringify({pushSubscription}),
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("JWT")}`,

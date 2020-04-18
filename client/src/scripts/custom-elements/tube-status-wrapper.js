@@ -38,7 +38,7 @@ const cssClass = {
 const FETCH_INTERVAL = 90000;
 
 /** @const {number} */
-const SIGN_OUT_DELAY = 30000;
+const SIGN_OUT_DELAY = 3500;
 
 /**
  * Tube status wrapper custom element.
@@ -72,9 +72,9 @@ export default class TubeStatusWrapper extends HTMLElement {
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
 
+    if (getStore().userProfile.signedIn) this.handleMultipleSignIn_(pushResult);
     this.order_();
     this.appReady_();
-    if (getStore().userProfile.signedIn) this.handleMultipleSignIn_();
 
     updateStore({
       action: actions.LOADING_APP,
@@ -142,14 +142,15 @@ export default class TubeStatusWrapper extends HTMLElement {
   /**
    * Handles the case where a user has signed in on multiple devices.
    * @async
+   * @param {object} pushSubscription
    * @private
    */
-  async handleMultipleSignIn_() {
-    const {pushSubscription: {endpoint}} = getStore();
+  async handleMultipleSignIn_(pushSubscription) {
+    if (!pushSubscription) return;
 
-    const endpointResult = await apiSubscribeEndpoint();
+    const {differentDevice} = await apiSubscribeEndpoint(pushSubscription);
 
-    if (endpointResult.endpoint && endpoint !== endpointResult.endpoint) {
+    if (differentDevice) {
       this.noteEl.textContent = copy.NOTE_SIGN_OUT;
       this.noteEl.classList.remove(cssClass.HIDDEN);
 
