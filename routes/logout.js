@@ -15,9 +15,9 @@ router.post(
 
     db.UserModel.updateOne(
       {googleId},
-      {$set: {signedIn: false}}, (err, resp) => {
+      {$set: {"signedIn": false, "pushSubscription": {}}}, (err, resp) => {
         if (err) {
-          debug(`failed to logo out ${err}`);
+          debug(`failed to log out ${err}`);
           res.status(400).send({error: "Failed to log out."});
         }
 
