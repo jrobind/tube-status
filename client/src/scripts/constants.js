@@ -68,6 +68,6 @@ export const copy = {
   TOAST_SUBSCRIBE: "Line successfully subscribed!",
   TOAST_UNSUBSCRIBE: "Line successfully unsubscribed.",
   NOTE_PUSH_API: "This browser does not support Push notifications. To use the notifications feature, please sign in with a different browser.",
-  NOTE_SIGN_OUT: "You are already signed in on another device. You will now be signed out.",
+  NOTE_SIGN_OUT: "You have already subscribed to line notifications on another device. You will now be signed out.",
   NOTE_PWA: "This app has been added to your homescreen. To sign in, please use the app.",
 };

@@ -12,21 +12,22 @@ router.post(
   middleware.jwtVerify,
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
+    const lineSubs = req.body.subscriptions;
+    const params = lineSubs ?
+      {$set: {"signedIn": false, "pushSubscription": {}}} :
+      {$set: {"signedIn": false}};
 
-    db.UserModel.updateOne(
-      {googleId},
-      {$set: {"signedIn": false, "pushSubscription": {}}}, (err, resp) => {
-        if (err) {
-          debug(`failed to log out ${err}`);
-          res.status(400).send({error: "Failed to log out."});
-        }
+    db.UserModel.updateOne({googleId}, params, (err, resp) => {
+      if (err) {
+        debug(`failed to log out ${err}`);
+        res.status(400).send({error: "Failed to log out."});
+      }
 
-        if (resp) {
-          debug("Successfully updated signed in status");
-          res.status(200).send({message: "You have logged out."});
-        }
-      },
-    );
+      if (resp) {
+        debug("Successfully updated signed in status");
+        res.status(200).send({message: "You have logged out."});
+      }
+    });
   },
 );
 

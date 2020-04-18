@@ -172,6 +172,8 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleLogout_() {
+    const {lineSubscriptions} = getStore();
+
     this.authPath_ = "Sign in";
     this.querySelector(
       `.${cssClass.SIGN_OUT_BTN}`).classList.add(cssClass.HIDDEN);
@@ -181,7 +183,7 @@ export default class Authentication extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    const result = await apiLogout();
+    const result = await apiLogout(!!lineSubscriptions.length);
 
     if (result === 200) {
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY_LOGOUT));
