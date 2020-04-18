@@ -158,14 +158,7 @@ export default class TubeStatusWrapper extends HTMLElement {
       await new Promise((resolve) => setTimeout(resolve, SIGN_OUT_DELAY));
 
       document.querySelector(cssSelector.AUTHENTICATION).click();
-  }
-
-  /**
-   * Hide note element.
-   * @private
-   */
-  hideNote_() {
-    this.noteEl.classList.add(cssClass.HIDDEN);
+    }
   }
 
   /**
