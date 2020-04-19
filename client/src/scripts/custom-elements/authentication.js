@@ -27,6 +27,8 @@ const cssClass = {
 /** @const {number} */
 const LOADING_DELAY_LOGOUT = 300;
 
+/** @const {number} */
+const SIGN_OUT_DELAY = 3500;
 
 /**
  * Authentication custom element.
@@ -58,10 +60,16 @@ export default class Authentication extends HTMLElement {
   connectedCallback() {
     if (this.connectedCalled_) return;
 
-    subscribeToStore({
-      callback: this.attemptAttrUpdate_.bind(this),
-      action: actions.AUTHENTICATION,
-    });
+    subscribeToStore([
+      {
+        callback: this.attemptAttrUpdate_.bind(this),
+        action: actions.AUTHENTICATION,
+      },
+      {
+        callback: this.forceLogout_.bind(this),
+        action: actions.DEVICE,
+      },
+    ]);
 
     this.classList.add(cssClass.AUTHENTICATION);
 
@@ -167,6 +175,18 @@ export default class Authentication extends HTMLElement {
   }
 
   /**
+   * Forces sign out if a different device is used with an
+   * already signed in account.
+   * @async
+   * @private
+   */
+  async forceLogout_() {
+    const {differentDevice} = getStore();
+
+    if (differentDevice) this.click();
+  }
+
+  /**
    * Handles the user logout process.
    * @async
    * @private
@@ -182,6 +202,10 @@ export default class Authentication extends HTMLElement {
       action: actions.LOADING_HEADER,
       data: {loadingState: {state: true, line: null}},
     });
+
+    if (differentDevice) {
+      await new Promise((resolve) => setTimeout(resolve, SIGN_OUT_DELAY));
+    }
 
     const result = await apiLogout(!!lineSubscriptions.length, differentDevice);
 

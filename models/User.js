@@ -9,7 +9,9 @@ const UserSchema = new mongoose.Schema({
     days: [String],
     hours: [Number],
   }],
-  pushSubscription: Object,
+  pushSubscription: {
+    type: Object, default: {},
+  },
   signedIn: Boolean,
 });
 

@@ -82,23 +82,41 @@ export const apiSubscribe = async (pushSubscription, line, window) => {
 };
 
 /**
- * Get user push subscription endpoint (if it exists).
+ * Get user push subscription endpoint.
  * @async
- * @param {object} pushSubscription
- * @param {boolean} subscriptions
  * @return {Promise}
  */
-export const apiSubscribeEndpoint = async (pushSubscription, subscriptions) => {
+export const apiGetPushSubscription = async () => {
   const options = {
-    method: "POST",
-    body: JSON.stringify({pushSubscription, subscriptions}),
+    method: "GET",
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
     },
   };
 
-  const endpointResponse = await (fetch("api/subscribe/endpoint", options)
+  const endpointResponse = await (fetch("api/push", options)
+    .catch((e) => console.error(e)));
+  return await endpointResponse.json();
+};
+
+/**
+ * Set user push subscription.
+ * @async
+ * @param {object} pushSubscription
+ * @return {Promise}
+ */
+export const apiSetPushSubscription = async (pushSubscription) => {
+  const options = {
+    method: "POST",
+    body: JSON.stringify({pushSubscription}),
+    headers: {
+      "content-type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("JWT")}`,
+    },
+  };
+
+  const endpointResponse = await (fetch("api/push", options)
     .catch((e) => console.error(e)));
   return await endpointResponse.json();
 };

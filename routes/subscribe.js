@@ -23,44 +23,6 @@ router.get("/subscribe",
   },
 );
 
-// get user push subscription enpoint
-router.post("/subscribe/endpoint",
-  passport.authenticate("jwt", {session: false}),
-  middleware.jwtVerify,
-  (req, res) => {
-    const googleId = res.locals.decoded._json.sub;
-    const {pushSubscription, subscriptions} = req.body;
-
-    // find current user line subscriptions and send to client
-    db.UserModel.findOne({googleId}, (err, resp) => {
-      if (err) debug(`error finding user push subscription endpoint ${err}`);
-      if (resp) {
-        const value = resp.pushSubscription && !subscriptions ? resp.pushSubscription.endpoint : null;
-
-        if (!value) {
-          const params = {$set: {"pushSubscription": pushSubscription}};
-
-          db.UserModel.findOneAndUpdate(
-            {googleId}, params, {new: true}, (err, resp) => {
-              if (err) debug(`Failed to update user push subscription ${err}`);
-              if (resp) {
-                debug("Successfully updated user push subscription", resp);
-                res.json({differentDevice: false});
-              }
-            },
-          );
-        } else {
-          const value = pushSubscription.endpoint !== resp.pushSubscription.endpoint ? true : false;
-
-          res.json({differentDevice: value});
-        }
-      } else {
-        debug("error finding user push subscription endpoint");
-      }
-    });
-  },
-);
-
 // create a new line subscription
 router.post(
   "/subscribe",
