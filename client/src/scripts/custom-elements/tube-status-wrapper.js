@@ -145,7 +145,6 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async handleMultipleSignIn_(pushSubscription) {
-    debugger;
     if (!pushSubscription) return;
 
     const {push} = await apiGetPushSubscription()
