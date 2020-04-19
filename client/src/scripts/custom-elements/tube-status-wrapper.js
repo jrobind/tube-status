@@ -69,8 +69,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     await this.updateNotifcationFeatureFlag_(pushResult);
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
-
-    if (getStore().userProfile.signedIn) this.handleMultipleSignIn_(pushResult);
+    await this.handleMultipleSignIn_(pushResult);
 
     this.order_();
     this.appReady_();
@@ -145,23 +144,26 @@ export default class TubeStatusWrapper extends HTMLElement {
    * @private
    */
   async handleMultipleSignIn_(pushSubscription) {
-    if (!pushSubscription) return;
+    const {userProfile: {signedIn}} = getStore();
 
-    const {push} = await apiGetPushSubscription()
-      .catch(this.handleError_);
+    if (signedIn) {
+      if (!pushSubscription) return;
 
-    // if the push susbcription does not already exist we set it
-    if (!Object.keys(push).length) {
-      await apiSetPushSubscription(pushSubscription).catch(this.handleError_);
-      return;
-    }
+      const {push} = await apiGetPushSubscription();
 
-    // if there is an endpoint diff we have a different device case
-    if (push.endpoint !== pushSubscription.endpoint) {
-      this.noteEl.textContent = copy.NOTE_SIGN_OUT;
-      this.noteEl.classList.remove(cssClass.HIDDEN);
+      // if the push susbcription does not already exist we set it
+      if (!Object.keys(push).length) {
+        await apiSetPushSubscription(pushSubscription);
+        return;
+      }
 
-      updateStore({action: actions.DEVICE, data: true});
+      // if there is an endpoint diff we have a different device case
+      if (push.endpoint !== pushSubscription.endpoint) {
+        this.noteEl.textContent = copy.NOTE_SIGN_OUT;
+        this.noteEl.classList.remove(cssClass.HIDDEN);
+
+        updateStore({action: actions.DEVICE, data: true});
+      }
     }
   }
 

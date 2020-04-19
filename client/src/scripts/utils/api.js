@@ -61,15 +61,14 @@ export const apiRemoveAccount = async () => {
 /**
  * Subscribes to tube line for push notification updates.
  * @async
- * @param {object} pushSubscription
  * @param {string} line
  * @param {object} window
  * @return {Promise}
  */
-export const apiSubscribe = async (pushSubscription, line, window) => {
+export const apiSubscribe = async (line, window) => {
   const options = {
     method: "POST",
-    body: JSON.stringify({pushSubscription, line, window}),
+    body: JSON.stringify({line, window}),
     headers: {
       "content-type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("JWT")}`,

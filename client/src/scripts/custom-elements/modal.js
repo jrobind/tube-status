@@ -253,8 +253,7 @@ export default class Modal extends HTMLElement {
     } = getStore();
 
     if (userProfile.signedIn && pushSubscription) {
-      const result = await apiSubscribe(
-        pushSubscription, this.line_, selectedSubscriptionWindow);
+      const result = await apiSubscribe(this.line_, selectedSubscriptionWindow);
       const {subscription} = result;
       const toastEl = /** @type {HTMLElement} */ (
         document.querySelector(cssSelector.TOAST));
