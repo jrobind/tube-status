@@ -26,6 +26,7 @@ const line = require("./routes/lines");
 const logout = require("./routes/logout");
 const download = require("./routes/download");
 const remove = require("./routes/remove");
+const push = require("./routes/push");
 
 app.use(compression());
 app.use(helmet());
@@ -39,6 +40,7 @@ app.use("/api/", line);
 app.use("/api/", logout);
 app.use("/api/", download);
 app.use("/api/", remove);
+app.use("/api/", push);
 
 // vapid keys
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
