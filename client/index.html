@@ -17,263 +17,265 @@
     <link rel="manifest" href="/manifest.json">
   </head>
   <body>
-    <!-- app loading element -->
-    <tube-status-loading class="tube-status-loading" app></tube-status-loading>
-    <!-- overlay element -->
-    <div class="overlay"></div>
-    <!-- main content wrapper -->
-    <div class="app-wrapper">
-      <!-- app modal element -->
-      <tube-status-modal class="tube-status-modal">
-        <tube-status-week class="tube-status-week"></tube-status-week>
-        <tube-status-time class="tube-status-time"></tube-status-time>
-      </tube-status-modal>
-      <!-- toast element -->
-      <tube-status-toast class="tube-status-toast tube-status-hide"><span class="tube-status-toast__message"></span></tube-status-toast>
-      <!-- header -->
-      <tube-status-header class="tube-status-header tube-status-hide">
-        <div class="tube-status-header__heading">
-          <h1 class="tube-status-header__heading-title">TUBE-STATUS</h1>
-        </div>
-        <div class="tube-status-header__profile tube-status-hide">
-          <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
-          <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
-            <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
-          </tube-status-authentication>
-          <div class="tube-status-header__subscription tube-status-hide">
-            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
-              <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-header__subscription-image"> 
-            </tube-status-subscriptions>
+    <main>
+      <!-- app loading element -->
+      <tube-status-loading class="tube-status-loading" app></tube-status-loading>
+      <!-- overlay element -->
+      <div class="overlay"></div>
+      <!-- main content wrapper -->
+      <div class="app-wrapper">
+        <!-- app modal element -->
+        <tube-status-modal class="tube-status-modal">
+          <tube-status-week class="tube-status-week"></tube-status-week>
+          <tube-status-time class="tube-status-time"></tube-status-time>
+        </tube-status-modal>
+        <!-- toast element -->
+        <tube-status-toast class="tube-status-toast tube-status-hide"><span class="tube-status-toast__message"></span></tube-status-toast>
+        <!-- header -->
+        <tube-status-header class="tube-status-header tube-status-hide">
+          <div class="tube-status-header__heading">
+            <h1 class="tube-status-header__heading-title">TUBE-STATUS</h1>
           </div>
-          <div class="tube-status-header__avatar" tabindex="0">
-            <img alt="Google profile avatar" referrerPolicy="no-referrer" class="tube-status-header__avatar-image"> 
-          </div>
-        </div>
-      </tube-status-header>
-      <!-- note -->
-      <div class="tube-status-note tube-status-hide">
-        <span class="tube-status-note__message"><img src="images/error-outline.svg"></span>
-      </div>
-      <!-- tube wrapper -->
-      <tube-status-wrapper class="tube-status-wrapper tube-status-hide">
-      <!-- filter component -->
-      <tube-status-filter class="tube-status-filter">
-        <span class="tube-status-filter__description">Show my subscriptions</span>
-        <div tabindex="0" class="tube-status__filter-toggle">
-          <i class="material-icons tube-status__filter-toggle--off">toggle_off</i>
-          <i class="material-icons tube-status-hide tube-status__filter-toggle--on">toggle_on</i>
-        </div>
-      </tube-status-filter>
-      <!-- tube lines -->
-        <tube-line class="tube-line" tabindex="0" line='bakerloo'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <div class="tube-status-header__profile tube-status-hide">
+            <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
+            <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
+              <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
+            </tube-status-authentication>
+            <div class="tube-status-header__subscription tube-status-hide">
+              <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
+                <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-header__subscription-image"> 
+              </tube-status-subscriptions>
+            </div>
+            <div class="tube-status-header__avatar" tabindex="0">
+              <img alt="Google profile avatar" referrerPolicy="no-referrer" class="tube-status-header__avatar-image"> 
             </div>
           </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
+        </tube-status-header>
+        <!-- note -->
+        <div class="tube-status-note tube-status-hide">
+          <span class="tube-status-note__message"><img src="images/error-outline.svg"></span>
+        </div>
+        <!-- tube wrapper -->
+        <tube-status-wrapper class="tube-status-wrapper tube-status-hide">
+        <!-- filter component -->
+        <tube-status-filter class="tube-status-filter">
+          <span class="tube-status-filter__description">Show my subscriptions</span>
+          <div tabindex="0" class="tube-status__filter-toggle">
+            <i class="material-icons tube-status__filter-toggle--off">toggle_off</i>
+            <i class="material-icons tube-status-hide tube-status__filter-toggle--on">toggle_on</i>
           </div>
-        </tube-line>
-
-        <tube-line class="tube-line" tabindex="0" line='central'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+        </tube-status-filter>
+        <!-- tube lines -->
+          <tube-line class="tube-line" tabindex="0" line='bakerloo'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
             <div class="tube-line-info">
               <div class="tube-line-info__reason-title"></div>
             </div>
-        </tube-line>
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='circle'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='central'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
+              <div class="tube-line-info">
+                <div class="tube-line-info__reason-title"></div>
+              </div>
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='district'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='circle'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
-
-        <tube-line class="tube-line" tabindex="0" line='hammersmith-city'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
-            </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
-
-        <tube-line class="tube-line" tabindex="0" line='jubilee'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
-            </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
-
-        <tube-line class="tube-line" tabindex="0" line='metropolitan'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
-            </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>  
-        </tube-line>
-
-        <tube-line class="tube-line" tabindex="0" line='northern'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
-            </div>
-          </div>
-          <div class="tube-line-info">
+            <div class="tube-line-info">
               <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
-
-        <tube-line class="tube-line" tabindex="0" line='piccadilly'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='victoria'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='district'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='waterloo-city'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='hammersmith-city'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='tfl-rail'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='jubilee'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='london-overground'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='metropolitan'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
-          </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
-          </div>
-        </tube-line>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>  
+          </tube-line>
 
-        <tube-line class="tube-line" tabindex="0" line='dlr'>
-          <div class="tube-line-sub">
-            <span class="tube-line-sub__status"></span>
-            <tube-status-loading class="tube-status-loading"></tube-status-loading>
-            <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type="unsubscribe">
-              <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
-              <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+          <tube-line class="tube-line" tabindex="0" line='northern'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
             </div>
+            <div class="tube-line-info">
+                <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+
+          <tube-line class="tube-line" tabindex="0" line='piccadilly'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
+            </div>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+
+          <tube-line class="tube-line" tabindex="0" line='victoria'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
+            </div>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+
+          <tube-line class="tube-line" tabindex="0" line='waterloo-city'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
+            </div>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+
+          <tube-line class="tube-line" tabindex="0" line='tfl-rail'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
+            </div>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+
+          <tube-line class="tube-line" tabindex="0" line='london-overground'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type>
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
+            </div>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+
+          <tube-line class="tube-line" tabindex="0" line='dlr'>
+            <div class="tube-line-sub">
+              <span class="tube-line-sub__status"></span>
+              <tube-status-loading class="tube-status-loading"></tube-status-loading>
+              <div class="tube-line-sub__image-wrapper tube-status-hide" tabindex="0" type="unsubscribe">
+                <img alt="line subscription bell" src="./images/subscribe.svg" class="tube-line-sub__image tube-line-sub__image-sub">
+                <img alt="line subscription bell" src="./images/unsubscribe.svg" class="tube-line-sub__image tube-line-sub__image-unsub tube-status-hide">
+              </div>
+            </div>
+            <div class="tube-line-info">
+              <div class="tube-line-info__reason-title"></div>
+            </div>
+          </tube-line>
+        </tube-status-wrapper>
+        <!-- footer -->
+        <footer class="tube-status-footer tube-status-hide">
+          <div class="tube-status-footer__reference">
+            <span class="tube-status-footer__reference-attribution">Powered by TfL Open Data</span>
+            <span class="tube-status-footer__reference-attribution">Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights 2019</span>
           </div>
-          <div class="tube-line-info">
-            <div class="tube-line-info__reason-title"></div>
+          <div class="tube-status-footer__privacy">
+            <tube-status-privacy-modal tabindex="0" class="tube-status-privacy-modal">
+              <span class="tube-status-privacy-modal__type">Privacy Policy</span>
+            </tube-status-privacy-modal>
           </div>
-        </tube-line>
-      </tube-status-wrapper>
-      <!-- footer -->
-      <footer class="tube-status-footer tube-status-hide">
-        <div class="tube-status-footer__reference">
-          <span class="tube-status-footer__reference-attribution">Powered by TfL Open Data</span>
-          <span class="tube-status-footer__reference-attribution">Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights 2019</span>
-        </div>
-        <div class="tube-status-footer__privacy">
-          <tube-status-privacy-modal tabindex="0" class="tube-status-privacy-modal">
-            <span class="tube-status-privacy-modal__type">Privacy Policy</span>
-          </tube-status-privacy-modal>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </main>
     <script type="module" src="./build/bundle.js"></script>
   </body>
 </html>
