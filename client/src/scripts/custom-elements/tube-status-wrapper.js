@@ -67,9 +67,9 @@ export default class TubeStatusWrapper extends HTMLElement {
     const pushResult = await initPushSubscription();
 
     await this.updateNotifcationFeatureFlag_(pushResult);
+    await this.setPushSubscription_(pushResult);
     await this.getAllLineData_();
     await this.getLineSubscriptions_();
-    await this.handleMultipleSignIn_(pushResult);
 
     this.order_();
     this.appReady_();
@@ -138,32 +138,18 @@ export default class TubeStatusWrapper extends HTMLElement {
   }
 
   /**
-   * Handles the case where a user has signed in on multiple devices.
+   * Saves user push subscription object to db.
    * @async
    * @param {object} pushSubscription
    * @private
    */
-  async handleMultipleSignIn_(pushSubscription) {
+  async setPushSubscription_(pushSubscription) {
     const {userProfile: {signedIn}} = getStore();
 
     if (signedIn) {
-      if (!pushSubscription) return;
+      const {push} = await apiSetPushSubscription(pushSubscription);
 
-      const {push} = await apiGetPushSubscription();
-
-      // if the push susbcription does not already exist we set it
-      if (!Object.keys(push).length) {
-        await apiSetPushSubscription(pushSubscription);
-        return;
-      }
-
-      // if there is an endpoint diff we have a different device case
-      if (push.endpoint !== pushSubscription.endpoint) {
-        this.noteEl.textContent = copy.NOTE_SIGN_OUT;
-        this.noteEl.classList.remove(cssClass.HIDDEN);
-
-        updateStore({action: actions.DEVICE, data: true});
-      }
+      if (!push.length) this.handleError_();
     }
   }
 
@@ -368,7 +354,7 @@ export default class TubeStatusWrapper extends HTMLElement {
 
   /**
    * Handles api fetch errors.
-   * @param {object} e
+   * @param {object=} e
    * @private
    */
   handleError_(e) {

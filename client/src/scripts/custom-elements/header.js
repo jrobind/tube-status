@@ -68,6 +68,10 @@ export default class Header extends HTMLElement {
         action: actions.AUTHENTICATION,
       },
       {
+        callback: this.updateAvatar_.bind(this),
+        action: actions.NOTIFICATIONS_FEATURE,
+      },
+      {
         callback: this.toggleDropdown_.bind(this),
         action: actions.RESET_APP,
       },
@@ -79,8 +83,6 @@ export default class Header extends HTMLElement {
       "keyup", this.handleKeyup_.bind(this));
     this.avatarWrapperEl_.addEventListener(
       "keypress", this.handleKeyPress_.bind(this));
-
-    this.updateAvatar_();
   }
 
   /**
@@ -111,9 +113,9 @@ export default class Header extends HTMLElement {
    * @private
    */
   updateAvatar_() {
-    const {userProfile: {signedIn, avatar}} = getStore();
+    const {userProfile: {signedIn, avatar}, notificationsFeature} = getStore();
 
-    if ("safari" in window !== true) {
+    if (notificationsFeature) {
       this.profileEl_.classList.remove(cssClass.HIDE);
 
       this.avatarEl_.src = (signedIn) ?

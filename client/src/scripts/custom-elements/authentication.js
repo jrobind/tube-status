@@ -27,9 +27,6 @@ const cssClass = {
 /** @const {number} */
 const LOADING_DELAY_LOGOUT = 300;
 
-/** @const {number} */
-const SIGN_OUT_DELAY = 3500;
-
 /**
  * Authentication custom element.
  */
@@ -192,8 +189,6 @@ export default class Authentication extends HTMLElement {
    * @private
    */
   async handleLogout_() {
-    const {lineSubscriptions, differentDevice} = getStore();
-
     this.authPath_ = "Sign in";
     this.querySelector(
       `.${cssClass.SIGN_OUT_BTN}`).classList.add(cssClass.HIDDEN);
@@ -203,11 +198,7 @@ export default class Authentication extends HTMLElement {
       data: {loadingState: {state: true, line: null}},
     });
 
-    if (differentDevice) {
-      await new Promise((resolve) => setTimeout(resolve, SIGN_OUT_DELAY));
-    }
-
-    const result = await apiLogout(!!lineSubscriptions.length, differentDevice);
+    const result = await apiLogout();
 
     if (result === 200) {
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY_LOGOUT));
