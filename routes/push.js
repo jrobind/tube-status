@@ -31,18 +31,32 @@ router.post("/push",
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
     const {pushSubscription} = req.body;
-    const params = {$set: {"pushSubscription": pushSubscription}};
 
-    // find current user line subscriptions and send to client
-    db.UserModel.findOneAndUpdate(
-      {googleId}, params, {new: true}, (err, resp) => {
-        if (err) debug(`Failed to update user push subscription ${err}`);
-        if (resp) {
-          debug("Successfully updated user push subscription", resp);
-          res.json({push: resp.pushSubscription.endpoint});
+    db.UserModel.findOne({googleId}, (err, resp) => {
+      if (err) debug(`error finding user ${err}`);
+      if (resp) {
+        const requestPushEndpoint = pushSubscription.endpoint;
+        const pushExists = resp.pushSubscription.some((push) => push.endpoint === requestPushEndpoint);
+        console.log(pushExists);
+
+        if (pushExists) {
+          res.json({push: resp.pushSubscription});
+        } else {
+          resp.pushSubscription.push(pushSubscription);
+
+          resp.save((err) => {
+            if (err) {
+              debug(`Failed to update user push subscription ${err}`);
+            } else {
+              debug("Successfully updated user push subscription");
+              res.json({push: resp.pushSubscription});
+            }
+          });
         }
-      },
-    );
+      } else {
+        debug("error finding user push subscription");
+      }
+    });
   },
 );
 

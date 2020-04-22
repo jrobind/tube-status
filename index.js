@@ -184,10 +184,12 @@ const job = new CronJob("0 */1 * * * *", async () => {
                 status: reason ? reason : statusSeverityDescription,
               });
 
-              // send push notification
-              webpush
-                .sendNotification(pushSubscription, payload)
-                .catch((err) => debug(`error sending push notification ${err}`));
+              pushSubscription.forEach((subscription) => {
+                // send push notification
+                webpush
+                  .sendNotification(subscription, payload)
+                  .catch((err) => debug(`error sending push notification ${err}`));
+              });
             }
           }
         });

@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     hours: [Number],
   }],
   pushSubscription: {
-    type: Object, default: {},
+    type: [Object], default: [],
   },
   signedIn: Boolean,
 });

@@ -12,8 +12,7 @@ router.post(
   middleware.jwtVerify,
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
-    const differentDevice = req.body.differentDevice;
-    const params = {$set: {"signedIn": differentDevice ? true : false}};
+    const params = {$set: {"signedIn": false}};
 
     db.UserModel.updateOne({googleId}, params, (err, resp) => {
       if (err) {
