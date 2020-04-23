@@ -18,7 +18,9 @@ const helmet = require("helmet");
 require("dotenv").config({path: "./env"});
 
 const app = express();
-app.listen(4000, () => debug("Server started on port 4000"));
+const server = app.listen(
+  4000, () => debug("Server started on port 4000"));
+const io = require("socket.io").listen(server, {pingTimeout: 60000});
 
 // require routes
 const subscribe = require("./routes/subscribe");
@@ -28,6 +30,7 @@ const download = require("./routes/download");
 const remove = require("./routes/remove");
 const push = require("./routes/push");
 
+app.set("io", io);
 app.use(compression());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "/client"), {index: false}));
@@ -64,7 +67,7 @@ passport.use(new JWTStrategy({
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_AUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  callbackURL: "http://localhost:4000/auth/google/callback/",
+  callbackURL: process.env.CALLBACK_URL,
   scope: ["profile"],
 },
 // verify function

@@ -3,12 +3,12 @@ import {initPushSubscription} from "../push-setup.js";
 import {
   apiGetAllLineData,
   apiGetLineSubscriptions,
-  apiGetPushSubscription,
   apiSetPushSubscription,
 } from "../utils/api.js";
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents, copy} from "../constants.js";
 const {updateStore, getStore, subscribeToStore} = store;
+const socket = io();
 
 /**
  * CSS class selectors.
@@ -37,6 +37,9 @@ const cssClass = {
 
 /** @type {number} */
 const FETCH_INTERVAL = 90000;
+
+/** @const {number} */
+const LOADING_DELAY = 500;
 
 /**
  * Tube status wrapper custom element.
@@ -90,6 +93,10 @@ export default class TubeStatusWrapper extends HTMLElement {
         "message", this.handleNotificationRecieved_.bind(this));
     }
 
+    socket.on(
+      customEvents.SUBSCRIPTION_ACTION,
+      (data) => this.handleSubscriptionAction_(data));
+
     // get data every 60 seconds
     this.fetchInterval_();
   }
@@ -135,6 +142,21 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   hideNote_() {
     this.noteEl.classList.add(cssClass.HIDDEN);
+  }
+
+  /**
+   * Handles subscription event emmited from server web socket.
+   * @param {object} data
+   * @async
+   * @private
+   */
+  async handleSubscriptionAction_(data) {
+    const {userProfile: {id}} = getStore();
+
+    if (id === data.id) {
+      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
+      await this.getLineSubscriptions_();
+    }
   }
 
   /**

@@ -428,10 +428,6 @@ body {
   transition-duration: .3s;
 }
 
-.tube-line--active:hover {
-  transform: translateY(-4px);
-}
-
 .tube-line-info::after {
   content: "";
   background-image: url("/images/check-circle.svg");
@@ -801,6 +797,13 @@ body {
   100% {
       opacity: 1;
       transform: translateY(0);
+  }
+}
+
+/* hover styles for devices that support hover */
+@media (hover: hover) {
+  .tube-line--active:hover {
+    transform: translateY(-4px);
   }
 }
 

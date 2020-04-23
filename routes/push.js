@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const db = require("../models");
 const middleware = require("../middleware");
-const debug = require("debug")("app:logout");
+const debug = require("debug")("app:push");
 const router = new express.Router();
 
 // get route for push subscription
@@ -37,7 +37,6 @@ router.post("/push",
       if (resp) {
         const requestPushEndpoint = pushSubscription.endpoint;
         const pushExists = resp.pushSubscription.some((push) => push.endpoint === requestPushEndpoint);
-        console.log(pushExists);
 
         if (pushExists) {
           res.json({push: resp.pushSubscription});

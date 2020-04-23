@@ -11,6 +11,7 @@ router.get("/subscribe",
   middleware.jwtVerify,
   (req, res) => {
     const googleId = res.locals.decoded._json.sub;
+
     // find current user line subscriptions and send to client
     db.UserModel.findOne({googleId}, (err, resp) => {
       if (err) debug(`error finding user line subscriptions ${err}`);
@@ -32,6 +33,7 @@ router.post(
     const googleId = res.locals.decoded._json.sub;
     const {window: {days, hours}} = req.body;
     const line = req.body.line || [];
+    const io = req.app.get("io");
     const params = {
       $push: {"subscriptions": {"days": days, "hours": hours, "line": line}}};
 
@@ -43,6 +45,7 @@ router.post(
         if (resp) {
           debug("Successfully updated user line subscription", resp);
           res.json({subscription: resp.subscriptions});
+          io.emit("subscription-action", {id: resp.googleId});
         }
       },
     );
@@ -58,6 +61,7 @@ router.delete(
     const googleId = res.locals.decoded._json.sub;
     const line = req.body.line;
     const params = {$pull: {"subscriptions": {"line": line}}};
+    const io = req.app.get("io");
 
     db.UserModel.findOneAndUpdate(
       {googleId},
@@ -66,8 +70,9 @@ router.delete(
       (err, resp) => {
         if (err) debug(`Failed to remove subscription data ${err}`);
         if (resp) {
-          debug("Successfully removed line", resp);
+          debug("Successfully removed line");
           res.json({subscription: resp.subscriptions});
+          io.emit("subscription-action", {id: resp.googleId});
         }
       });
   },
