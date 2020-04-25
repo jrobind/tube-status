@@ -308,17 +308,13 @@ body {
   margin-right: 12px;
 }
 
-.tube-status__filter-toggle--on {
-  color: var(--app-green);
-}
-
 .tube-status__filter-toggle--off {
   opacity: 0.4;
 }
 
 .tube-status__filter-toggle--on,
 .tube-status__filter-toggle--off {
-  font-size: 35px;
+  width: 35px;
 }
 
 .tube-status__filter-toggle--on:hover,
@@ -359,6 +355,7 @@ body {
 .tube-line[line='dlr'] .tube-line-sub__status,
 .tube-status-subscriptions__line-color-dlr {
   background-color: var(--dlr-color);
+  text-transform: uppercase;
 }
 
 .tube-line[line='tfl-rail'] .tube-line-sub__status,
@@ -989,7 +986,7 @@ body {
 
   .tube-status__filter-toggle--on,
   .tube-status__filter-toggle--off {
-    font-size: 45px;
+    width: 45px;
   }
 
   /* tube line styles */

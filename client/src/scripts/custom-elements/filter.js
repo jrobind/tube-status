@@ -9,7 +9,7 @@ const {subscribeToStore, getStore} = store;
  * @enum {string}
  */
 const cssSelector = {
-  TOGGLE_ICONS: ".tube-status__filter-toggle .material-icons",
+  TOGGLE_ICONS: ".tube-status__filter-toggle-image",
   TOGGLE: ".tube-status__filter-toggle",
 };
 

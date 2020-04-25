@@ -301,6 +301,7 @@ export default class TubeLine extends HTMLElement {
   handleClick_(e) {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
+    const isActive = this.classList.contains(cssClass.ACTIVE);
     const isSubEl = target.classList.contains(cssClass.ICON_IMAGE) ||
       target.classList.contains(cssClass.SUB_ICON_WRAPPER);
 
@@ -309,8 +310,10 @@ export default class TubeLine extends HTMLElement {
       return;
     }
 
-    document.dispatchEvent(
-      new CustomEvent(customEvents.LINE_CLICK, detail));
+    if (isActive) {
+      document.dispatchEvent(
+        new CustomEvent(customEvents.LINE_CLICK, detail));
+    }
   }
 
   /**
@@ -321,8 +324,8 @@ export default class TubeLine extends HTMLElement {
     const {lineInformation} = getStore();
     const lineInfo = removeDuplicate(lineInformation[this.line_]);
     const {status, reason} = lineInfo[0];
-
-    this.subStatusEl_.textContent = `${this.line_}`;
+    const lineName = this.getAttribute("line-name");
+    this.subStatusEl_.textContent = `${lineName ? lineName : this.line_}`;
     this.reasonTitleEl_.textContent = "";
 
     this.setScoreAttribute_(status);
