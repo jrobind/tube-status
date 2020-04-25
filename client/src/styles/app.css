@@ -171,6 +171,7 @@ body {
 /* header subscriptions styles */
 .tube-status-subscriptions {
   position: relative;
+  display: block;
 }
 
 .tube-status-authentication:hover {
@@ -234,7 +235,7 @@ body {
 
 .tube-status-subscriptions__notifcation {
   position: absolute;
-  top: 4px;
+  bottom: 0;
   color: var(--default-white);
   background-color: var(--app-green);
   width: 14px;

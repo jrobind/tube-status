@@ -36,6 +36,7 @@ export const customEvents = {
   READY: "app-ready",
   PRIVACY_POLICY: "privacy-policy",
   SUBSCRIPTION_ACTION: "subscription-action",
+  CONNECT: "connect",
 };
 
 /**

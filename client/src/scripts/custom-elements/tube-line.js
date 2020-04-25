@@ -301,11 +301,8 @@ export default class TubeLine extends HTMLElement {
   handleClick_(e) {
     const target = /** @type {HTMLElement} */ (e.target);
     const detail = {detail: {line: this.line_}};
-    const isActive = this.classList.contains(cssClass.ACTIVE);
     const isSubEl = target.classList.contains(cssClass.ICON_IMAGE) ||
       target.classList.contains(cssClass.SUB_ICON_WRAPPER);
-
-    if (!isActive) return;
 
     if (isSubEl) {
       this.handleSubClick_(e);

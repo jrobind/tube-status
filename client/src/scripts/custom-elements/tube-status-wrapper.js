@@ -8,7 +8,7 @@ import {
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents, copy} from "../constants.js";
 const {updateStore, getStore, subscribeToStore} = store;
-const socket = io();
+const socket = io("http://localhost:4000/");
 
 /**
  * CSS class selectors.
@@ -97,6 +97,8 @@ export default class TubeStatusWrapper extends HTMLElement {
       customEvents.SUBSCRIPTION_ACTION,
       (data) => this.handleSubscriptionAction_(data));
 
+    socket.on(customEvents.CONNECT, this.handleConnected_.bind(this));
+
     // get data every 60 seconds
     this.fetchInterval_();
   }
@@ -134,6 +136,19 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.NOTIFICATIONS_FEATURE,
       data: {notificationsFeature: flag},
     });
+  }
+
+  /**
+   * Handles a successful socket connection.
+   * @async
+   * @private
+   */
+  async handleConnected_() {
+    const {userProfile: {signedIn}} = getStore();
+
+    if (signedIn) {
+      await this.getLineSubscriptions_();
+    }
   }
 
   /**
@@ -256,17 +271,9 @@ export default class TubeStatusWrapper extends HTMLElement {
    */
   fetchInterval_() {
     setInterval(async () => {
-      updateStore({
-        action: actions.LOADING_APP,
-        data: {loadingState: {state: true, line: null}},
-      });
-
       await this.getAllLineData_();
-
-      updateStore({
-        action: actions.LOADING_APP,
-        data: {loadingState: {state: false, line: null}},
-      });
+      await this.getLineSubscriptions_();
+      this.order_();
     }, FETCH_INTERVAL);
   }
 
