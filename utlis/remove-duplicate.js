@@ -1,5 +1,5 @@
 // removes duplicate line statuses. Often they are duplicate status objects with
-// different statusSeverityDescriptions but the same reason.
+// different statusSeverityDescriptions but the same reason
 const removeDuplicate = (result) => {
   return result.map((line) => {
     const newStatuses = line.lineStatuses.reduce((unique, line) => {

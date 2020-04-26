@@ -72,4 +72,6 @@ export const copy = {
   NOTE_PUSH_API: "This browser does not support Push notifications. To use the notifications feature, please sign in with a different browser.",
   NOTE_SIGN_OUT: "This account is already associated with another device. You will now be signed out.",
   NOTE_PWA: "This app has been added to your homescreen. To sign in, please use the app.",
+  SUBSCRIPTIONS: "Subscriptions",
+  SUBSCRIPTIONS_NONE: "No subscriptions",
 };

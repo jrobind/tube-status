@@ -193,11 +193,11 @@ body {
   padding: 3px;
 }
 
-.tube-status-header__subscription-image {
+.tube-status-subscriptions__img {
   width: 35px;
 }
 
-.tube-status-header__subscription-image:hover {
+.tube-status-subscriptions__img:hover {
   cursor: pointer;
 }
 
@@ -238,11 +238,11 @@ body {
   bottom: 0;
   color: var(--default-white);
   background-color: var(--app-green);
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  line-height: 14px;
-  font-size: 9px;
+  line-height: 16px;
+  font-size: 10px;
   text-align: center;
   cursor: pointer;
 }
@@ -798,13 +798,6 @@ body {
   }
 }
 
-/* hover styles for devices that support hover */
-@media (hover: hover) {
-  .tube-line--active:hover {
-    transform: translateY(-4px);
-  }
-}
-
 /* tablet */
 @media (min-width: 500px) {
   /* button styles */
@@ -849,7 +842,7 @@ body {
     flex-direction: row;
   }
 
-  .tube-status-header__subscription-image {
+  .tube-status-subscriptions__img {
     width: 40px;
   }
 
@@ -954,7 +947,7 @@ body {
   }
 
   /* subscription header styles */
-  .tube-status-header__subscription-image {
+  .tube-status-subscriptions__img {
     width: 45px;
   }
 

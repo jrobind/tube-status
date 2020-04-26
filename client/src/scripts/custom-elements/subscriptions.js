@@ -1,19 +1,7 @@
 import {store} from "../utils/client-store.js";
 import {create, handleTabFocus} from "../utils/helpers.js";
-import {actions} from "../constants.js";
+import {actions, copy} from "../constants.js";
 const {getStore, subscribeToStore} = store;
-
-/** @const {string} */
-const SUBSCRIPTIONS_COPY = "Subscriptions";
-
-/** @const {string} */
-const NO_SUBSCRIPTIONS_COPY = "No subscriptions";
-
-/** @const {string} */
-const SUBSCRIPTION_IMG_PATH = "/images/subscriptions.svg";
-
-/** @const {string} */
-const SUBSCRIPTION_FILLED_IMG_PATH = "/images/subscriptions-filled.svg";
 
 /**
  * CSS classes.
@@ -26,7 +14,8 @@ const cssClass = {
   SUBSCRIPTION_LINE_NAME: "tube-status-subscriptions__line-name",
   SUBSCRIPTION_LINE_COLOR: "tube-status-subscriptions__line-color",
   SUBSCRIPTIONS_NOTIFICATION: "tube-status-subscriptions__notifcation",
-  SUBCRIPTION_IMAGE: "tube-status-header__subscription-image",
+  SUBSCRIPTION_IMG: "tube-status-subscriptions__img",
+  HIDE: "tube-status-hide",
 };
 
 /**
@@ -34,7 +23,8 @@ const cssClass = {
  * @enum {string}
  */
 const cssSelector = {
-  SUBSCRIPTION_IMG: ".tube-status-header__subscription-image",
+  SUBCRIPTION_IMG_FILLED: ".tube-status-subscriptions__img-filled",
+  SUBCRIPTION_IMG_DEFAULT: ".tube-status-subscriptions__img--default",
 };
 
 /**
@@ -45,11 +35,13 @@ export default class Subscriptions extends HTMLElement {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {HTMLImageElement}
-     */
-    this.subIconEl_;
+    /** @private {HTMLImageElement} */
+    this.subImgDefaultEl_ = this.querySelector(
+      cssSelector.SUBCRIPTION_IMG_DEFAULT);
+
+    /** @private {HTMLImageElement} */
+    this.subImgFilledEl_ = this.querySelector(
+      cssSelector.SUBCRIPTION_IMG_FILLED);
   }
 
   /**
@@ -75,8 +67,6 @@ export default class Subscriptions extends HTMLElement {
     document.addEventListener("click", this.toggleSubscriptions_.bind(this));
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
     this.addEventListener("keypress", this.handleKeyPress_.bind(this));
-
-    this.subIconEl_ = this.querySelector(cssSelector.SUBSCRIPTION_IMG);
   }
 
   /**
@@ -142,9 +132,11 @@ export default class Subscriptions extends HTMLElement {
    */
   updateIcon_() {
     if (this.dropdownExists_()) {
-      this.subIconEl_.src = SUBSCRIPTION_IMG_PATH;
+      this.subImgFilledEl_.classList.add(cssClass.HIDE);
+      this.subImgDefaultEl_.classList.remove(cssClass.HIDE);
     } else {
-      this.subIconEl_.src = SUBSCRIPTION_FILLED_IMG_PATH;
+      this.subImgDefaultEl_.classList.add(cssClass.HIDE);
+      this.subImgFilledEl_.classList.remove(cssClass.HIDE);
     }
   }
 
@@ -187,8 +179,8 @@ export default class Subscriptions extends HTMLElement {
 
     const {lineSubscriptions} = getStore();
     const titleCopy = lineSubscriptions.length ?
-      SUBSCRIPTIONS_COPY :
-      NO_SUBSCRIPTIONS_COPY;
+      copy.SUBSCRIPTIONS :
+      copy.SUBSCRIPTIONS_NONE;
     const subWrapper = create("div", {classname: cssClass.SUBSCRIPTIONS});
     const title = create("h2", {
       classname: cssClass.SUBSCRIPTIONS_HEADING,
@@ -222,7 +214,7 @@ export default class Subscriptions extends HTMLElement {
     const {userProfile: {signedIn}} = store.getStore();
 
     const filteredChildren = Array.from(this.children).filter((child) => {
-      const isImg = child.classList.contains(cssClass.SUBCRIPTION_IMAGE);
+      const isImg = child.classList.contains(cssClass.SUBSCRIPTION_IMG);
       const isNotification = child.classList.contains(
         cssClass.SUBSCRIPTIONS_NOTIFICATION);
       const condition = signedIn ? (!isImg && !isNotification) : !isImg;
