@@ -138,26 +138,6 @@ app.get(
   },
 );
 
-const mockData = [
-  {
-    id: 'bakerloo',
-    lineStatuses: [
-      {statusSeverityDescription: "Minor Delays", reason: "BARRY test"}],
-  },
-  {
-    id: 'central',
-    lineStatuses: [
-      {statusSeverityDescription: "Good Service"},
-      {statusSeverityDescription: "Good Service"}
-    ],
-  },
-  {
-    id: 'circle',
-    lineStatuses: [
-      {statusSeverityDescription: "Part Suspended", reason: 'BARRY CHUCKLE'}],
-  },
-];
-
 // run line status check every minute,
 // and send push notification to relevant line subscribers
 const job = new CronJob("0 */1 * * * *", async () => {
@@ -172,7 +152,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
     lineDbData = resp;
   });
 
-  mockData.forEach((line) => {
+  result.forEach((line) => {
     line.lineStatuses.forEach((status, i) => {
       const {statusSeverityDescription, reason} = status;
 
