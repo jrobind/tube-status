@@ -148,7 +148,6 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     if (signedIn) {
       await this.getLineSubscriptions_();
-      this.filterView_();
     }
   }
 
@@ -161,7 +160,7 @@ export default class TubeStatusWrapper extends HTMLElement {
   }
 
   /**
-   * Handles subscription event emmited from server web socket.
+   * Handles subscription event emitted from server web socket.
    * @param {object} data
    * @async
    * @private
@@ -172,7 +171,6 @@ export default class TubeStatusWrapper extends HTMLElement {
     if (id === data.id) {
       await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY));
       await this.getLineSubscriptions_();
-      this.filterView_();
     }
   }
 
@@ -289,27 +287,18 @@ export default class TubeStatusWrapper extends HTMLElement {
     const {data: {title}} = e;
 
     if (title === "push received") {
-      updateStore({
-        action: actions.LOADING_APP,
-        data: {loadingState: {state: true, line: null}},
-      });
-
       await this.getAllLineData_();
-
-      updateStore({
-        action: actions.LOADING_APP,
-        data: {loadingState: {state: false, line: null}},
-      });
+      this.order_();
     }
   }
 
   /**
    * Filters the view, depending on the toggle state.
-   * @param {CustomEvent=} e
+   * @param {CustomEvent} e
    * @private
    */
   filterView_(e) {
-    const filter = e ? e.detail.filter : false;
+    const {detail: {filter}} = e;
     const {lineSubscriptions} = getStore();
     const subscriptions = lineSubscriptions.map((sub) => sub.line);
     const tubeLineEls = this.querySelectorAll(cssSelector.TUBE_LINE);

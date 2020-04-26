@@ -154,5 +154,7 @@ export default class Filter extends HTMLElement {
     this.removeEventListener("click", this.handleClick_);
     this.removeEventListener("keyup", this.handleKeyup_);
     this.removeEventListener("keypress", this.handleKeyPress_);
+    document.addEventListener(
+      customEvents.READY, this.toggleDisplay_.bind(this));
   }
 }
