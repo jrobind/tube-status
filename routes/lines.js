@@ -1,5 +1,6 @@
 const express = require("express");
 const apiResults = require("../utlis/api");
+const {removeDuplicate} = require("../utlis/remove-duplicate");
 const debug = require("debug")("app:lines");
 const router = new express.Router();
 
@@ -9,7 +10,8 @@ router.get("/lines", (req, res) => {
   (async () => {
     try {
       const results = await apiResults.fetchAllLineStatus().catch((e) => debug(`error fetching lines ${e}`));
-      res.json(results);
+      const formattedResults = removeDuplicate(results);
+      res.json(formattedResults);
     } catch (e) {
       debug(`error fetching line data ${e}`);
       res.status(500).json({error: e});
