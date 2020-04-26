@@ -39,11 +39,12 @@
           <div class="tube-status-header__profile tube-status-hide">
             <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
             <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
-              <img alt="line subscription bell" src="./images/google-sign-in.png" class="tube-status-authentication__image">
+              <img alt="sign in with google" src="./images/google-sign-in.png" class="tube-status-authentication__image">
             </tube-status-authentication>
             <div class="tube-status-header__subscription tube-status-hide">
               <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
-                <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-header__subscription-image"> 
+                <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-subscriptions__img tube-status-subscriptions__img--default"> 
+                <img alt="subscription list icon filled" src="./images/subscriptions-filled.svg" class=" tube-status-subscriptions__img tube-status-subscriptions__img-filled tube-status-hide"> 
               </tube-status-subscriptions>
             </div>
             <div class="tube-status-header__avatar" tabindex="0">
@@ -61,8 +62,8 @@
         <tube-status-filter class="tube-status-filter">
           <span class="tube-status-filter__description">Show my subscriptions</span>
           <div tabindex="0" class="tube-status__filter-toggle">
-            <i class="material-icons tube-status__filter-toggle--off">toggle_off</i>
-            <i class="material-icons tube-status-hide tube-status__filter-toggle--on">toggle_on</i>
+            <img alt="toggle icon off" src="./images/toggle-off.svg" class="tube-status__filter-toggle--off tube-status__filter-toggle-image">
+            <img alt="toggle icon on" src="./images/toggle-on.svg" class="tube-status-hide tube-status__filter-toggle--on tube-status__filter-toggle-image">
           </div>
         </tube-status-filter>
         <!-- tube lines -->
@@ -122,7 +123,7 @@
             </div>
           </tube-line>
 
-          <tube-line class="tube-line" tabindex="0" line='hammersmith-city'>
+          <tube-line class="tube-line" tabindex="0" line='hammersmith-city' line-name="hammersmith & city">
             <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-loading class="tube-status-loading"></tube-status-loading>
@@ -206,7 +207,7 @@
             </div>
           </tube-line>
 
-          <tube-line class="tube-line" tabindex="0" line='waterloo-city'>
+          <tube-line class="tube-line" tabindex="0" line='waterloo-city' line-name="waterloo & city">
             <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-loading class="tube-status-loading"></tube-status-loading>
@@ -220,7 +221,7 @@
             </div>
           </tube-line>
 
-          <tube-line class="tube-line" tabindex="0" line='tfl-rail'>
+          <tube-line class="tube-line" tabindex="0" line='tfl-rail' line-name="tfl rail">
             <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-loading class="tube-status-loading"></tube-status-loading>
@@ -234,7 +235,7 @@
             </div>
           </tube-line>
 
-          <tube-line class="tube-line" tabindex="0" line='london-overground'>
+          <tube-line class="tube-line" tabindex="0" line='london-overground' line-name="london overground">
             <div class="tube-line-sub">
               <span class="tube-line-sub__status"></span>
               <tube-status-loading class="tube-status-loading"></tube-status-loading>
