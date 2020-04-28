@@ -136,7 +136,7 @@ body {
   border-radius: 53px;
 }
 
-.tube-status-header__avatar-image:hover {
+.tube-status-header__profile--signed-in .tube-status-header__avatar-image:hover {
   cursor: pointer;
 }
 
@@ -216,8 +216,8 @@ body {
   background-color: var(--default-white);
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.04), 0 1px 5px 0 rgba(0, 0, 0, 0.04);
   padding: 10px;
-  right: -67px;
-  top: 62px;
+  right: -71px;
+  top: 82px;
   min-width: 180px;
   animation: slide-down 0.25s ease;
 }
@@ -355,7 +355,6 @@ body {
 .tube-line[line='dlr'] .tube-line-sub__status,
 .tube-status-subscriptions__line-color-dlr {
   background-color: var(--dlr-color);
-  text-transform: uppercase;
 }
 
 .tube-line[line='tfl-rail'] .tube-line-sub__status,
@@ -833,7 +832,7 @@ body {
 
   /* subscription header styles */
   .tube-status-subscriptions__dropdown {
-    top: 68px;
+    top: 97px;
     right: -93px;
   }
 
@@ -956,7 +955,7 @@ body {
   }
 
   .tube-status-subscriptions__dropdown {
-    top: 72px;
+    top: 104px;
   }
 
   .tube-status-subscriptions__heading {
