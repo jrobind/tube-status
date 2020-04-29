@@ -126,7 +126,8 @@ export const removeSubscriptionId = (subs) => {
  */
 export const removeDuplicate = (lines) => {
   return lines.reduce((unique, line) => {
-    const hasDup = !!unique.filter((obj) => obj.reason === line.reason).length;
+    const hasDup = !!unique.filter(
+      (obj) => obj.reason.trim() === line.reason.trim()).length;
 
     if (!hasDup) unique.push(line);
     return unique;
