@@ -161,9 +161,11 @@ const job = new CronJob("0 */1 * * * *", async () => {
       if (lineDbData) {
         const dbLine = lineDbData[0][line.id];
 
-        diffExists = !dbLine[i] ?
-          true :
-          dbLine[i].reason !== reason;
+        if (statusSeverityDescription === "Good Service") {
+          diffExists = dbLine[i].goodService ? false : true;
+        } else {
+          diffExists = !dbLine[i] ? true : dbLine[i].reason !== reason;
+        }
       }
 
       if (diffExists) {
