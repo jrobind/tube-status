@@ -188,7 +188,7 @@ const job = new CronJob("0 */1 * * * *", async () => {
 
               // check subscription window before sending notification
               if (matchesDay(days) && matchesTime(hours)) {
-                const {pushSubscription} = resp[0];
+                const {pushSubscription} = user;
                 const payload = JSON.stringify({
                   line: line.id,
                   status: reason ? reason : statusSeverityDescription,
