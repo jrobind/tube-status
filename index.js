@@ -162,7 +162,11 @@ const job = new CronJob("0 */1 * * * *", async () => {
         const dbLine = lineDbData[0][line.id];
 
         if (statusSeverityDescription === "Good Service") {
-          diffExists = dbLine[i].goodService ? false : true;
+          if (!dbLine[i]) {
+            diffExists = true;
+          } else {
+            diffExists = dbLine[i].goodService ? false : true;
+          }
         } else {
           diffExists = !dbLine[i] ? true : dbLine[i].reason !== reason;
         }
@@ -177,25 +181,27 @@ const job = new CronJob("0 */1 * * * *", async () => {
         db.UserModel.find(params, (err, resp) => {
           if (err) debug(`error finding subscribed line ${err}`);
           if (resp.length) {
-            const {days, hours} = resp[0].subscriptions.filter((sub) =>{
-              return sub.line === line.id;
-            })[0];
+            resp.forEach((user) => {
+              const {days, hours} = user.subscriptions.filter((sub) =>{
+                return sub.line === line.id;
+              })[0];
 
-            // check subscription window before sending notification
-            if (matchesDay(days) && matchesTime(hours)) {
-              const {pushSubscription} = resp[0];
-              const payload = JSON.stringify({
-                line: line.id,
-                status: reason ? reason : statusSeverityDescription,
-              });
+              // check subscription window before sending notification
+              if (matchesDay(days) && matchesTime(hours)) {
+                const {pushSubscription} = resp[0];
+                const payload = JSON.stringify({
+                  line: line.id,
+                  status: reason ? reason : statusSeverityDescription,
+                });
 
-              pushSubscription.forEach((subscription) => {
-                // send push notification
-                webpush
-                  .sendNotification(subscription, payload)
-                  .catch((err) => debug(`error sending push notification ${err}`));
-              });
-            }
+                pushSubscription.forEach((subscription) => {
+                  // send push notification
+                  webpush
+                    .sendNotification(subscription, payload)
+                    .catch((err) => debug(`error sending push notification ${err}`));
+                });
+              }
+            });
           }
         });
       }
