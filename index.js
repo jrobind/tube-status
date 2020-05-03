@@ -29,6 +29,7 @@ const logout = require("./routes/logout");
 const download = require("./routes/download");
 const remove = require("./routes/remove");
 const push = require("./routes/push");
+const pushsubscriptionchange = require("./routes/pushsubscriptionchange");
 
 app.set("io", io);
 app.use(compression());
@@ -44,6 +45,7 @@ app.use("/api/", logout);
 app.use("/api/", download);
 app.use("/api/", remove);
 app.use("/api/", push);
+app.use("/api/", pushsubscriptionchange);
 
 // vapid keys
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
