@@ -32,6 +32,24 @@ self.addEventListener("push", (e) => {
 });
 
 /**
+ * Handles pushsubscription change event.
+ */
+self.addEventListener("pushsubscriptionchange", (e) => {
+  e.waitUntil(self.registration.pushManager.subscribe(e.oldSubscription.options)
+    .then((subscription) => {
+      return fetch("/api/pushsubscriptionchange", {
+        method: "POST",
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify({
+          newEndpoint: subscription.endpoint,
+          oldEndpoint: e.oldSubscription.endpoint,
+        }),
+      });
+    }).catch((e) => console.log(e)),
+  );
+}, false);
+
+/**
  * Handles service worker install event.
  */
 self.addEventListener("install", (e) => {
