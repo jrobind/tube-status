@@ -69,7 +69,7 @@ export const copy = {
   TOAST_DELETE: "Account successfully deleted.",
   TOAST_SUBSCRIBE: "Line successfully subscribed!",
   TOAST_UNSUBSCRIBE: "Line successfully unsubscribed.",
-  NOTE_PUSH_API: "This browser does not support Push notifications. To use the notifications feature, please sign in with a different browser.",
+  NOTE_PUSH_API: "This browser does not support Push notifications, or you have declined notification permissions for this app. To use the notifications functionality, please sign in with a different browser or accept notifications for this app.",
   NOTE_SIGN_OUT: "This account is already associated with another device. You will now be signed out.",
   NOTE_PWA: "This app has been added to your homescreen. To sign in, please use the app.",
   SUBSCRIPTIONS: "Subscriptions",
