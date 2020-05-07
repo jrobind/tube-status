@@ -196,9 +196,9 @@ const job = new CronJob("0 */1 * * * *", async () => {
                   status: reason ? reason : statusSeverityDescription,
                 });
 
-                pushSubscription.forEach((subscription) => {
+                pushSubscription.forEach(async (subscription) => {
                   // send push notification
-                  webpush
+                  await webpush
                     .sendNotification(subscription, payload)
                     .catch((err) => debug(`error sending push notification ${err}`));
                 });
