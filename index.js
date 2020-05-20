@@ -144,6 +144,9 @@ app.get(
 // and send push notification to relevant line subscribers
 const job = new CronJob("0 */1 * * * *", async () => {
   const response = await fetch("http://localhost:4000/api/lines").catch((e) => debug(`error fetching lines ${e}`));
+
+  if (response.status === 500) return;
+
   const result = await response.json();
   let lineDbData;
   let diffExists;
