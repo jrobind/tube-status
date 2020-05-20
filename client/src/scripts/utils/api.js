@@ -144,7 +144,12 @@ export const apiUnsubscribe = async (line) => {
  * @return {Promise}
  */
 export const apiGetAllLineData = async () => {
-  const lines = await fetch("api/lines")
+  const options = {
+    method: "GET",
+    headers: {"content-type": "application/json"},
+  };
+
+  const lines = await fetch("api/lines", options)
     .catch((e) => console.error(e));
 
   return await lines.json();
