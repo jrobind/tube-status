@@ -20,5 +20,6 @@
     "semi": ["error", "always"],
     "camelcase": ["error", { "properties": "never" }],
     "comma-spacing": ["error", { "before": false, "after": true }]
-  }
+  },
+  "ignorePatterns": ["client/build", "client/src/sw.js", "webpack.config.js"]
 }
