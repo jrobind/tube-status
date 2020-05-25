@@ -1,6 +1,6 @@
 import tubeStatusWrapper from "./custom-elements/tube-status-wrapper.js";
 import tubeLine from "./custom-elements/tube-line.js";
-import authentication from "./custom-elements/authentication.js";
+import authentication from "./custom-elements/authentication/authentication.js";
 import loading from "./custom-elements/loading.js";
 import modal from "./custom-elements/modal.js";
 import header from "./custom-elements/header.js";
