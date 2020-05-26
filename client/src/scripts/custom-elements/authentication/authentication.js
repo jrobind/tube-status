@@ -112,6 +112,7 @@ export default class Authentication extends HTMLElement {
    */
   attemptAttrUpdate_() {
     const {userProfile: {signedIn}} = getStore();
+
     if (signedIn) {
       const signOutBtn = create("span", {
         copy: "Sign out",
