@@ -18,7 +18,6 @@ const cssSelector = {
  * @enum {string}
  */
 const cssClass = {
-  AUTHENTICATION: "tube-status-authentication",
   SIGN_OUT_BTN: "tube-status-authentication__btn",
   HIDDEN: "tube-status-hide",
   BTN: "tube-status-btn",
@@ -57,18 +56,10 @@ export default class Authentication extends HTMLElement {
   connectedCallback() {
     if (this.connectedCalled_) return;
 
-    subscribeToStore([
-      {
-        callback: this.attemptAttrUpdate_.bind(this),
-        action: actions.AUTHENTICATION,
-      },
-      {
-        callback: this.forceLogout_.bind(this),
-        action: actions.DEVICE,
-      },
-    ]);
-
-    this.classList.add(cssClass.AUTHENTICATION);
+    subscribeToStore({
+      callback: this.attemptAttrUpdate_.bind(this),
+      action: actions.AUTHENTICATION,
+    });
 
     // listeners
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
@@ -169,18 +160,6 @@ export default class Authentication extends HTMLElement {
     });
 
     window.location.href = this.dest_;
-  }
-
-  /**
-   * Forces sign out if a different device is used with an
-   * already signed in account.
-   * @async
-   * @private
-   */
-  async forceLogout_() {
-    const {differentDevice} = getStore();
-
-    if (differentDevice) this.click();
   }
 
   /**
