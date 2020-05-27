@@ -16,7 +16,7 @@ export const actions = {
   SELECTED_HOURS: "SELECTED-HOURS",
   RESET_SELECTED: "RESET-SELECTED",
   RESET_APP: "RESET-APP",
-  DEVICE: "DEVICE",
+  RESET_STORE: "RESET-STORE",
   NOTIFICATIONS_FEATURE: "NOTIFICATIONS-FEATURE",
 };
 
@@ -70,7 +70,6 @@ export const copy = {
   TOAST_SUBSCRIBE: "Line successfully subscribed!",
   TOAST_UNSUBSCRIBE: "Line successfully unsubscribed.",
   NOTE_PUSH_API: "To use Push notifications, please sign in with a different browser or accept notification permissions for this app.",
-  NOTE_SIGN_OUT: "This account is already associated with another device. You will now be signed out.",
   NOTE_PWA: "This app has been added to your homescreen. To sign in, please use the app.",
   SUBSCRIPTIONS: "Subscriptions",
   SUBSCRIPTIONS_NONE: "No subscriptions",

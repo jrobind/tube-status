@@ -64,12 +64,12 @@ export const storeUpdater = (store, {action, data}) => {
     store = {...store, lineSubscriptions: []};
 
     return store;
-  case "NOTIFICATIONS-FEATURE":
-    store = {...store, ...data};
+  case "RESET-STORE":
+    store = data;
 
     return store;
-  case "DEVICE":
-    store = {...store, differentDevice: {...data}};
+  case "NOTIFICATIONS-FEATURE":
+    store = {...store, ...data};
 
     return store;
   }
