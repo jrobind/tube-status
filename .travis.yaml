@@ -1,3 +1,18 @@
 language: node_js
+
 node_js:
-  - "node"
+ - "12"
+
+branches:
+  only:
+    - master
+
+install:
+ - npm run clean
+ - npm install
+
+before_script:
+ - npm run lint
+
+after_script: 
+  - npm run test
