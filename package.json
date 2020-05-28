@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=dev DEBUG=app:* nodemon server/index.js",
     "build": "webpack --config webpack.config.js",
-    "test": "jest --env=jest-environment-jsdom-sixteen",
+    "test": "jest --env=jest-environment-jsdom-sixteen --coverage",
     "lint": "eslint . --ext .js",
     "watch": "npm run build -- --watch"
   },
@@ -29,11 +29,13 @@
   "homepage": "https://github.com/jrobind/tube-status#readme",
   "jest": {
     "verbose": true,
-    "testEnvironment": "jest-environment-jsdom-sixteen"
+    "testEnvironment": "jest-environment-jsdom-sixteen",
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ]
   },
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "config": "^3.2.2",
@@ -66,9 +68,11 @@
     "eslint-config-google": "^0.14.0",
     "jest": "^26.0.1",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "jest-localstorage-mock": "^2.4.2",
     "mini-css-extract-plugin": "^0.9.0",
     "nodemon": "^1.19.4",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "wait-for-expect": "^3.0.2",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
     "webpack-fix-style-only-entries": "^0.4.0"
