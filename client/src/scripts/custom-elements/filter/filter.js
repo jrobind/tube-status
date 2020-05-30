@@ -1,7 +1,7 @@
-import {store} from "../utils/client-store.js";
-import {customEvents} from "../constants.js";
-import {handleTabFocus} from "../utils/helpers.js";
-import {actions} from "../constants.js";
+import {store} from "../../utils/client-store.js";
+import {customEvents} from "../../constants.js";
+import {handleTabFocus} from "../../utils/helpers.js";
+import {actions} from "../../constants.js";
 const {subscribeToStore, getStore} = store;
 
 /**

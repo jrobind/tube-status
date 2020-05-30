@@ -28,7 +28,7 @@ window.location = {
 /**
  * Tests
  */
-describe("authentication element", () => {
+describe("Authentication element", () => {
   beforeAll(() => localStorage.setItem("JWT", testJWT));
 
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe("authentication element", () => {
     document.body.innerHTML = "";
   });
 
-  it("instantiates without error", () => {
+  it("Instantiates without error", () => {
     const authenticationElement = document.querySelector("tube-status-authentication");
 
     expect(authenticationElement.nodeType).toBe(1);

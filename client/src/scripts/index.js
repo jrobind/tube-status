@@ -8,7 +8,7 @@ import week from "./custom-elements/week.js";
 import time from "./custom-elements/time.js";
 import tooltip from "./custom-elements/tooltip.js";
 import subscriptions from "./custom-elements/subscriptions.js";
-import filter from "./custom-elements/filter.js";
+import filter from "./custom-elements/filter/filter.js";
 import privacyModal from "./custom-elements/privacy-modal.js";
 import toast from "./custom-elements/toast.js";
 
