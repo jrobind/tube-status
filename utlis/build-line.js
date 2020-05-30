@@ -4,7 +4,8 @@ const debug = require("debug")("app:buildline");
 
 module.exports = async () => {
   const url = "http://localhost:4000/api/lines";
-  const response = await fetch(url).catch((e) => debug(`error fetching line data ${e}`));
+  const response = await fetch(url).catch((e) => debug(
+    `error fetching line data ${e}`));
 
   if (response.status === 500) return;
 

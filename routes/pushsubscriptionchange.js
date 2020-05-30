@@ -17,10 +17,14 @@ router.post("/pushsubscriptionchange", (req, res) => {
 
   db.UserModel.findOneAndUpdate(
     findParams, updateParams, {new: true}, (err, resp) => {
-      if (err) debug(`Failed to update user line subscription after expiration ${err}`);
+      if (err) {
+        debug(
+          `Failed to update user line subscription after expiration ${err}`);
+      }
       if (resp) {
         res.status(200);
-        debug("Successfully updated user line subscription after expiration", resp);
+        debug(
+          "Successfully updated user line subscription after expiration", resp);
       }
     },
   );

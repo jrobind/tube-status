@@ -36,7 +36,8 @@ router.post("/push",
       if (err) debug(`error finding user ${err}`);
       if (resp) {
         const requestPushEndpoint = pushSubscription.endpoint;
-        const pushExists = resp.pushSubscription.some((push) => push.endpoint === requestPushEndpoint);
+        const pushExists = resp.pushSubscription.some(
+          (push) => push.endpoint === requestPushEndpoint);
 
         if (pushExists) {
           res.json({push: resp.pushSubscription});

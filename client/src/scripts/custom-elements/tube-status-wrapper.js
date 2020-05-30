@@ -8,6 +8,7 @@ import {
 import {removeSubscriptionId, create} from "../utils/helpers.js";
 import {actions, customEvents, copy} from "../constants.js";
 const {updateStore, getStore, subscribeToStore} = store;
+// eslint-disable-next-line no-undef
 const socket = io("http://localhost:4000/");
 
 /**

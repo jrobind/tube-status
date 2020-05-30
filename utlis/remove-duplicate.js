@@ -3,7 +3,8 @@
 const removeDuplicate = (result) => {
   return result.map((line) => {
     const newStatuses = line.lineStatuses.reduce((unique, line) => {
-      const hasDup = !!unique.filter((obj) => obj.reason.trim() === line.reason.trim()).length;
+      const hasDup = !!unique.filter(
+        (obj) => obj.reason.trim() === line.reason.trim()).length;
 
       if (!hasDup) unique.push(line);
       return unique;

@@ -203,7 +203,8 @@ const job = new CronJob("0 */1 * * * *", async () => {
                   // send push notification
                   await webpush
                     .sendNotification(subscription, payload)
-                    .catch((err) => debug(`error sending push notification ${err}`));
+                    .catch((err) => debug(
+                      `error sending push notification ${err}`));
                 });
               }
             });

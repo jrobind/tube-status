@@ -9,8 +9,10 @@ router.get("/lines", (req, res) => {
   // send results
   (async () => {
     try {
-      const results = await apiResults.fetchAllLineStatus().catch((e) => debug(`error fetching lines ${e}`));
+      const results = await apiResults.fetchAllLineStatus().catch(
+        (e) => debug(`error fetching lines ${e}`));
       const formattedResults = removeDuplicate(results);
+
       res.json(formattedResults);
     } catch (e) {
       debug(`error fetching line data ${e}`);
