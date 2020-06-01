@@ -3,7 +3,7 @@ import tubeLine from "./custom-elements/tube-line.js";
 import authentication from "./custom-elements/authentication/authentication.js";
 import loading from "./custom-elements/loading.js";
 import modal from "./custom-elements/modal.js";
-import header from "./custom-elements/header.js";
+import header from "./custom-elements/header/header.js";
 import week from "./custom-elements/week.js";
 import time from "./custom-elements/time.js";
 import tooltip from "./custom-elements/tooltip.js";

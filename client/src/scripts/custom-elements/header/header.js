@@ -1,7 +1,7 @@
-import {store} from "../utils/client-store.js";
-import {actions} from "../constants.js";
-import {apiDownload, apiRemoveAccount} from "../utils/api.js";
-import {handleTabFocus, create, createFocusTrap} from "../utils/helpers.js";
+import {store} from "../../utils/client-store.js";
+import {actions} from "../../constants.js";
+import {apiDownload, apiRemoveAccount} from "../../utils/api.js";
+import {handleTabFocus, create, createFocusTrap} from "../../utils/helpers.js";
 const {subscribeToStore, getStore} = store;
 
 /**
