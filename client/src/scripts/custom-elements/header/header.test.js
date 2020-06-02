@@ -2,10 +2,14 @@
 import Header from "./header.js";
 import {store} from "../../utils/client-store.js";
 import {initialStore} from "../../utils/initial-store.js";
+import * as helpers from "../../utils/helpers.js";
 import {actions} from "../../constants.js";
 const {updateStore} = store;
 
-window.customElements.define("tube-status-filter", Header);
+// spies
+const spyHandleTabFocus = jest.spyOn(helpers, "handleTabFocus");
+
+window.customElements.define("tube-status-header", Header);
 
 /**
  * Tests
@@ -45,5 +49,16 @@ describe("Header element", () => {
     const headerElement = document.querySelector(".tube-status-header");
 
     expect(headerElement.nodeType).toBe(1);
+  });
+
+  it("Handles a keyup event", async () => {
+    const headerElement = document.querySelector(".tube-status-header");
+    const event = new KeyboardEvent("keyup", {which: 9});
+    const avatarWrapperElement = headerElement.avatarWrapperEl_;
+
+    avatarWrapperElement.dispatchEvent(event);
+
+    expect(spyHandleTabFocus).toHaveBeenCalledTimes(1);
+    expect(spyHandleTabFocus).toHaveBeenCalledWith(avatarWrapperElement);
   });
 });
