@@ -405,9 +405,7 @@ export default class TubeLine extends HTMLElement {
     this.removeEventListener("click", this.handleClick_);
     this.removeEventListener("keyup", this.handleKeyup_);
     this.removeEventListener("keypress", this.handleKeyPress_);
-    this.subIconEl_.removeEventListener(
-      "mouseover", this.toggleTooltip_.bind(this));
-    this.subIconEl_.removeEventListener(
-      "mouseout", this.toggleTooltip_.bind(this));
+    this.subIconEl_.removeEventListener("mouseover", this.toggleTooltip_);
+    this.subIconEl_.removeEventListener("mouseout", this.toggleTooltip_);
   }
 }

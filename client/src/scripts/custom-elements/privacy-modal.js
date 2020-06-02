@@ -180,6 +180,6 @@ export default class PrivacyModal extends HTMLElement {
   disconnectedCallback() {
     document.removeEventListener("click", this.toggleModal_);
     document.removeEventListener(
-      customEvents.PRIVACY_POLICY, this.toggleModal_.bind(this));
+      customEvents.PRIVACY_POLICY, this.toggleModal_);
   }
 }
