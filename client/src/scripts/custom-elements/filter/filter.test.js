@@ -44,7 +44,7 @@ describe("Filter element", () => {
     expect(filterElement.nodeType).toBe(1);
   });
 
-  it("Handles a keyup event", async () => {
+  it("Handles a keyup event", () => {
     const filterElement = document.querySelector(".tube-status-filter");
     const event = new KeyboardEvent("keyup", {which: 9});
 
@@ -54,7 +54,7 @@ describe("Filter element", () => {
     expect(spyHandleTabFocus).toHaveBeenCalledWith(filterElement.filterToggle_);
   });
 
-  it("Handles a keypress event", async () => {
+  it("Handles a keypress event", () => {
     const filterElement = document.querySelector("tube-status-filter");
     const event = new KeyboardEvent("keypress", {which: 13});
 
@@ -64,7 +64,7 @@ describe("Filter element", () => {
     expect(spyEmit_).toHaveBeenCalledTimes(1);
   });
 
-  it("Handles a click event", async () => {
+  it("Handles a click event", () => {
     const filterElement = document.querySelector("tube-status-filter");
 
     filterElement.toggleIconEls_[0].click();
@@ -73,7 +73,7 @@ describe("Filter element", () => {
     expect(spyEmit_).toHaveBeenCalledTimes(1);
   });
 
-  it("Toggles the visibility of the filter element", async () => {
+  it("Toggles the visibility of the filter element", () => {
     const filterElement = document.querySelector("tube-status-filter");
 
     filterElement.toggleDisplay_();
@@ -88,7 +88,7 @@ describe("Filter element", () => {
     expect(filterElement.classList.contains("tube-status-filter--active")).toBeTruthy();
   });
 
-  it("Successfully emits a custom event with a truthy filter", async () => {
+  it("Successfully emits a custom event with a truthy filter", () => {
     const filterElement = document.querySelector("tube-status-filter");
 
     filterElement.emit_();
@@ -97,7 +97,7 @@ describe("Filter element", () => {
     expect(spyDispatchEvent).toHaveReturnedWith(true);
   });
 
-  it("Successfully emits a custom event with a falsy filter", async () => {
+  it("Successfully emits a custom event with a falsy filter", () => {
     const filterElement = document.querySelector("tube-status-filter");
 
     filterElement.emit_(true);

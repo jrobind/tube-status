@@ -78,7 +78,7 @@ describe("Authentication element", () => {
     expect(authenticationEl.getAttribute("auth-path")).toBe("Sign in");
   });
 
-  it("Handles a successful user login", async () => {
+  it("Handles a successful user login", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
 
     authenticationEl.handleSignIn_();
@@ -110,7 +110,7 @@ describe("Authentication element", () => {
     });
   });
 
-  it("Handles a keyup event", async () => {
+  it("Handles a keyup event", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
     const event = new KeyboardEvent("keyup", {which: 9});
 
@@ -120,7 +120,7 @@ describe("Authentication element", () => {
     expect(spyHandleTabFocus).toHaveBeenCalledWith(authenticationEl);
   });
 
-  it("Handles a keypress event", async () => {
+  it("Handles a keypress event", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
     const event = new KeyboardEvent("keypress", {which: 13});
 
