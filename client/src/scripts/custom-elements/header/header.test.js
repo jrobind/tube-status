@@ -8,6 +8,7 @@ const {updateStore} = store;
 
 // spies
 const spyHandleTabFocus = jest.spyOn(helpers, "handleTabFocus");
+const spyToggleDropdown_ = jest.spyOn(Header.prototype, "toggleDropdown_");
 
 window.customElements.define("tube-status-header", Header);
 
@@ -51,7 +52,7 @@ describe("Header element", () => {
     expect(headerElement.nodeType).toBe(1);
   });
 
-  it("Handles a keyup event", async () => {
+  it("Handles a keyup event", () => {
     const headerElement = document.querySelector(".tube-status-header");
     const event = new KeyboardEvent("keyup", {which: 9});
     const avatarWrapperElement = headerElement.avatarWrapperEl_;
@@ -60,5 +61,35 @@ describe("Header element", () => {
 
     expect(spyHandleTabFocus).toHaveBeenCalledTimes(1);
     expect(spyHandleTabFocus).toHaveBeenCalledWith(avatarWrapperElement);
+  });
+
+  it("Handles a keypress event", () => {
+    const headerElement = document.querySelector(".tube-status-header");
+    const event = new KeyboardEvent("keypress", {which: 13});
+    const avatarWrapperElement = headerElement.avatarWrapperEl_;
+
+    avatarWrapperElement.dispatchEvent(event);
+
+    expect(spyToggleDropdown_).toHaveBeenCalledTimes(1);
+  });
+
+  it("Updates the user's avatar image after sign in", () => {
+    const headerElement = document.querySelector(".tube-status-header");
+
+    updateStore({
+      action: actions.AUTHENTICATION,
+      data: {signedIn: true, avatar: "https://test-photo/", id: "217321693378495195842"},
+    });
+
+    updateStore({
+      action: actions.NOTIFICATIONS_FEATURE,
+      data: {notificationsFeature: true},
+    });
+
+    headerElement.updateAvatar_();
+
+    expect(headerElement.profileEl_.classList.contains("tube-status-hide")).toBeFalsy();
+    expect(headerElement.avatarEl_.src).toBe("https://test-photo/");
+    expect(headerElement.profileEl_.classList.contains("tube-status-header__profile--signed-in")).toBeTruthy();
   });
 });
