@@ -98,6 +98,18 @@ export default class Modal extends HTMLElement {
       customEvents.LINE_CLICK, this.toggleModal_.bind(this));
     document.addEventListener(
       customEvents.SHOW_SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
+    document.addEventListener("keyup", this.handleKeyUp_.bind(this));
+  }
+
+  /**
+   * Handler for a enter keypress event.
+   * @param {KeyboardEvent} e
+   * @private
+   */
+  handleKeyUp_(e) {
+    e.stopImmediatePropagation();
+
+    e.which === 27 && this.toggleModal_();
   }
 
   /**
@@ -437,6 +449,7 @@ export default class Modal extends HTMLElement {
     document.removeEventListener(
       customEvents.LINE_CLICK, this.toggleModal_);
     document.removeEventListener(
-      customEvents.SHOW_SUBSCRIBE, this.renderSubscriptionOptions_.bind(this));
+      customEvents.SHOW_SUBSCRIBE, this.renderSubscriptionOptions_);
+    document.removeEventListener("keyup", this.handleKeyUp_);
   }
 }
