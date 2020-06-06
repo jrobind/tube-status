@@ -35,7 +35,8 @@ export const customEvents = {
   SUBSCRIPTIONS_LOADED: "subscriptions-loaded",
   READY: "app-ready",
   PRIVACY_POLICY: "privacy-policy",
-  SUBSCRIPTION_ACTION: "subscription-action",
+  IO_SUBSCRIPTION_ACTION: "io-subscription-action",
+  IO_LOGOUT_ACTION: "io-logout-action",
   CONNECT: "connect",
 };
 
