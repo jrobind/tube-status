@@ -95,7 +95,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     }
 
     socket.on(
-      customEvents.SUBSCRIPTION_ACTION,
+      customEvents.IO_SUBSCRIPTION_ACTION,
       (data) => this.handleSubscriptionAction_(data));
 
     socket.on(customEvents.CONNECT, this.handleConnected_.bind(this));

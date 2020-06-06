@@ -45,7 +45,7 @@ router.post(
         if (resp) {
           debug("Successfully updated user line subscription", resp);
           res.json({subscription: resp.subscriptions});
-          io.emit("subscription-action", {id: resp.googleId});
+          io.emit("io-subscription-action", {id: resp.googleId});
         }
       },
     );
@@ -72,7 +72,7 @@ router.delete(
         if (resp) {
           debug("Successfully removed line");
           res.json({subscription: resp.subscriptions});
-          io.emit("subscription-action", {id: resp.googleId});
+          io.emit("io-subscription-action", {id: resp.googleId});
         }
       });
   },
