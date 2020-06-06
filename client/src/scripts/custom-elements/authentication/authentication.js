@@ -1,7 +1,7 @@
 import {store} from "../../utils/client-store.js";
 import {apiLogout} from "../../utils/api.js";
 import {handleTabFocus, create} from "../../utils/helpers.js";
-import {actions} from "../../constants.js";
+import {actions, customEvents} from "../../constants.js";
 const {updateStore, subscribeToStore, getStore} = store;
 
 /**
@@ -25,6 +25,9 @@ const cssClass = {
 
 /** @const {number} */
 const LOADING_DELAY_LOGOUT = 300;
+
+// eslint-disable-next-line no-undef
+const socket = io("http://localhost:4000/");
 
 /**
  * Authentication custom element.
@@ -65,6 +68,10 @@ export default class Authentication extends HTMLElement {
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
     this.addEventListener("keypress", this.handleKeyPress_.bind(this));
     this.addEventListener("click", this.handleAuth_.bind(this));
+
+    socket.on(
+      customEvents.IO_LOGOUT_ACTION,
+      (data) => this.handleLogoutAction_(data));
 
     this.handleJWT_();
     this.connectedCalled_ = true;
@@ -164,6 +171,33 @@ export default class Authentication extends HTMLElement {
   }
 
   /**
+   * Handles logout event emitted from server web socket.
+   * @param {object} data
+   * @async
+   * @private
+   */
+  async handleLogoutAction_(data) {
+    const {userProfile: {id}} = getStore();
+
+    if (id === data.id) {
+      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY_LOGOUT));
+
+      localStorage.removeItem("JWT");
+      updateStore({
+        action: actions.AUTHENTICATION,
+        data: {signedIn: false, avatar: null, id: null},
+      });
+
+      updateStore({
+        action: actions.LOADING_HEADER,
+        data: {loadingState: {state: false, line: null}},
+      });
+
+      updateStore({action: actions.RESET_APP});
+    }
+  }
+
+  /**
    * Handles the user logout process.
    * @async
    * @private
@@ -180,24 +214,7 @@ export default class Authentication extends HTMLElement {
 
     const result = await apiLogout();
 
-    if (result === 200) {
-      await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY_LOGOUT));
-
-      localStorage.removeItem("JWT");
-      updateStore({
-        action: actions.AUTHENTICATION,
-        data: {signedIn: false, avatar: null, id: null},
-      });
-
-      updateStore({
-        action: actions.LOADING_HEADER,
-        data: {loadingState: {state: false, line: null}},
-      });
-
-      updateStore({action: actions.RESET_APP});
-    } else {
-      this.handleError_(result);
-    }
+    if (result !== 200) this.handleError_(result);
   }
 
   /**
@@ -207,6 +224,11 @@ export default class Authentication extends HTMLElement {
    */
   handleError_(e) {
     console.error(`Unable to subscribe to line at this time. ${e}`);
+
+    updateStore({
+      action: actions.LOADING_HEADER,
+      data: {loadingState: {state: false, line: null}},
+    });
   }
 
   /**
