@@ -32,7 +32,8 @@
     "verbose": true,
     "testEnvironment": "jest-environment-jsdom-sixteen",
     "setupFiles": [
-      "jest-localstorage-mock"
+      "jest-localstorage-mock",
+      "<rootDir>/jest/setup.js"
     ]
   },
   "dependencies": {
