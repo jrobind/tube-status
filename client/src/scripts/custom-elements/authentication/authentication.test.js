@@ -37,13 +37,12 @@ describe("Authentication element", () => {
         <img alt="sign in with google" src="./images/google-sign-in.png" class="tube-status-authentication__image">
       </tube-status-authentication>
       <div class="tube-status-header__subscription"></div>`;
-
-    updateStore({action: actions.RESET_STORE, data: initialStore});
   });
 
   afterEach(() => {
     spyHandleJWT_.mockClear();
     document.body.innerHTML = "";
+    updateStore({action: actions.RESET_STORE, data: initialStore});
   });
 
   it("Instantiates without error", () => {
@@ -106,7 +105,25 @@ describe("Authentication element", () => {
     authenticationEl.handleLogout_();
 
     await waitForExpect(() => {
-      expect(localStorage.getItem("JWT")).toBe(null);
+      const signOutbtn = authenticationEl.querySelector(".tube-status-authentication__btn");
+
+      expect(signOutbtn.classList.contains("tube-status-hide")).toBeTruthy();
+      expect(getStore().loadingState.state).toBeTruthy();
+      expect(authenticationEl.authPath_).toBe("Sign in");
+    });
+  });
+
+  it("Handles a logout action", async () => {
+    const authenticationEl = document.querySelector(".tube-status-authentication");
+
+    authenticationEl.handleLogoutAction_({id: "217321693378495195842"});
+
+    await waitForExpect(() => {
+      expect(localStorage.getItem("JWT")).toBeNull();
+      expect(getStore().loadingState.state).toBeFalsy();
+      expect(getStore().userProfile.signedIn).toBeFalsy();
+      expect(getStore().userProfile.avatar).toBeFalsy();
+      expect(getStore().userProfile.id).toBeFalsy();
     });
   });
 
