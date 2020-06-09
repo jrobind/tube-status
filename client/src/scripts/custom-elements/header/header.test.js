@@ -1,14 +1,18 @@
 /* eslint-disable max-len */
 import Header from "./header.js";
 import {store} from "../../utils/client-store.js";
+import waitForExpect from "wait-for-expect";
+import {apiDownload, apiRemoveAccount} from "../../utils/api.js";
 import {initialStore} from "../../utils/initial-store.js";
 import * as helpers from "../../utils/helpers.js";
 import {actions} from "../../constants.js";
+jest.mock("../../utils/api.js");
 const {updateStore} = store;
 
 // spies
 const spyHandleTabFocus = jest.spyOn(helpers, "handleTabFocus");
 const spyToggleDropdown_ = jest.spyOn(Header.prototype, "toggleDropdown_");
+const spyRemoveContent_ = jest.spyOn(Header.prototype, "removeContent_");
 
 window.customElements.define("tube-status-header", Header);
 
@@ -37,12 +41,14 @@ describe("Header element", () => {
             <img alt="Google profile avatar" referrerPolicy="no-referrer" class="tube-status-header__avatar-image"> 
           </div>
         </div>
-      </tube-status-header>`;
+      </tube-status-header>
+      <tube-status-toast class="tube-status-toast tube-status-hide"><span class="tube-status-toast__message"></span></tube-status-toast>`;
 
     updateStore({action: actions.RESET_STORE, data: initialStore});
   });
 
   afterEach(() => {
+    spyRemoveContent_.mockClear();
     document.body.innerHTML = "";
   });
 
@@ -91,5 +97,41 @@ describe("Header element", () => {
     expect(headerElement.profileEl_.classList.contains("tube-status-hide")).toBeFalsy();
     expect(headerElement.avatarEl_.src).toBe("https://test-photo/");
     expect(headerElement.profileEl_.classList.contains("tube-status-header__profile--signed-in")).toBeTruthy();
+  });
+
+  it("Removes existing markup from avatar dropdown", () => {
+    const headerElement = document.querySelector(".tube-status-header");
+
+    headerElement.createDropdown_();
+    headerElement.removeContent_();
+
+    expect(headerElement.avatarWrapperEl_.children.length).toBe(1);
+    expect(headerElement.classList.contains("tube-status-header--open")).toBeFalsy();
+    expect(headerElement.avatarEl_.hasAttribute("tabindex")).toBeFalsy();
+  });
+
+  it("Creates a dropdown component", () => {
+    const headerElement = document.querySelector(".tube-status-header");
+
+    headerElement.createDropdown_();
+
+    expect(headerElement.avatarWrapperEl_.children.length).toBe(2);
+    expect(headerElement.classList.contains("tube-status-header--open")).toBeTruthy();
+    expect(headerElement.avatarEl_.hasAttribute("tabindex")).toBeTruthy();
+  });
+
+  it("Handles a user account removal request", async () => {
+    const headerElement = document.querySelector(".tube-status-header");
+    const toasterElement = document.querySelector(".tube-status-toast");
+
+    apiRemoveAccount.mockImplementation(() => 200);
+
+    headerElement.createDropdown_();
+    headerElement.querySelector(".tube-status-btn--danger").click();
+
+    await waitForExpect(() => {
+      expect(headerElement.avatarWrapperEl_.children.length).toBe(1);
+      expect(toasterElement.hasAttribute("delete")).toBeTruthy();
+    });
   });
 });
