@@ -16,6 +16,9 @@ const spyRemoveContent_ = jest.spyOn(Header.prototype, "removeContent_");
 
 window.customElements.define("tube-status-header", Header);
 
+global.URL.createObjectURL = jest.fn(() => "https://tube-status.co.uk/");
+global.URL.revokeObjectURL = jest.fn();
+
 /**
  * Tests
  */
@@ -132,6 +135,26 @@ describe("Header element", () => {
     await waitForExpect(() => {
       expect(headerElement.avatarWrapperEl_.children.length).toBe(1);
       expect(toasterElement.hasAttribute("delete")).toBeTruthy();
+    });
+  });
+
+  it("Handles user data download request", async () => {
+    const headerElement = document.querySelector(".tube-status-header");
+
+    apiDownload.mockReturnValue(Promise.resolve({
+      blob() {
+        return Promise.resolve("https://tube-status.co.uk/");
+      },
+    }));
+
+    headerElement.createDropdown_();
+    headerElement.querySelector(".tube-status-btn").click();
+
+    await waitForExpect(() => {
+      expect(window.URL.createObjectURL).toHaveBeenCalledTimes(1);
+      expect(window.URL.createObjectURL).toHaveBeenCalledWith("https://tube-status.co.uk/");
+      expect(window.URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+      expect(window.URL.revokeObjectURL).toHaveBeenCalledWith("https://tube-status.co.uk/");
     });
   });
 });
