@@ -121,7 +121,7 @@ export default class Authentication extends HTMLElement {
     const {userProfile: {signedIn}} = getStore();
 
     if (signedIn) {
-      const signOutBtn = create("span", {
+      const signOutBtn = create("button", {
         copy: "Sign out",
         classname: [cssClass.SIGN_OUT_BTN, cssClass.BTN],
       });
