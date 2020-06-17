@@ -45,13 +45,13 @@ describe("Authentication element", () => {
     updateStore({action: actions.RESET_STORE, data: initialStore});
   });
 
-  it("Instantiates without error", () => {
+  it("instantiates without error", () => {
     const authenticationElement = document.querySelector("tube-status-authentication");
 
     expect(authenticationElement.nodeType).toBe(1);
   });
 
-  it("Handles a JWT within local storage", () => {
+  it("handles a JWT within local storage", () => {
     const authenticationElement = document.querySelector("tube-status-authentication");
 
     expect(authenticationElement.token_).toEqual(testJWT);
@@ -64,7 +64,7 @@ describe("Authentication element", () => {
     expect(userProfile.avatar).toBe("https://test-photo");
   });
 
-  it("Updates attributes after authentication", () => {
+  it("updates attributes after authentication", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
 
     expect(authenticationEl.getAttribute("auth-path")).toBe("Sign out");
@@ -77,7 +77,7 @@ describe("Authentication element", () => {
     expect(authenticationEl.getAttribute("auth-path")).toBe("Sign in");
   });
 
-  it("Handles a successful user login", () => {
+  it("handles a successful user login", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
 
     authenticationEl.handleSignIn_();
@@ -86,7 +86,7 @@ describe("Authentication element", () => {
     expect(authenticationEl.classList.contains("tube-status-hide")).toBe(true);
   });
 
-  it("Handles an unsuccessful user logout proccess", async () => {
+  it("handles an unsuccessful user logout proccess", async () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
     apiLogout.mockImplementation(() => 500);
 
@@ -98,7 +98,7 @@ describe("Authentication element", () => {
     });
   });
 
-  it("Handles a successful user logout process", async () => {
+  it("handles a successful user logout process", async () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
     apiLogout.mockImplementation(() => 200);
 
@@ -113,7 +113,7 @@ describe("Authentication element", () => {
     });
   });
 
-  it("Handles a logout action", async () => {
+  it("handles a logout action", async () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
 
     authenticationEl.handleLogoutAction_({id: "217321693378495195842"});
@@ -127,7 +127,7 @@ describe("Authentication element", () => {
     });
   });
 
-  it("Handles a keyup event", () => {
+  it("handles a keyup event", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
     const event = new KeyboardEvent("keyup", {which: 9});
 
@@ -137,7 +137,7 @@ describe("Authentication element", () => {
     expect(spyHandleTabFocus).toHaveBeenCalledWith(authenticationEl);
   });
 
-  it("Handles a keypress event", () => {
+  it("handles a keypress event", () => {
     const authenticationEl = document.querySelector(".tube-status-authentication");
     const event = new KeyboardEvent("keypress", {which: 13});
 
