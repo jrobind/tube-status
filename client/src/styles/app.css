@@ -273,18 +273,16 @@ body {
 /* note styles */
 .tube-status-note {
   background: var(--note-blue);
+  display: flex;
   padding: 20px;
-  font-size: 14px;
+  font-size: 13px;
   margin: -45px 0 45px 0;
 }
 
 .tube-status-note__message {
   display: flex;
   align-items: center;
-}
-
-.tube-status-note__message img {
-  margin-right: 10px;
+  margin-left: 8px;
 }
 
 /* filter styles */
@@ -802,6 +800,10 @@ body {
   /* button styles */
   .tube-status-btn {
     padding: 4px;
+  }
+
+  .tube-status-note {
+    font-size: 14px;
   }
 
   /* header styles */
