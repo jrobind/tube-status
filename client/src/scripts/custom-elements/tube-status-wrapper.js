@@ -24,6 +24,7 @@ const cssSelector = {
   SUBSCRRIPTIONS: ".tube-status-header__subscription",
   AUTHENTICATION: ".tube-status-authentication",
   NOTE: ".tube-status-note",
+  NOTE_MESSAGE: ".tube-status-note__message",
 };
 
 /**
@@ -52,6 +53,9 @@ export default class TubeStatusWrapper extends HTMLElement {
 
     /** @private {HTMLElement} */
     this.noteEl = document.querySelector(cssSelector.NOTE);
+
+    /** @private {HTMLElement} */
+    this.noteMessageEl = document.querySelector(cssSelector.NOTE_MESSAGE);
   }
 
   /**
@@ -358,7 +362,7 @@ export default class TubeStatusWrapper extends HTMLElement {
     }
 
     if (!notificationsFeature) {
-      this.noteEl.textContent = copy.NOTE_PUSH_API;
+      this.noteMessageEl.textContent = copy.NOTE_PUSH_API;
       this.noteEl.classList.remove(cssClass.HIDDEN);
     }
 
