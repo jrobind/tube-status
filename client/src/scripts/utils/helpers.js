@@ -14,7 +14,8 @@ const cssClass = {
 * @enum {string}
 */
 const cssSelector = {
-  FOCUSABLE_ELEMENTS: "button:not([disabled]), [tabindex]",
+  // eslint-disable-next-line max-len
+  FOCUSABLE_ELEMENTS: "a, button, input, textarea, select, details, [tabindex]:not([tabindex='-1'])",
 };
 
 /**
@@ -155,7 +156,9 @@ export const handleTabFocus = (el) => {
  * @param {HTMLElement} el
  */
 export const createFocusTrap = (el) => {
-  const focusableEls = el.querySelectorAll(cssSelector.FOCUSABLE_ELEMENTS);
+  const focusableEls = [...el.querySelectorAll(
+    cssSelector.FOCUSABLE_ELEMENTS)].filter(
+    (el) => !el.hasAttribute("disabled"));
   const firstFocusableEl = focusableEls[0];
   const lastFocusableEl = focusableEls[focusableEls.length - 1];
 
