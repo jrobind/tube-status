@@ -98,8 +98,7 @@ export default class Time extends HTMLElement {
   }
 
   /**
-   * Dispatches custom event to app modal containing hours
-   * selected for line subscriptions.
+   * Updates store with hours selected for line subscriptions.
    * @private
    */
   handleSubmitHours_() {

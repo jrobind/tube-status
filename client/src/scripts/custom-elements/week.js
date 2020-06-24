@@ -97,8 +97,7 @@ export default class Week extends HTMLElement {
   }
 
   /**
-   * Dispatches custom event to app modal containing week days
-   * selected for line subscriptions.
+   * Updates store with week days selected for line subscriptions.
    * @private
    */
   handleSubmitDays_() {
