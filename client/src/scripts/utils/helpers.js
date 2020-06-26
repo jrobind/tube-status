@@ -156,13 +156,13 @@ export const handleTabFocus = (el) => {
  * @param {HTMLElement} el
  */
 export const createFocusTrap = (el) => {
-  const focusableEls = [...el.querySelectorAll(
-    cssSelector.FOCUSABLE_ELEMENTS)].filter(
-    (el) => !el.hasAttribute("disabled"));
-  const firstFocusableEl = focusableEls[0];
-  const lastFocusableEl = focusableEls[focusableEls.length - 1];
+  const handleKeyDown = (e, first, last) => {
+    const focusableEls = [...el.querySelectorAll(
+      cssSelector.FOCUSABLE_ELEMENTS)].filter(
+      (el) => !el.hasAttribute("disabled"));
+    const firstFocusableEl = focusableEls[0];
+    const lastFocusableEl = focusableEls[focusableEls.length - 1];
 
-  el.addEventListener("keydown", (e) => {
     if (e.which === 9) {
       if (e.shiftKey) {
         if (document.activeElement === firstFocusableEl) {
@@ -176,5 +176,8 @@ export const createFocusTrap = (el) => {
         }
       }
     }
-  });
+  };
+
+  el.removeEventListener("keydown", handleKeyDown);
+  el.addEventListener("keydown", handleKeyDown);
 };
