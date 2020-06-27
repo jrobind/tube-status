@@ -124,6 +124,7 @@ export default class Authentication extends HTMLElement {
       const signOutBtn = create("button", {
         copy: "Sign out",
         classname: [cssClass.SIGN_OUT_BTN, cssClass.BTN],
+        data: {name: "tabindex", value: "-1"},
       });
 
       this.setAttribute("auth-path", "Sign out");
