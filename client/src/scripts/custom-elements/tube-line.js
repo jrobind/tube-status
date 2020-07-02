@@ -128,6 +128,8 @@ export default class TubeLine extends HTMLElement {
     this.tubeStatusWrapper_ = document.querySelector(
       `.${cssClass.STATUS_WRAPPER}`);
     this.connectedCalled_ = true;
+
+    this.subIconWrapper_.setAttribute("tabindex", "0");
   }
 
   /**
@@ -230,6 +232,7 @@ export default class TubeLine extends HTMLElement {
    * @private
    */
   hideSubscritpionIcons_() {
+    this.subIconWrapper_.removeAttribute("tabindex");
     this.subIconEl_.classList.add(cssClass.HIDDEN);
   }
 
