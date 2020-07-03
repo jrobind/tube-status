@@ -201,6 +201,9 @@ export default class Header extends HTMLElement {
    * @private
    */
   toggleDropdown_(e) {
+    const {userProfile: {signedIn}} = getStore();
+
+    if (!signedIn) return;
     if (e) {
       const {target} = e;
       const tempAnchorEl = this.querySelector(`.${cssClass.TEMP_ANCHOR}`);
