@@ -204,6 +204,7 @@ export default class Header extends HTMLElement {
     const {userProfile: {signedIn}} = getStore();
 
     if (!signedIn) return;
+
     if (e) {
       const {target} = e;
       const tempAnchorEl = this.querySelector(`.${cssClass.TEMP_ANCHOR}`);
@@ -223,7 +224,6 @@ export default class Header extends HTMLElement {
       }
     }
 
-    const {userProfile: {signedIn}} = getStore();
     const contentExists = this.querySelector(
       `.${cssClass.DOWNLOAD}`);
 
@@ -232,7 +232,6 @@ export default class Header extends HTMLElement {
         this.removeContent_();
         return;
       }
-
       this.createDropdown_();
     } else {
       this.removeContent_();
