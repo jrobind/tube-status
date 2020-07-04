@@ -30,29 +30,21 @@ describe("Header element", () => {
           <h1 class="tube-status-header__heading-title">Tube-status</h1>
         </div>
         <div class="tube-status-header__profile tube-status-hide">
-          <tube-status-loading class="tube-status-loading tube-status-loading__header" header></tube-status-loading>
           <tube-status-authentication tabindex="0" class="tube-status-authentication" dest='/auth/google/callback' auth-path='Sign in'>
-            <img alt="sign in with google" src="./images/google-sign-in.png" class="tube-status-authentication__image">
+            <input tabindex="-1" type="image" src="./images/google-sign-in.png" alt="sign in with google" class="tube-status-authentication__image"/>
           </tube-status-authentication>
-          <div class="tube-status-header__subscription tube-status-hide">
-            <tube-status-subscriptions tabindex="0" class="tube-status-subscriptions">
-              <img alt="subscription list icon" src="./images/subscriptions.svg" class="tube-status-subscriptions__img tube-status-subscriptions__img--default"> 
-              <img alt="subscription list icon filled" src="./images/subscriptions-filled.svg" class=" tube-status-subscriptions__img tube-status-subscriptions__img-filled tube-status-hide"> 
-            </tube-status-subscriptions>
-          </div>
           <div class="tube-status-header__avatar" tabindex="0">
             <img alt="Google profile avatar" referrerPolicy="no-referrer" class="tube-status-header__avatar-image"> 
           </div>
         </div>
       </tube-status-header>
       <tube-status-toast class="tube-status-toast tube-status-hide"><span class="tube-status-toast__message"></span></tube-status-toast>`;
-
-    updateStore({action: actions.RESET_STORE, data: initialStore});
   });
 
   afterEach(() => {
-    spyRemoveContent_.mockClear();
+    jest.clearAllMocks();
     document.body.innerHTML = "";
+    updateStore({action: actions.RESET_STORE, data: initialStore});
   });
 
   it("Instantiates without error", () => {
@@ -156,5 +148,31 @@ describe("Header element", () => {
       expect(window.URL.revokeObjectURL).toHaveBeenCalledTimes(1);
       expect(window.URL.revokeObjectURL).toHaveBeenCalledWith("https://tube-status.co.uk/");
     });
+  });
+
+  it("toggles the header dropdown", () => {
+    const headerElement = document.querySelector(".tube-status-header");
+
+    updateStore({
+      action: actions.AUTHENTICATION,
+      data: {signedIn: true, avatar: "https://test-photo/", id: "217321693378495195842"},
+    });
+
+    updateStore({
+      action: actions.NOTIFICATIONS_FEATURE,
+      data: {notificationsFeature: true},
+    });
+
+    headerElement.updateAvatar_();
+
+    headerElement.toggleDropdown_({target: headerElement.avatarEl_});
+
+    expect(headerElement.avatarWrapperEl_.children.length).toBe(2);
+    expect(spyRemoveContent_).toHaveBeenCalledTimes(0);
+
+    headerElement.toggleDropdown_({target: document});
+
+    expect(spyRemoveContent_).toHaveBeenCalledTimes(1);
+    expect(headerElement.avatarWrapperEl_.children.length).toBe(1);
   });
 });
