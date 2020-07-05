@@ -90,13 +90,8 @@ export default class TubeStatusWrapper extends HTMLElement {
     // listeners
     document.addEventListener(
       customEvents.FILTER_SUBSCRIPTIONS, this.filterView_.bind(this));
-
-    if ("safari" in window !== true) {
-      const channel = new BroadcastChannel("sw-messages");
-
-      channel.addEventListener(
-        "message", this.handleNotificationRecieved_.bind(this));
-    }
+    document.addEventListener(
+      "visibilitychange", this.handleVisibilityChange_.bind(this));
 
     socket.on(
       customEvents.IO_SUBSCRIPTION_ACTION,
@@ -283,15 +278,11 @@ export default class TubeStatusWrapper extends HTMLElement {
   }
 
   /**
-   * Fetches tube line data when a push notification has been recieved
-   * within the client.
-   * @param {Event} e
+   * Fetches tube line data when the document has become active.
    * @private
    */
-  async handleNotificationRecieved_(e) {
-    const {data: {title}} = e;
-
-    if (title === "push received") {
+  async handleVisibilityChange_() {
+    if (document.visibilityState === "visible") {
       await this.getAllLineData_();
       this.order_();
     }
