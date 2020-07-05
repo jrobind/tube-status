@@ -25,6 +25,7 @@ const cssSelector = {
   AUTHENTICATION: ".tube-status-authentication",
   NOTE: ".tube-status-note",
   NOTE_MESSAGE: ".tube-status-note__message",
+  PRIVACY_MODAL: "tube-status-privacy-modal",
 };
 
 /**
@@ -62,6 +63,8 @@ export default class TubeStatusWrapper extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   async connectedCallback() {
+    const href = window.location.href;
+
     updateStore({
       action: actions.LOADING_APP,
       data: {loadingState: {state: true, line: null}},
@@ -86,6 +89,10 @@ export default class TubeStatusWrapper extends HTMLElement {
       action: actions.LOADING_APP,
       data: {loadingState: {state: false, line: null}},
     });
+
+    if (href.includes("privacy")) {
+      document.querySelector(cssSelector.PRIVACY_MODAL).focus();
+    }
 
     // listeners
     document.addEventListener(
