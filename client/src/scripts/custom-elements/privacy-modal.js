@@ -57,13 +57,13 @@ export default class PrivacyModal extends HTMLElement {
   }
 
   /**
-   * Handler for a tab keyup event.
+   * Handler for a keyup event.
    * @param {KeyboardEvent} e
    * @private
    */
   handleKeyup_(e) {
     e.stopImmediatePropagation();
-    e.which === 9 && handleTabFocus(this);
+    e.which === 9 || e.which === 27 && handleTabFocus(this);
   }
 
   /**
@@ -104,8 +104,6 @@ export default class PrivacyModal extends HTMLElement {
     });
 
     this.appendChild(captionEl);
-    // set focus
-    this.focus();
   }
 
   /**
