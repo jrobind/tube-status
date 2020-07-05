@@ -102,7 +102,7 @@ export default class Modal extends HTMLElement {
   }
 
   /**
-   * Handler for a enter keypress event.
+   * Handler for a keyup event.
    * @param {KeyboardEvent} e
    * @private
    */
