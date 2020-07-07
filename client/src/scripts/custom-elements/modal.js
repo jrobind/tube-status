@@ -7,6 +7,7 @@ import {
   removeDuplicate,
   handleTabFocus,
   createFocusTrap,
+  handleModalScroll
 } from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 
@@ -249,6 +250,7 @@ export default class Modal extends HTMLElement {
     this.setAttribute("tabindex", "0");
     this.focus();
     createFocusTrap(this);
+    handleModalScroll();
   }
 
   /**
@@ -359,6 +361,7 @@ export default class Modal extends HTMLElement {
         this.populateModal_(removeDuplicate(lineInformation[line]));
 
         createFocusTrap(this);
+        handleModalScroll();
       } else {
         this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
         this.classList.remove(cssClass.MODAL_ACTIVE);
@@ -366,6 +369,7 @@ export default class Modal extends HTMLElement {
 
         document.dispatchEvent(
           new CustomEvent(customEvents.MODAL_CLOSE));
+        handleModalScroll();
       }
     } else if (which === 9) {
       handleTabFocus(modalIconEl);

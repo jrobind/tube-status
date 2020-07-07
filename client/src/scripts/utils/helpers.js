@@ -7,6 +7,7 @@ const {getStore} = store;
  */
 const cssClass = {
   FOCUS: "tube-status-focus",
+  MODAL_OPEN: "modal-open",
 };
 
 /**
@@ -180,4 +181,12 @@ export const createFocusTrap = (el) => {
 
   el.removeEventListener("keydown", handleKeyDown);
   el.addEventListener("keydown", handleKeyDown);
+};
+
+export const handleModalScroll = () => {
+  if (document.body.classList.contains(cssClass.MODAL_OPEN)) {
+    document.body.classList.remove(cssClass.MODAL_OPEN);
+  } else {
+    document.body.classList.add(cssClass.MODAL_OPEN);
+  }
 };

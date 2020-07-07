@@ -1,7 +1,12 @@
 import copy from "../privacy-copy.js";
 import Modal from "../custom-elements/modal.js";
 import {customEvents} from "../constants.js";
-import {create, createFocusTrap, handleTabFocus} from "../utils/helpers.js";
+import {
+  create,
+  createFocusTrap,
+  handleTabFocus,
+  handleModalScroll
+} from "../utils/helpers.js";
 
 /**
  * CSS classes.
@@ -146,6 +151,7 @@ export default class PrivacyModal extends HTMLElement {
       this.populateModal_();
 
       createFocusTrap(this);
+      handleModalScroll();
     } else {
       this.overlay_.classList.remove(cssClass.OVERLAY_DIM);
       this.classList.remove(cssClass.MODAL_ACTIVE);
@@ -154,6 +160,7 @@ export default class PrivacyModal extends HTMLElement {
 
       document.dispatchEvent(
         new CustomEvent(customEvents.MODAL_CLOSE));
+      handleModalScroll();
     }
   }
 
