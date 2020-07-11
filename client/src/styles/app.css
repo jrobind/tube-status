@@ -717,7 +717,7 @@ body {
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
   animation: fade-in 0.5s ease;
-  z-index: 1;
+  z-index: 0;
 }
 
 .tube-status-tooltip__message {
