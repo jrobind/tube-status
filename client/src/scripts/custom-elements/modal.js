@@ -7,7 +7,7 @@ import {
   removeDuplicate,
   handleTabFocus,
   createFocusTrap,
-  handleModalScroll
+  handleModalScroll,
 } from "../utils/helpers.js";
 const {getStore, updateStore, subscribeToStore} = store;
 

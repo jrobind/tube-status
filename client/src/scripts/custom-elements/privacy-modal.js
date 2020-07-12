@@ -5,7 +5,7 @@ import {
   create,
   createFocusTrap,
   handleTabFocus,
-  handleModalScroll
+  handleModalScroll,
 } from "../utils/helpers.js";
 
 /**
