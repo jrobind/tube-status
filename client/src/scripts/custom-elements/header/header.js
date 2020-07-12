@@ -122,8 +122,9 @@ export default class Header extends HTMLElement {
         avatar :
         AVATAR_IMG_PATH;
 
-      signedIn && this.profileEl_.classList.add(
-        cssClass.HEADER_PROFILE_SIGNED_IN);
+      signedIn ?
+        this.profileEl_.classList.add(cssClass.HEADER_PROFILE_SIGNED_IN) :
+        this.profileEl_.classList.remove(cssClass.HEADER_PROFILE_SIGNED_IN);
     }
   }
 
