@@ -13,6 +13,7 @@ const CronJob = require("cron").CronJob;
 const db = require("./models");
 const buildLine = require("./utlis/build-line");
 const {matchesDay, matchesTime} = require("./utlis/date-checker");
+const {deleteSubscription} = require("./utlis/deleteSubscription");
 const debug = require("debug")("app:server");
 const helmet = require("helmet");
 require("dotenv").config({path: "./env"});
@@ -203,8 +204,13 @@ const job = new CronJob("0 */1 * * * *", async () => {
                   // send push notification
                   await webpush
                     .sendNotification(subscription, payload)
-                    .catch((err) => debug(
-                      `error sending push notification ${err}`));
+                    .catch((err) => {
+                      debug(`error sending push notification ${err}`);
+
+                      if (err.statusCode === 410) {
+                        deleteSubscription(user.googleId, subscription);
+                      }
+                    });
                 });
               }
             });
