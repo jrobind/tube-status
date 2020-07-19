@@ -27,7 +27,7 @@ const cssSelector = {
  */
 const cssClass = {
   STATUS_WRAPPER: "tube-status-wrapper",
-  SUB_STATUS: "tube-line-sub__status",
+  SUB_STATUS_TEXT: "tube-line-sub__status-text",
   SUB_ICON: "tube-line-sub__image-sub",
   ICON_IMAGE: "tube-line-sub__image",
   UNSUB_ICON: "tube-line-sub__image-unsub",
@@ -59,7 +59,7 @@ export default class TubeLine extends HTMLElement {
     this.tubeStatusWrapper_;
 
     /** @private {HTMLElement} */
-    this.subStatusEl_ = this.querySelector(`.${cssClass.SUB_STATUS}`);
+    this.subStatusEl_ = this.querySelector(`.${cssClass.SUB_STATUS_TEXT}`);
 
     /** @private {HTMLElement} */
     this.subIconWrapper_ = this.querySelector(cssSelector.SUB_ICON_WRAPPER);
@@ -294,7 +294,7 @@ export default class TubeLine extends HTMLElement {
    */
   handleClick_(e) {
     const target = /** @type {HTMLElement} */ (e.target);
-    const detail = {detail: {line: this.line_}};
+    const detail = {detail: {line: this.line_, el: this}};
     const isActive = this.classList.contains(cssClass.ACTIVE);
     const isSubEl = target.classList.contains(cssClass.ICON_IMAGE) ||
       target.classList.contains(cssClass.SUB_ICON_WRAPPER);
