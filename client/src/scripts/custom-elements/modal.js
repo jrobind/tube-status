@@ -59,6 +59,7 @@ const cssClass = {
 const cssSelector = {
   OVERLAY: ".overlay",
   TOAST: ".tube-status-toast",
+  APP: ".app",
 };
 
 /**
@@ -70,7 +71,13 @@ export default class Modal extends HTMLElement {
     super();
 
     /** @private {HTMLElement} */
-    this.overlay_;
+    this.overlay_ = document.querySelector(cssSelector.OVERLAY);
+
+    /** @private {HTMLElement} */
+    this.app_ = document.querySelector(cssSelector.APP);
+
+    /** @private {HTMLElement} */
+    this.invokingContext_;
 
     /** @private {string} */
     this.line_;
@@ -80,7 +87,6 @@ export default class Modal extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    this.overlay_ = document.querySelector(cssSelector.OVERLAY);
     const subscribers = [
       {
         callback: this.updateSelectDaysBtn_.bind(this),
@@ -312,12 +318,13 @@ export default class Modal extends HTMLElement {
   /**
    * Gets the relevant line information from client store.
    * @private
-   * @param {array} line
+   * @param {string} line
+   * @param {array} lines
    */
-  populateModal_(line) {
+  populateModal_(line, lines) {
     const context = create("div", {classname: cssClass.MODAL_CAPTION});
 
-    line.forEach((info) => {
+    lines.forEach((info) => {
       const {reason} = info;
       const duplicateReason = context.textContent.trimLeft() === reason;
       const reasonEl = create("div", {classname: cssClass.MODAL_REASON});
@@ -330,8 +337,11 @@ export default class Modal extends HTMLElement {
       this.renderDelayContext_(context);
     });
 
-    // set focus
     this.setAttribute("tabindex", "0");
+    this.setAttribute("role", "dialog");
+    this.setAttribute("aria-hidden", "false");
+    this.app_.setAttribute("aria-hidden", "true");
+    this.setAttribute("aria-label", `${line} line disruption description`);
     this.focus();
   }
 
@@ -352,13 +362,17 @@ export default class Modal extends HTMLElement {
       const {lineInformation} = getStore();
       const line = e ? e.detail.line : null;
 
+      if (e && e.detail.el) {
+        this.invokingContext_ = e ? e.detail.el : null;
+      }
+
       // remove old markup before toggling visibility
       this.removeContent_();
 
       if (line) {
         this.overlay_.classList.add(cssClass.OVERLAY_DIM);
         this.classList.add(cssClass.MODAL_ACTIVE);
-        this.populateModal_(removeDuplicate(lineInformation[line]));
+        this.populateModal_(line, removeDuplicate(lineInformation[line]));
 
         createFocusTrap(this);
         handleModalScroll();
@@ -370,6 +384,11 @@ export default class Modal extends HTMLElement {
         document.dispatchEvent(
           new CustomEvent(customEvents.MODAL_CLOSE));
         handleModalScroll();
+        this.setAttribute("aria-hidden", "true");
+        this.app_.setAttribute("aria-hidden", "false");
+
+        // return focus to invoking context
+        this.invokingContext_ && this.invokingContext_.focus();
       }
     } else if (which === 9) {
       handleTabFocus(modalIconEl);

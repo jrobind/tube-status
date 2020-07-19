@@ -30,6 +30,15 @@ const cssClass = {
  */
 const cssSelector = {
   OVERLAY: ".overlay",
+  APP: ".app",
+};
+
+/**
+ * CSS id's.
+ * @enum {string}
+ */
+const cssId = {
+  MODAL_LABEL_ID: "tube-status-privacy-modal-label",
 };
 
 /**
@@ -41,7 +50,10 @@ export default class PrivacyModal extends HTMLElement {
     super();
 
     /** @private {HTMLElement} */
-    this.overlay_;
+    this.overlay_ = document.querySelector(cssSelector.OVERLAY);
+
+    /** @private {HTMLElement} */
+    this.app_ = document.querySelector(cssSelector.APP);
 
     /** @private {string} */
     this.typeEl_ = this.querySelector(`.${cssClass.PRIVACY_TYPE}`);
@@ -51,8 +63,6 @@ export default class PrivacyModal extends HTMLElement {
    * Called every time element is inserted to DOM.
    */
   connectedCallback() {
-    this.overlay_ = document.querySelector(cssSelector.OVERLAY);
-
     // listeners
     this.addEventListener("click", this.toggleModal_.bind(this));
     this.addEventListener("keyup", this.handleKeyup_.bind(this));
@@ -68,7 +78,11 @@ export default class PrivacyModal extends HTMLElement {
    */
   handleKeyup_(e) {
     e.stopImmediatePropagation();
-    e.which === 9 || e.which === 27 && handleTabFocus(this);
+    if (e.which === 9) {
+      handleTabFocus(this);
+    } else if (e.which === 27) {
+      this.toggleModal_(e);
+    }
   }
 
   /**
@@ -97,6 +111,7 @@ export default class PrivacyModal extends HTMLElement {
       const headingEl = create("h2", {
         classname: cssClass.PRIVACY_BLOCK_HEADING,
         copy: TITLE,
+        id: cssId.MODAL_LABEL_ID,
       });
       const contentEl = create("p", {
         classname: cssClass.PRIVACY_BLOCK_CONTENT,
@@ -150,6 +165,12 @@ export default class PrivacyModal extends HTMLElement {
       this.typeEl_.classList.add(cssClass.HIDE);
       this.populateModal_();
 
+      this.setAttribute("role", "dialog");
+      this.setAttribute("aria-hidden", "false");
+      this.app_.setAttribute("aria-hidden", "true");
+      this.setAttribute("aria-labelledby", cssId.MODAL_LABEL_ID);
+      this.focus();
+
       createFocusTrap(this);
       handleModalScroll();
     } else {
@@ -161,6 +182,9 @@ export default class PrivacyModal extends HTMLElement {
       document.dispatchEvent(
         new CustomEvent(customEvents.MODAL_CLOSE));
       handleModalScroll();
+      this.setAttribute("aria-hidden", "true");
+      this.app_.setAttribute("aria-hidden", "false");
+      this.focus();
     }
   }
 
