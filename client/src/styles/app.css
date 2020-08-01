@@ -692,7 +692,7 @@ body {
 
 .tube-status-time__table-wrapper {
   overflow: auto;
-  padding: 15px 0;
+  padding: 8px 0;
   position: relative;
 }
 
@@ -738,8 +738,8 @@ body {
   background: var(--default-white);
   border-radius: 10px;
   box-shadow: 4px 12px 47px 0 rgba(0, 0, 0, 0.15);
-  min-height: 130px;
-  bottom: -135px;
+  min-height: 141px;
+  bottom: -146px;
 }
 
 .tube-status-week__btn,
@@ -748,7 +748,7 @@ body {
 }
 
 .tube-status-time__btn {
-  margin-bottom: 11px;
+  margin: 5px 0 11px 0;
 }
 
 /* tooltip styles */
