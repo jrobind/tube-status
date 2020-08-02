@@ -35,6 +35,7 @@
   src: local('PT Sans'), local('PTSans-Regular'),
        url('../fonts/pt-sans-v11-latin-regular.woff2') format('woff2'),
        url('../fonts/pt-sans-v11-latin-regular.woff') format('woff');
+  font-display: swap;
 }
 
 @font-face {
@@ -44,6 +45,7 @@
   src: local('PT Sans Bold'), local('PTSans-Bold'),
        url('../fonts/pt-sans-v11-latin-700.woff2') format('woff2'),
        url('../fonts/pt-sans-v11-latin-700.woff') format('woff');
+  font-display: swap;
 }
 
 html, 
