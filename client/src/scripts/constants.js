@@ -49,6 +49,7 @@ export const delayTypes = {
   SERVICE_CLOSED: "Service Closed",
   PART_CLOSURE: "Part Closure",
   PLANNED_CLOSURE: "Planned Closure",
+  SUSPENDED: "Suspended",
   PART_SUSPENDED: "Part Suspended",
   SEVERE_DELAYS: "Severe Delays",
   MINOR_DELAYS: "Minor Delays",

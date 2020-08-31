@@ -373,6 +373,9 @@ export default class TubeLine extends HTMLElement {
     case delayTypes.PLANNED_CLOSURE:
       this.setAttribute("score", "5");
       break;
+    case delayTypes.SUSPENDED:
+      this.setAttribute("score", "4");
+      break;
     case delayTypes.PART_SUSPENDED:
       this.setAttribute("score", "4");
       break;
