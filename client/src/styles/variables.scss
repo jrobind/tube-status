@@ -1,0 +1,108 @@
+// colors
+$body-background-color: #fdfdfd;
+$default-white: #fff;
+$disruption-background-color: #fbf7e7;
+$week-day-color: #d4ebf2;
+$week-day-hover-color: #bed3d9;
+$tooltip-background-color: #4c4c4c;
+$dividing-line-color: rgba(0,0,0,0.1);
+$app-green: #25d366;
+$note-blue: #e8f0fe;
+$toast-background-color: #3c4043;
+$danger-red: #F32013;
+$danger-red-hover: #CA0B00;
+$london-overground-color: #e86a10;
+$central-color: #dc241f;
+$bakerloo-color: #894e24;
+$circle-color: #ffce00;
+$district-color: #007229;
+$hammersmith-city-color: #d799af;
+$jubilee-color: #6a7278;
+$metropolitan-color: #751056;
+$northern-color: #000;
+$piccadilly-color: #0019a8;
+$victoria-color: #00a0e2;
+$waterloo-city-color: #76d0bd;
+$tfl-rail-color: #0019a8;
+$dlr-color: #00afad;
+$tram-color: #6c0;
+
+// maps
+$london-overground: (
+    name: london-overground,
+    background-color: $london-overground-color,
+    color: rgba(0, 0, 0, 0.75),
+);
+
+$dlr: (
+    name: dlr,
+    background-color: $dlr-color,
+    color: rgba(0, 0, 0, 0.7),
+);
+
+$tfl-rail: (
+    name: tfl-rail,
+    background-color: $tfl-rail-color,
+);
+
+$waterloo-city: (
+    name: waterloo-city,
+    background-color: $waterloo-city-color,
+    color: rgba(0, 0, 0, 0.7),
+);
+
+$victoria: (
+    name: victoria,
+    background-color: $victoria-color,
+    color: rgba(0, 0, 0, 0.7),
+);
+
+$piccadilly: (
+    name: piccadilly, 
+    background-color: $piccadilly-color,
+);
+
+$northern: (
+    name: northern,
+    background-color: $northern-color,
+);
+
+$metropolitan: (
+    name: metropolitan,
+    background-color: $metropolitan-color,
+);
+
+$jubilee: (
+    name: jubilee,
+    background-color: $jubilee-color,
+);
+
+$hammersmith-city: (
+    name: hammersmith-city,
+    background-color: $hammersmith-city-color,
+    color: rgba(0, 0, 0, 0.7),
+);
+
+$district: (
+    name: district,
+    background-color: $district-color,
+);
+
+$circle: (
+    name: circle,
+    background-color: $circle-color,
+    color: rgba(0, 0, 0, 0.7),
+);
+
+$central: (
+    name: central,
+    background-color: $central-color,
+);
+
+$bakerloo: (
+    name: bakerloo,
+    background-color: $bakerloo-color,
+);
+
+// lines
+$lines: $london-overground, $dlr, $tfl-rail, $waterloo-city, $victoria, $piccadilly, $northern, $metropolitan, $jubilee, $hammersmith-city, $district, $circle, $central, $bakerloo;
