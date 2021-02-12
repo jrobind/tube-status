@@ -2,9 +2,8 @@ const VERSION = "v1-tube-status";
 const CONTENT_TO_CACHE = [
   "/index.html",
   "/offline.html",
-  "/src/styles/app.css",
-  "/src/scripts/index.js",
-  "/src/scripts/push-setup.js",
+  "/build/bundle.js",
+  "/build/app.css",
   "/images/train-large.png",
   "/images/train-medium.png",
   "/images/train-small.png",

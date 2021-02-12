@@ -319,6 +319,7 @@ export default class TubeLine extends HTMLElement {
     const lineInfo = removeDuplicate(lineInformation[this.line_]);
     const {status, reason} = lineInfo[0];
     const lineName = this.getAttribute("line-name");
+
     this.subStatusEl_.textContent = `${lineName ? lineName : this.line_}`;
     this.reasonTitleEl_.textContent = "";
 
@@ -371,6 +372,9 @@ export default class TubeLine extends HTMLElement {
       this.setAttribute("score", "6");
       break;
     case delayTypes.PART_CLOSURE:
+      this.setAttribute("score", "5");
+      break;
+    case delayTypes.REDUCED_SERVICE:
       this.setAttribute("score", "5");
       break;
     case delayTypes.PLANNED_CLOSURE:

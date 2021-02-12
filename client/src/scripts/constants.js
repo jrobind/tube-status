@@ -54,6 +54,7 @@ export const delayTypes = {
   SEVERE_DELAYS: "Severe Delays",
   MINOR_DELAYS: "Minor Delays",
   GOOD_SERVICE: "Good Service",
+  REDUCED_SERVICE: "Reduced Service",
   SPECIAL_SERVICE: "Special Service",
 };
 
